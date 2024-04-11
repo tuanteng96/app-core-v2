@@ -21,7 +21,7 @@ function IframeWheel({ f7, params }) {
   return (
     <IframeComm
       attributes={{
-        src: `${SERVER_APP}/vong-quay-may-man?v=${new Date().valueOf()}&DepartmentID=${params?.DepartmentID}&EndDate=${params?.EndDate}`,
+        src: `${SERVER_APP}/minigame/vong-quay-may-man?v=${new Date().valueOf()}&DepartmentID=${params?.DepartmentID}&EndDate=${params?.EndDate}`,
         width: "100%",
         height: "100%",
         frameBorder: 0,
