@@ -50,6 +50,10 @@ export default class extends React.Component {
 
   render() {
     const { arrayItem, isLoading } = this.state;
+    let PhotoList =
+      arrayItem?.PhotoList && arrayItem?.PhotoList.length > 0
+        ? arrayItem?.PhotoList.slice(1, arrayItem?.PhotoList.length)
+        : [];
     return (
       <Page
         name="news-list-detail"
@@ -122,6 +126,18 @@ export default class extends React.Component {
                           }
                         },
                       }
+                    )}
+                    {PhotoList && PhotoList.length > 0 && (
+                      <div>
+                        {PhotoList.map((x, index) => (
+                          <div class="mt-12px" key={index}>
+                            <img
+                              src={SERVER_APP + "/upload/image/" + x}
+                              alt=""
+                            />
+                          </div>
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>
