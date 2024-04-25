@@ -37,6 +37,21 @@ export default class extends React.Component {
       .then(({ data }) => {
         if (data.error) {
           this.$f7router.navigate("/login/");
+          SEND_TOKEN_FIREBASE().then(async (response) => {
+            if (!response.error && response.Token) {
+              const { ID, acc_type } = getUser();
+              await UserService.authRemoveFirebase({
+                Token: response.Token,
+                ID: ID,
+                Type: acc_type,
+              });
+            } else {
+              app_request("unsubscribe", "");
+            }
+            iOS() && REMOVE_BADGE();
+            await localStorage.clear();
+            await new Promise((resolve) => setTimeout(resolve, 800));
+          });
         } else {
           this.setState({
             memberInfo: data,

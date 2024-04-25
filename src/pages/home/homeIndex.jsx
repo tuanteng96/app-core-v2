@@ -300,13 +300,13 @@ export default class extends React.Component {
                   f7={this.$f7}
                 />
               )}
-              <SlideList
+              {/* <SlideList
                 containerClass="pl-15px pr-15px slider-hot"
                 BannerName="APP.SALE"
                 OpenStock={this.handleStock}
                 f7router={this.$f7router}
                 f7={this.$f7}
-              />
+              /> */}
               <ProductList />
               <Reviews />
               <ListImage />

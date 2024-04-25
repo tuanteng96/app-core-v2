@@ -33,6 +33,11 @@ function PopupImages({ f7 }) {
                 }
               });
           }
+          else {
+            setData(data.data[0]);
+            setVisible(true);
+            localStorage.removeItem("_vqmm")
+          }
         }
       } else {
         if (data && data.data && data.data.length > 0) {

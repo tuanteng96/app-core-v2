@@ -15,6 +15,8 @@ import SkeletonPay from "./components/Pay/SkeletonPay";
 import NumberFormat from "react-number-format";
 import { toast } from "react-toastify";
 import clsx from "clsx";
+import userService from "../../service/user.service";
+import moment from "moment";
 
 export default class extends React.Component {
   constructor() {
@@ -27,6 +29,7 @@ export default class extends React.Component {
       deletedsOrder: [],
       editsOrder: [],
       voucherList: [],
+      contactMiniGame: [],
       WalletMe: 0,
       WalletPay: 0,
       WalletPaySuccess: 0,
@@ -353,7 +356,7 @@ export default class extends React.Component {
       .catch((er) => console.log(er));
   };
 
-  getVoucherOrder = () => {
+  getVoucherOrder = async () => {
     const infoUser = getUser();
     if (!infoUser) {
       this.$f7router.navigate("/login/");
@@ -369,12 +372,28 @@ export default class extends React.Component {
       addProps: "ProdTitle",
       voucherForOrder: true,
     };
+
+    let contactMiniGame = [];
+
+    if (!window.VoucherInfo) {
+      let { data: vouchers } = await userService.getVoucher(infoUser?.ID);
+      contactMiniGame = vouchers?.data.contactMiniGame;
+      
+    }
+    else {
+      contactMiniGame = window.VoucherInfo?.contactMiniGame;
+      delete window.VoucherInfo;
+    }
+
     ShopDataService.getUpdateOrder(data)
       .then((response) => {
         const data = response.data.data;
         if (response.data.success) {
           this.setState({
             voucherList: data.vouchers,
+            contactMiniGame: contactMiniGame
+              ? contactMiniGame.filter((x) => x.Status !== 0)
+              : [],
           });
           if (data.errors && data.errors.length > 0) {
             toast.error(data.errors.join(", "), {
@@ -557,7 +576,7 @@ export default class extends React.Component {
   render() {
     const {
       items,
-      TotalPay,
+      contactMiniGame,
       popupOpened,
       VCode,
       WalletMe,
@@ -882,7 +901,8 @@ export default class extends React.Component {
                 </div>
               </button>
             </form>
-            {voucherList.length === 0 ? (
+            {(!voucherList || voucherList.length === 0) &&
+            (!contactMiniGame || contactMiniGame.length === 0) ? (
               <ul>
                 <li>Bạn không có mã khuyến mại.</li>
               </ul>
@@ -890,6 +910,41 @@ export default class extends React.Component {
               ""
             )}
             <ul>
+              {contactMiniGame &&
+                contactMiniGame.map((item, index) => (
+                  <li
+                    key={index}
+                    style={{
+                      backgroundImage: `url(${imgCoupon})`,
+                    }}
+                  >
+                    <div className="coupon">
+                      <div className="coupon-title">{item.Title}</div>
+                      <div className="coupon-value">
+                        {item.Content}{" "}
+                        <span className="coupon-end">
+                          ( HSD :{" "}
+                          {!item.EndDate ? (
+                            "Không giới hạn"
+                          ) : (
+                            <React.Fragment>
+                              {moment(item.EndDate).format("HH:mm DD-MM-YYYY")}
+                            </React.Fragment>
+                          )}{" "}
+                          )
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      onClick={() =>
+                        toast.error("Liên hệ để sử dụng Voucher này.")
+                      }
+                      className="apply-coupon"
+                    >
+                      Chọn mã
+                    </div>
+                  </li>
+                ))}
               {voucherList &&
                 voucherList
                   .slice()

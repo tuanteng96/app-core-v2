@@ -140,7 +140,7 @@ const SheetOrder = ({ item, textPay, loadingText, Banks, MaND }) => {
                   //   }),
                   // }}
                   // menuPortalTarget={document.body}
-                  menuPlacement="top"
+                  menuPlacement="bottom"
                 />
               </div>
               {ValueBank && (

@@ -60,8 +60,11 @@ import PosPage from "../pages/pos/Pos";
 
 import SearchPage from "../pages/search/index";
 import NotFoundPage from "../pages/404.jsx";
-import { getUser } from "../constants/user";
+import {
+  getUser
+} from "../constants/user";
 import ServiceOriginal from "../pages/shop/ServiceOriginal";
+import GiftGamePage from "../pages/user/GiftGame.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -101,8 +104,7 @@ const checkRouterHome = () => {
   return HomeIndex;
 };
 
-var routes = [
-  {
+var routes = [{
     path: "/",
     asyncComponent: () => checkRouterHome(),
   },
@@ -169,10 +171,14 @@ var routes = [
     component: WheelSpinPage,
     beforeEnter: checkAuth,
   },
-
+  {
+    path: "/hop-qua-may-man/:DepartmentID/:EndDate",
+    component: GiftGamePage,
+    beforeEnter: checkAuth,
+  },
   {
     path: "/shop/:cateId",
-    async(routeTo, routeFrom, resolve, reject) {
+    async (routeTo, routeFrom, resolve, reject) {
       const cateID = routeTo.params.cateId;
       const cateidparams = routeTo.query.cateid;
       if (Number(cateID) === 795 || Number(cateidparams) === 795) {
@@ -188,7 +194,7 @@ var routes = [
   },
   {
     path: "/shop/list/:parentId/:cateId",
-    async(routeTo, routeFrom, resolve, reject) {
+    async (routeTo, routeFrom, resolve, reject) {
       const cateParentID = routeTo.params.parentId;
       if (cateParentID === "795") {
         resolve({
