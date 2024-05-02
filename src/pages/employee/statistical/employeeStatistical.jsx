@@ -684,7 +684,7 @@ export default class employeeStatistical extends React.Component {
                                   ? "Hoàn thành"
                                   : "Đang thực hiện"}
                               </span>
-                              {item.ProdTitle} - ({" "}
+                              {item.ProdTitle} - <span className="text-muted">{item.ConvertTitle || item.Root2Title || item.RootTitle}</span> ({" "} 
                               {moment(item.CreateDate).format("llll")} )
                               <div>
                                 {item?.Member?.FullName}
