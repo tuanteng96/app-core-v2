@@ -352,7 +352,7 @@ export default class extends React.Component {
                                           </div>
                                         </div>
                                       </div>
-                                      <div className="item-sub">
+                                      {/* <div className="item-sub">
                                         <div className="item-sub__box">
                                           <h5>Số lần sử dụng / Tổng số lần</h5>
                                           <div className="price">
@@ -369,6 +369,12 @@ export default class extends React.Component {
                                               </>
                                             )}
                                           </div>
+                                        </div>
+                                      </div> */}
+                                      <div className="item-sub">
+                                        <div className="item-sub__box">
+                                          <h5>Số lần sử dụng tối đa</h5>
+                                          <div className="price">{item?.Voucher?.MemberUseMax}</div>
                                         </div>
                                       </div>
                                       <div className="item-sub">
