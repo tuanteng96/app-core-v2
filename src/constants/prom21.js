@@ -101,7 +101,8 @@ export const SEND_TOKEN_FIREBASE = () => {
           resolve({ Token: data });
         })
         .catch(({ error }) => {
-          resolve({ error: error });
+          //resolve({ error: error });
+          resolve({ Token: error });
         });
     });
   } else {
