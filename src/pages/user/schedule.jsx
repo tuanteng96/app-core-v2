@@ -282,8 +282,8 @@ export default class extends React.Component {
           BookDate: date,
           Desc:
             window.GlobalConfig?.APP?.SL_khach && AmountPeople
-              ? `Số lượng khách: ${AmountPeople.value}. \nGhi chú: ${serviceNote}`
-              : serviceNote,
+              ? `Số lượng khách: ${AmountPeople.value}. \nGhi chú: ${serviceNote || ""}`
+              : serviceNote || "",
           StockID: DateTimeBook.stock || 0,
           AtHome: DateTimeBook.AtHome,
           UserServiceIDs: StaffSelected ? StaffSelected.value : "",
