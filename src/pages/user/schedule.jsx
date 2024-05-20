@@ -132,22 +132,23 @@ export default class extends React.Component {
       BookDataService.getBookId(ID)
         .then(({ data }) => {
           const currentBook = data.data;
-          let serviceNotes = currentBook.Desc;
+          let serviceNotes = "";
           let AmountPeople = {
             label: "1 khách",
             value: 1,
           };
-          if (
-            currentBook.Desc &&
-            currentBook.Desc.includes("Số lượng khách:")
-          ) {
-            let descSplit = currentBook.Desc.split("\n");
-            let SL = Number(descSplit[0].match(/\d+/)[0]);
+          let descSplit = currentBook?.Desc?.split("\n");
 
-            serviceNotes = descSplit[1].replaceAll("Ghi chú: ", "")
-            AmountPeople = {
-              label: SL + " khách",
-              value: SL,
+          for (let i of descSplit) {
+            if (i.includes("Số lượng khách:")) {
+              let SL = Number(i.match(/\d+/)[0]);
+              AmountPeople = {
+                label: SL + " khách",
+                value: SL,
+              };
+            }
+            if (i.includes("Ghi chú:")) {
+              serviceNotes = i.replaceAll("Ghi chú: ", "");
             }
           }
           if (currentBook) {
@@ -162,7 +163,8 @@ export default class extends React.Component {
               },
               serviceNote: serviceNotes,
               selectedService: currentBook.Roots,
-              AmountPeople
+              AmountPeople,
+              OldBook: currentBook
             });
           }
 
@@ -257,7 +259,9 @@ export default class extends React.Component {
       selectedService,
       StaffSelected,
       AmountPeople,
+      OldBook
     } = this.state;
+
     const infoUser = getUser();
     const self = this;
     if (!infoUser) {
@@ -274,16 +278,17 @@ export default class extends React.Component {
           " " +
           DateTimeBook.time
         : "";
+      let newDesc = window.GlobalConfig?.APP?.SL_khach && AmountPeople
+      ? (`Số lượng khách: ${AmountPeople.value}. \nGhi chú: ${(serviceNote || "") + (OldBook ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(OldBook?.BookDate).format("HH:mm DD-MM-YYYY")}` : "")})`)
+      : (serviceNote || "") + (OldBook ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(OldBook?.BookDate).format("HH:mm DD-MM-YYYY")})` : "");
+      
     const dataSubmit = {
       booking: [
         {
           MemberID: infoUser.ID,
           RootIdS: selectedService.map((item) => item.ID).toString(),
           BookDate: date,
-          Desc:
-            window.GlobalConfig?.APP?.SL_khach && AmountPeople
-              ? `Số lượng khách: ${AmountPeople.value}. \nGhi chú: ${serviceNote || ""}`
-              : serviceNote || "",
+          Desc: newDesc,
           StockID: DateTimeBook.stock || 0,
           AtHome: DateTimeBook.AtHome,
           UserServiceIDs: StaffSelected ? StaffSelected.value : "",
