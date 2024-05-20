@@ -111,7 +111,7 @@ export default class extends React.Component {
     UserService.updateBirthday(date, username, password)
       .then((response) => {
         if (!response.error) {
-          toast.success("Cập nhập ngày sinh thành công !", {
+          toast.success("Cập nhật ngày sinh thành công !", {
             position: toast.POSITION.TOP_CENTER,
             autoClose: 1000,
           });
@@ -229,7 +229,7 @@ export default class extends React.Component {
       }
       UserService.updateInfo(obj)
         .then(() => {
-          toast.success("Cập nhập địa chỉ thành công !", {
+          toast.success("Cập nhật địa chỉ thành công !", {
             position: toast.POSITION.TOP_CENTER,
             autoClose: 1500,
           });
@@ -257,7 +257,7 @@ export default class extends React.Component {
         }
         UserService.updateInfo(obj)
           .then(() => {
-            toast.success("Cập nhập hình ảnh thành công !", {
+            toast.success("Cập nhật hình ảnh thành công !", {
               position: toast.POSITION.TOP_CENTER,
               autoClose: 1500,
             });
@@ -283,7 +283,7 @@ export default class extends React.Component {
     }
     UserService.updateInfo(obj)
       .then(() => {
-        toast.success("Cập nhập giới tính thành công !", {
+        toast.success("Cập nhật giới tính thành công !", {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 1500,
         });
@@ -297,7 +297,7 @@ export default class extends React.Component {
     if (email && !email.includes("@nomail.com")) {
       return email;
     }
-    return "Chưa cập nhập";
+    return "Chưa cập nhật";
   };
 
   onLoadRefresh() {
@@ -431,11 +431,11 @@ export default class extends React.Component {
                     <div className="content-text">
                       {memberInfo && memberInfo.BirthDate
                         ? formatDateBirday(memberInfo.BirthDate)
-                        : "Chưa cập nhập"}
+                        : "Chưa cập nhật"}
                       <DatePicker
                         theme="ios"
                         cancelText="Đóng"
-                        confirmText="Cập nhập"
+                        confirmText="Cập nhật"
                         headerFormat="DD/MM/YYYY"
                         showCaption={true}
                         dateConfig={dateConfig}
@@ -459,8 +459,8 @@ export default class extends React.Component {
                   <div className="content">
                     <div className="content-text">
                       {memberInfo && memberInfo.MobilePhone
-                        ? memberInfo.MobilePhone || "Chưa cập nhập"
-                        : memberInfo.Phone || "Chưa cập nhập"}
+                        ? memberInfo.MobilePhone || "Chưa cập nhật"
+                        : memberInfo.Phone || "Chưa cập nhật"}
                     </div>
                   </div>
                 </div>
@@ -485,7 +485,7 @@ export default class extends React.Component {
                     <div className="content-text">
                       {memberInfo && memberInfo.HomeAddress
                         ? memberInfo.HomeAddress
-                        : "Chưa cập nhập"}
+                        : "Chưa cập nhật"}
                     </div>
                     <i className="las la-angle-right"></i>
                   </div>

@@ -49,7 +49,7 @@ function ReportKGForm({ onClose, initial }) {
             queryClient
               .invalidateQueries({ queryKey: ["MembersNoteKG"] })
               .then(() => {
-                toast.success("Cập nhập thành công.");
+                toast.success("Cập nhật thành công.");
                 resetForm();
                 onClose();
               });
@@ -126,7 +126,7 @@ function ReportKGForm({ onClose, initial }) {
                   saveNoteMutation.isLoading && "loading"
                 )}
               >
-                <span>Cập nhập KG</span>
+                <span>Cập nhật KG</span>
                 <div className="loading-icon">
                   <div className="loading-icon__item item-1"></div>
                   <div className="loading-icon__item item-2"></div>

@@ -148,7 +148,7 @@ export default class extends React.Component {
               autoClose: 2000,
             });
           } else {
-            toast.success("Cập nhập mật khẩu mới công !", {
+            toast.success("Cập nhật mật khẩu mới công !", {
               position: toast.POSITION.TOP_CENTER,
               autoClose: 1000,
             });

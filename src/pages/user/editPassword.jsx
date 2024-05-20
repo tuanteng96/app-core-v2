@@ -76,7 +76,7 @@ export default class extends React.Component {
               });
               self.resetValue();
             } else {
-              toast.success("Cập nhập mật khẩu mới công !", {
+              toast.success("Cập nhật mật khẩu mới công !", {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 1000,
               });
@@ -121,7 +121,7 @@ export default class extends React.Component {
             <div className="edit-email__box">
               <div className="note">
                 <span>(*)</span>Bạn muốn thay đổi mật khẩu hiện tại. Vui lòng
-                cập nhập đầy đủ thông tin dưới đây.
+                cập nhật đầy đủ thông tin dưới đây.
               </div>
               <div className="box-form">
                 <div className="page-login__form-item">

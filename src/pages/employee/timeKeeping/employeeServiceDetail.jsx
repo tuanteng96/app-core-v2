@@ -274,7 +274,7 @@ export default class employeeServiceDetail extends React.Component {
   };
 
   updateDesc = (ServiceID) => {
-    f7.dialog.preloader("Đang cập nhập...");
+    f7.dialog.preloader("Đang cập nhật...");
     const { Note } = this.state;
     if (!getUser()) return false;
     staffService
@@ -719,7 +719,7 @@ export default class employeeServiceDetail extends React.Component {
                     className={`page-btn-order btn-submit-order bg-primary mr-10px`}
                     onClick={() => this.updateDesc(itemDetail.ID)}
                   >
-                    <span>Cập nhập</span>
+                    <span>Cập nhật</span>
                     <div className="loading-icon">
                       <div className="loading-icon__item item-1"></div>
                       <div className="loading-icon__item item-2"></div>

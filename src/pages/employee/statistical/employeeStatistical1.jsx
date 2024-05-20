@@ -1029,7 +1029,7 @@ export default class employeeStatistical extends React.Component {
         <DatePicker
           theme="ios"
           cancelText="Đóng"
-          confirmText="Cập nhập"
+          confirmText="Cập nhật"
           headerFormat="MM/YYYY"
           showCaption={true}
           dateConfig={dateConfig}

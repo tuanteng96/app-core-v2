@@ -72,7 +72,7 @@ export default class extends React.Component {
               });
               self.resetValue();
             } else {
-              toast.success("Cập nhập Emai mới công !", {
+              toast.success("Cập nhật Emai mới công !", {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 1000,
               });
@@ -115,7 +115,7 @@ export default class extends React.Component {
           <div className="edit-email__box">
             <form>
               <div className="note">
-                Bạn muốn thay đổi Email hiện tại. Vui lòng cập nhập đầy đủ thông
+                Bạn muốn thay đổi Email hiện tại. Vui lòng cập nhật đầy đủ thông
                 tin dưới đây.
               </div>
               <div className="box-form">
