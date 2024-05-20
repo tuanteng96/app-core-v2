@@ -132,13 +132,13 @@ export default class extends React.Component {
       BookDataService.getBookId(ID)
         .then(({ data }) => {
           const currentBook = data.data;
+          
           let serviceNotes = "";
           let AmountPeople = {
             label: "1 khách",
             value: 1,
           };
           let descSplit = currentBook?.Desc?.split("\n");
-
           for (let i of descSplit) {
             if (i.includes("Số lượng khách:")) {
               let SL = Number(i.match(/\d+/)[0]);
@@ -149,6 +149,10 @@ export default class extends React.Component {
             }
             if (i.includes("Ghi chú:")) {
               serviceNotes = i.replaceAll("Ghi chú: ", "");
+              let indexCut = serviceNotes && serviceNotes.indexOf('(Thay đổi từ')
+              if(indexCut > -1) {
+                serviceNotes = serviceNotes.substring(0, indexCut)
+              }
             }
           }
           if (currentBook) {
@@ -279,7 +283,7 @@ export default class extends React.Component {
           DateTimeBook.time
         : "";
       let newDesc = window.GlobalConfig?.APP?.SL_khach && AmountPeople
-      ? (`Số lượng khách: ${AmountPeople.value}. \nGhi chú: ${(serviceNote || "") + (OldBook ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(OldBook?.BookDate).format("HH:mm DD-MM-YYYY")}` : "")})`)
+      ? (`Số lượng khách: ${AmountPeople.value}. \nGhi chú: ${(serviceNote || "") + (OldBook ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(OldBook?.BookDate).format("HH:mm DD-MM-YYYY")}` : "")}`)
       : (serviceNote || "") + (OldBook ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(OldBook?.BookDate).format("HH:mm DD-MM-YYYY")})` : "");
       
     const dataSubmit = {
