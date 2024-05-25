@@ -251,10 +251,10 @@ export default class extends React.Component {
         this.getDataList(CateID, "1", itemView, "", this.state.keySearch);
         this.getTitleCate();
       }
-      this.setState({
-        allowInfinite: true,
-        showPreloader: true,
-      });
+      // this.setState({
+      //   allowInfinite: true,
+      //   showPreloader: true,
+      // });
       done();
     }, 1000);
   }
