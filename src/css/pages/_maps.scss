@@ -130,3 +130,204 @@
         }
     }
 }
+
+.page-maps2 {
+    display: flex;
+    flex-direction: column;
+    .maps {
+        flex-grow: 1;
+        iframe {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    }
+    .list {
+        margin: 0;
+        height: 160px;
+        background: #f5f5f9;
+        overflow: auto;
+        padding: 0 16px 16px 16px;
+        .item-stock {
+            background: #fff;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #EBEDF3;
+            padding: 12px;
+            transition: all 300ms ease;
+            ._title {
+                font-size: 16px;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+            ._address {
+                display: flex;
+                font-size: 14px;
+                i {
+                    margin-right: 5px; 
+                    font-size: 20px;
+                }
+                p {
+                    margin: 0;
+                }
+            }
+            ._work {
+                display: flex;
+                justify-content: space-between;
+                color: var(--f7-theme-color);
+                margin-top: 10px;
+                font-size: 14px;
+                ._phone,
+                ._support {
+                    display: flex;
+                    align-items: center;
+                    i {
+                        margin-right: 5px; 
+                        font-size: 22px;
+                    }
+                }
+                ._phone {
+                    i { 
+                        font-size: 20px;
+                    }
+                }
+            }
+            &.active {
+                border: 1px solid var(--ezs-color);
+                ._title {
+                    color: var(--ezs-color);
+                }
+            }
+        }
+    }
+
+    .map-total {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.picker-select {
+    position: fixed;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    ._bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgb(0 0 0 / 50%);
+        z-index: 1;
+    }
+    .picker-select-wrap {
+        position: absolute;
+        z-index: 10;
+        background: #fff;
+        width: 100%;
+        height: auto;
+        bottom: 0;
+        left: 0;
+        border-radius: 10px 10px 0 0;
+
+        ._body {
+            max-height: 75vh;
+            overflow: auto;
+        }
+    }
+    ._header {
+        border-bottom: 1px solid #EBEDF3;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        padding: 16px;
+        font-weight: 600;
+        font-size: 15px;
+    }
+    ._close {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 16px;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        i {
+            font-size: 20px;
+            opacity: .8;
+        }
+    }
+
+    ._body {
+        .item {
+            border-bottom: 1px solid #EBEDF3;
+            padding: 15px 16px;
+            position: relative;
+            i {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 16px;
+                font-size: 18px;
+                display: none;
+            }
+            &.text-app2 {
+                i {
+                    display: block;
+                    color: var(--ezs-color);
+                }
+                
+            }
+        }
+    }
+
+    
+
+    
+}
+
+.box-filter {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 16px 16px;
+    gap: 16px;
+}
+
+.picker-input-wrap {
+    position: relative;
+    input {
+        width: 100%;
+        height: 42px;
+        padding: 12px 40px 12px 12px;
+        box-sizing: border-box;
+        border: 1px solid #EBEDF3;
+        border-radius: 5px;
+    }
+    .las {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 30px;
+        display: flex;
+        align-items: center;
+    }
+    
+}
+.map-total {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    i {
+        font-size: 19px; 
+        margin-right: 5px;
+    }
+}
+
+.wrap-filter {
+    padding-bottom: 15px;
+}

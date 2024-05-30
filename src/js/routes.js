@@ -17,6 +17,7 @@ import ShopPayInfoPage from "../pages/shop/ShopPayInfo";
 import ShopPaySuccessPage from "../pages/shop/shopPaySuccess";
 
 import MapsPage from "../pages/maps/maps";
+import MapsPage2 from "../pages/maps/maps2";
 
 import LoginPage from "../pages/user/login";
 import LoginOTPPage from "../pages/user/loginOTP";
@@ -65,6 +66,8 @@ import {
 } from "../constants/user";
 import ServiceOriginal from "../pages/shop/ServiceOriginal";
 import GiftGamePage from "../pages/user/GiftGame.jsx";
+import StocksProvince from "../pages/stocks/StocksProvince.jsx";
+import StocksDistrict from "../pages/stocks/StocksDistrict.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -218,7 +221,7 @@ var routes = [{
   },
   {
     path: "/maps/",
-    asyncComponent: () => MapsPage,
+    asyncComponent: () => window?.GlobalConfig?.APP?.ByProvince ? MapsPage2 : MapsPage,
     options: {
       transition: "f7-cover",
     },
@@ -474,6 +477,20 @@ var routes = [{
   {
     path: "/search/",
     asyncComponent: () => SearchPage,
+  },
+  {
+    path: "/stock-province/",
+    asyncComponent: () => StocksProvince,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  {
+    path: "/stock-province/:province_id/",
+    asyncComponent: () => StocksDistrict,
+    options: {
+      transition: "f7-cover",
+    },
   },
   {
     path: "(.*)",

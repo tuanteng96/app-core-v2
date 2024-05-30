@@ -16,6 +16,7 @@ import {
   setStockNameStorage,
 } from "../constants/user";
 import { toast } from "react-toastify";
+import StocksProvinces from "./StocksProvinces";
 
 export default class SelectStock extends React.Component {
   constructor() {
@@ -23,6 +24,7 @@ export default class SelectStock extends React.Component {
     this.state = {
       arrStock: [],
       isReload: 0,
+      isOpen: false,
     };
   }
 
@@ -44,7 +46,12 @@ export default class SelectStock extends React.Component {
   componentDidMount() {
     const isOpenStock = this.props.isOpenStock;
     if (isOpenStock === true) {
-      this.refs.actionStock.open();
+      if (window?.GlobalConfig?.APP?.ByProvince) {
+        this.setState({ isOpen: true });
+      } else {
+        this.refs.actionStock.open();
+      }
+
       this.getStock();
     } else {
       const StockID = getStockIDStorage();
@@ -59,7 +66,11 @@ export default class SelectStock extends React.Component {
 
     if (prevProps.isOpenStock !== isOpenStock) {
       this.getStock();
-      this.refs.actionStock.open();
+      if (window?.GlobalConfig?.APP?.ByProvince) {
+        this.setState({ isOpen: true });
+      } else {
+        this.refs.actionStock.open();
+      }
     }
     if (prevProps.isReload !== isReload) {
       const StockID = getStockIDStorage();
@@ -93,7 +104,36 @@ export default class SelectStock extends React.Component {
           this.props.fnSuccess(true);
         }
         this.props.nameStock && this.props.nameStock(NameStock);
-        if(!this.props?.noReload) {
+        if (!this.props?.noReload) {
+          this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
+            reloadCurrent: true,
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  updateStockCr = (val) => {
+    var bodyData = new FormData();
+    bodyData.append("stockid", val?.ID);
+
+    UserService.setStock(bodyData)
+      .then((response) => {
+        setStockIDStorage(val?.ID);
+        setStockNameStorage(val?.Title);
+        this.setState({
+          StockID: val?.ID,
+          isOpen: false,
+        });
+        toast.success("Chọn điểm thành công !", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 1500,
+        });
+        if (this.props.fnSuccess !== undefined) {
+          this.props.fnSuccess(true);
+        }
+        this.props.nameStock && this.props.nameStock(val.Title);
+        if (!this.props?.noReload) {
           this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
             reloadCurrent: true,
           });
@@ -103,9 +143,20 @@ export default class SelectStock extends React.Component {
   };
 
   render() {
-    const arrStock = this.state.arrStock;
+    const { isOpen, arrStock } = this.state;
     const StockID = this.state.StockID && this.state.StockID;
-    if (!arrStock) return "";
+    if (!arrStock) return <></>;
+    if (window?.GlobalConfig?.APP?.ByProvince) {
+      return (
+        <StocksProvinces
+          isOpen={isOpen}
+          onClose={() => this.setState({ isOpen: false })}
+          Stocks={arrStock}
+          onChange={(val) => this.updateStockCr(val)}
+        />
+      );
+    }
+
     return (
       <Actions className="action-stock" ref="actionStock">
         <ActionsGroup>

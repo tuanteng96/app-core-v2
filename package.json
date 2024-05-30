@@ -25,6 +25,7 @@
         "@material-ui/lab": "^4.0.0-alpha.56",
         "axios": "^0.21.1",
         "clsx": "^1.2.1",
+        "framer-motion": "^4.1.17",
         "dom7": "^2.1.5",
         "firebase": "^9.6.1",
         "formik": "^2.2.9",

@@ -21,6 +21,7 @@ import Select from "react-select";
 
 import moment from "moment";
 import "moment/locale/vi";
+import StocksProvinces from "../StocksProvinces";
 moment.locale("vi");
 
 const dateConfig = {
@@ -72,6 +73,7 @@ export default class ScheduleSpa extends React.Component {
       isLoadingStock: true,
       isActive: 0,
       isOpen: false,
+      visible: false,
       indexCurrent: 7,
       openStock: false,
     };
@@ -235,6 +237,9 @@ export default class ScheduleSpa extends React.Component {
       stock: item.ID,
       nameStock: item.Title,
     });
+    this.setState({
+      visible: false,
+    });
     this.handleCancelDate();
   };
 
@@ -279,6 +284,7 @@ export default class ScheduleSpa extends React.Component {
       isActive,
       ListChoose,
       openStock,
+      visible,
     } = this.state;
     const { DateTimeBook } = this.props;
 
@@ -310,8 +316,6 @@ export default class ScheduleSpa extends React.Component {
       beforeChange: (current, next) => {},
     };
 
-    
-
     return (
       <div className="page-schedule__box">
         <div className="pt-8px"></div>
@@ -322,122 +326,166 @@ export default class ScheduleSpa extends React.Component {
               {isLoadingStock && <SkeletonStock />}
               {!isLoadingStock && (
                 <>
-                  {arrStock &&
-                    arrStock.length <= 4 &&
-                    arrStock.map((item, index) => (
-                      <Col
-                        width={arrStock.length > 1 ? "50" : "100"}
-                        key={index}
-                      >
-                        <div className="location">
-                          <div
-                            className="location-item"
-                            onClick={() => this.handleStock(item)}
-                          >
-                            <input
-                              id={"location-" + item.ID}
-                              type="radio"
-                              name="checklocation"
-                              value={item.ID}
-                              checked={
-                                parseInt(
-                                  DateTimeBook.stock && DateTimeBook.stock
-                                ) === item.ID
-                              }
-                              readOnly
-                            />
-                            <label htmlFor={"location-" + item.ID}>
-                              {item.Title}
-                            </label>
-                            <div className="icon">
-                              <img src={IconLocation} alt="Location" />
-                            </div>
-                          </div>
+                  {window?.GlobalConfig?.APP?.ByProvince && (
+                    <>
+                      <div className="mb-8px">
+                        <div>
+                          Bạn đang muốn đặt lịch tại
+                          <span className="pl-6px text-app2 fw-600">
+                            {DateTimeBook.nameStock}
+                          </span>
                         </div>
-                      </Col>
-                    ))}
-                  {arrStock && arrStock.length > 4 && (
-                    <Col width="100">
-                      <div
-                        style={{
-                          marginBottom: "10px",
-                        }}
-                        onClick={() => this.setState({ openStock: true })}
-                      >
-                        <Select
-                          isDisabled
-                          options={arrStock}
-                          className="select-control"
-                          classNamePrefix="select"
-                          placeholder="Chọn cơ sở"
-                          noOptionsMessage={() => "Không có dữ liệu"}
-                          value={
-                            DateTimeBook?.stock
-                              ? arrStock.filter(
-                                  (x) =>
+                        <div
+                          className="text-primary mt-2px text-underline"
+                          onClick={() =>
+                            this.setState({
+                              visible: true,
+                            })
+                          }
+                        >
+                          Thay đổi cơ sở ?
+                        </div>
+                      </div>
+                      <StocksProvinces
+                        isOpen={visible}
+                        onClose={() => this.setState({ visible: false })}
+                        Stocks={arrStock}
+                        onChange={(val) => this.handleStock(val)}
+                        StockActive={
+                          DateTimeBook.stock && Number(DateTimeBook.stock)
+                        }
+                      />
+                    </>
+                  )}
+                  {!window?.GlobalConfig?.APP?.ByProvince && (
+                    <>
+                      {arrStock &&
+                        arrStock.length <= 4 &&
+                        arrStock.map((item, index) => (
+                          <Col
+                            width={arrStock.length > 1 ? "50" : "100"}
+                            key={index}
+                          >
+                            <div className="location">
+                              <div
+                                className="location-item"
+                                onClick={() => this.handleStock(item)}
+                              >
+                                <input
+                                  id={"location-" + item.ID}
+                                  type="radio"
+                                  name="checklocation"
+                                  value={item.ID}
+                                  checked={
                                     parseInt(
                                       DateTimeBook.stock && DateTimeBook.stock
-                                    ) === x.ID
-                                )[0]
-                              : ""
-                          }
-                          onChange={(val) => this.handleStock(val)}
-                          menuPosition="fixed"
-                          styles={{
-                            menuPortal: (base) => ({
-                              ...base,
-                              zIndex: 9999,
-                            }),
-                          }}
-                          menuPortalTarget={document.body}
-                          menuPlacement="top"
-                        />
-                      </div>
-                      <Actions className="action-stock" opened={openStock} onActionsClosed={() => this.setState({ openStock: false })}>
-                        <ActionsGroup>
-                          <div className="action-stock__list">
-                            {arrStock &&
-                              arrStock.map((item) => (
-                                <div
-                                  className={
-                                    "action-stock__list-name " +
-                                    (parseInt(
-                                      DateTimeBook.stock && DateTimeBook.stock
                                     ) === item.ID
-                                      ? "currentStock"
-                                      : "")
                                   }
-                                  key={item.ID}
-                                >
-                                  <input
-                                    name="ValueStock"
-                                    type="radio"
-                                    value={item.ID}
-                                    title={item.Title}
-                                    id={"stock" + item.ID}
-                                    checked={
-                                      parseInt(
-                                        DateTimeBook.stock && DateTimeBook.stock
-                                      ) === item.ID
-                                    }
-                                    onChange={(e) => {
-                                      this.handleStock(item);
-                                      this.setState({ openStock: false });
-                                    }}
-                                  />
-                                  <label htmlFor={"stock" + item.ID}>
-                                    {item.Title}{" "}
-                                    <i className="las la-check"></i>
-                                  </label>
+                                  readOnly
+                                />
+                                <label htmlFor={"location-" + item.ID}>
+                                  {item.Title}
+                                </label>
+                                <div className="icon">
+                                  <img src={IconLocation} alt="Location" />
                                 </div>
-                              ))}
+                              </div>
+                            </div>
+                          </Col>
+                        ))}
+                      {arrStock && arrStock.length > 4 && (
+                        <Col width="100">
+                          <div
+                            style={{
+                              marginBottom: "10px",
+                            }}
+                            onClick={() => this.setState({ openStock: true })}
+                          >
+                            <Select
+                              isDisabled
+                              options={arrStock}
+                              className="select-control"
+                              classNamePrefix="select"
+                              placeholder="Chọn cơ sở"
+                              noOptionsMessage={() => "Không có dữ liệu"}
+                              value={
+                                DateTimeBook?.stock
+                                  ? arrStock.filter(
+                                      (x) =>
+                                        parseInt(
+                                          DateTimeBook.stock &&
+                                            DateTimeBook.stock
+                                        ) === x.ID
+                                    )[0]
+                                  : ""
+                              }
+                              onChange={(val) => this.handleStock(val)}
+                              menuPosition="fixed"
+                              styles={{
+                                menuPortal: (base) => ({
+                                  ...base,
+                                  zIndex: 9999,
+                                }),
+                              }}
+                              menuPortalTarget={document.body}
+                              menuPlacement="top"
+                            />
                           </div>
-                        </ActionsGroup>
-                        <ActionsGroup>
-                          <ActionsButton color="red">Đóng</ActionsButton>
-                        </ActionsGroup>
-                      </Actions>
-                    </Col>
+                          <Actions
+                            className="action-stock"
+                            opened={openStock}
+                            onActionsClosed={() =>
+                              this.setState({ openStock: false })
+                            }
+                          >
+                            <ActionsGroup>
+                              <div className="action-stock__list">
+                                {arrStock &&
+                                  arrStock.map((item) => (
+                                    <div
+                                      className={
+                                        "action-stock__list-name " +
+                                        (parseInt(
+                                          DateTimeBook.stock &&
+                                            DateTimeBook.stock
+                                        ) === item.ID
+                                          ? "currentStock"
+                                          : "")
+                                      }
+                                      key={item.ID}
+                                    >
+                                      <input
+                                        name="ValueStock"
+                                        type="radio"
+                                        value={item.ID}
+                                        title={item.Title}
+                                        id={"stock" + item.ID}
+                                        checked={
+                                          parseInt(
+                                            DateTimeBook.stock &&
+                                              DateTimeBook.stock
+                                          ) === item.ID
+                                        }
+                                        onChange={(e) => {
+                                          this.handleStock(item);
+                                          this.setState({ openStock: false });
+                                        }}
+                                      />
+                                      <label htmlFor={"stock" + item.ID}>
+                                        {item.Title}{" "}
+                                        <i className="las la-check"></i>
+                                      </label>
+                                    </div>
+                                  ))}
+                              </div>
+                            </ActionsGroup>
+                            <ActionsGroup>
+                              <ActionsButton color="red">Đóng</ActionsButton>
+                            </ActionsGroup>
+                          </Actions>
+                        </Col>
+                      )}
+                    </>
                   )}
                 </>
               )}
