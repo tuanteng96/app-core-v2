@@ -18,10 +18,10 @@ import _ from "lodash";
 import { clsx } from "clsx";
 import ConfigServiceAPI from "../../service/config.service";
 import Select from "react-select";
+import "moment/locale/vi";
+import StocksProvincesFilter from "../StocksProvincesFilter";
 
 import moment from "moment";
-import "moment/locale/vi";
-import StocksProvinces from "../StocksProvinces";
 moment.locale("vi");
 
 const dateConfig = {
@@ -320,7 +320,7 @@ export default class ScheduleSpa extends React.Component {
       <div className="page-schedule__box">
         <div className="pt-8px"></div>
         <div className="page-schedule__location">
-          <h5>1. Chọn cơ sở gần bạn</h5>
+          <h5>1. Chọn cơ sở đặt lịch</h5>
           <div className="page-schedule__location-list">
             <Row>
               {isLoadingStock && <SkeletonStock />}
@@ -329,12 +329,17 @@ export default class ScheduleSpa extends React.Component {
                   {window?.GlobalConfig?.APP?.ByProvince && (
                     <>
                       <div className="mb-8px">
-                        <div>
-                          Bạn đang muốn đặt lịch tại
-                          <span className="pl-6px text-app2 fw-600">
-                            {DateTimeBook.nameStock}
-                          </span>
-                        </div>
+                        {DateTimeBook.nameStock ? (
+                          <div>
+                            Bạn đang đặt lịch tại
+                            <span className="pl-6px text-app2 fw-600">
+                              {DateTimeBook.nameStock}
+                            </span>
+                          </div>
+                        ) : (
+                          "Bạn chưa chọn cơ sở đặt lịch."
+                        )}
+
                         <div
                           className="text-primary mt-2px text-underline"
                           onClick={() =>
@@ -343,10 +348,10 @@ export default class ScheduleSpa extends React.Component {
                             })
                           }
                         >
-                          Thay đổi cơ sở ?
+                          {DateTimeBook.nameStock ? "Thay đổi cơ sở ?" : "Chọn cơ sở ?"}
                         </div>
                       </div>
-                      <StocksProvinces
+                      <StocksProvincesFilter
                         isOpen={visible}
                         onClose={() => this.setState({ visible: false })}
                         Stocks={arrStock}

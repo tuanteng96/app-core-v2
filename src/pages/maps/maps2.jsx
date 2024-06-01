@@ -1,10 +1,8 @@
 import React from "react";
-import { SERVER_APP } from "./../../constants/config";
-import { Page, Link, Toolbar, Navbar } from "framework7-react";
+import { Page, Link, Toolbar, Navbar, LoginScreen, f7 } from "framework7-react";
 import ReactHtmlParser from "react-html-parser";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
-import Slider from "react-slick";
 import NotificationIcon from "../../components/NotificationIcon";
 import NewsDataService from "../../service/news.service";
 import { iOS } from "../../constants/helpers";
@@ -22,6 +20,7 @@ export default class extends React.Component {
       showPreloader: false,
       ActiveProvinces: null,
       ActiveDistricts: null,
+      isOpen: false,
     };
   }
 
@@ -61,7 +60,12 @@ export default class extends React.Component {
     let newArr1 = arr1?.data?.all
       ? arr1?.data?.all.filter((item) => item.ID !== 778)
       : [];
-    let newArr2 = arr2?.data || [];
+    let newArr2 = arr2?.data
+      ? arr2?.data.map((x) => ({
+          ...x,
+          DescSEO: x.Follow,
+        }))
+      : [];
     let newMaps = [];
 
     let Provinces = [];
@@ -69,6 +73,7 @@ export default class extends React.Component {
     for (let x of newArr1) {
       let obj = {
         ...x,
+        FileName: x.LinkSEO,
       };
       let newDesc = x.DescSEO ? JSON.parse(x.DescSEO) : null;
 
@@ -93,6 +98,10 @@ export default class extends React.Component {
       }
       newMaps.push(obj);
     }
+
+    newMaps = newMaps?.sort(
+      (a, b) => a?.Province?.Parentid - b?.Province?.Parentid
+    );
 
     for (let province of newMaps) {
       let index = Provinces.findIndex(
@@ -167,16 +176,9 @@ export default class extends React.Component {
       currentID,
       ActiveDistricts,
       ActiveProvinces,
+      isOpen,
+      MapsOpen,
     } = this.state;
-    const settingsMaps = {
-      className: "slider variable-width",
-      dots: false,
-      arrows: false,
-      infinite: true,
-      slidesToShow: 1,
-      //centerPadding: "20px",
-      variableWidth: true,
-    };
 
     return (
       <Page name="maps">
@@ -208,7 +210,7 @@ export default class extends React.Component {
           </div>
         </Navbar>
         <div className="page-wrapper page-maps page-maps2">
-          <div className="maps">
+          {/* <div className="maps">
             {currentMap && (
               <iframe
                 src={ReactHtmlParser(currentMap)}
@@ -219,8 +221,8 @@ export default class extends React.Component {
                 loading="lazy"
               />
             )}
-          </div>
-          <div className="wrap-filter">
+          </div> */}
+          <div className="wrap-filter pb-0">
             <div className="box-filter">
               <div>
                 <SelectPicker
@@ -242,49 +244,139 @@ export default class extends React.Component {
                 />
               </div>
             </div>
-            <div className="map-total">
+            {/* <div className="map-total">
               <i className="las la-store"></i> Có {arrMaps?.length} cơ sở
-            </div>
+            </div> */}
           </div>
-          <div className="list">
+          <div
+            className="list"
+            style={{
+              height: "auto",
+              flex: "1",
+            }}
+          >
             {arrMaps &&
               arrMaps.map((item, index) => (
                 <div
                   className={clsx(
-                    "item-stock",
-                    currentID === item.ID && "active"
+                    "item-stock"
+                    //currentID === item.ID && "active"
                   )}
                   key={index}
-                  onClick={() => this.handleMaps(item)}
+                  onClick={() => {
+                    this.setState({ isOpen: true, MapsOpen: item });
+                    f7.dialog.preloader("Đang tải...");
+                  }}
                 >
                   <div className="_title">{item.Title}</div>
                   <div className="_address">
                     <i className="las la-map-marked-alt"></i>
                     <div className="_address-value">
-                      {ReactHtmlParser(item.Desc)}
+                      {ReactHtmlParser(item.Desc || "Đang cập nhập")}
                     </div>
                   </div>
                   <div className="_work">
                     <div className="_phone">
                       <i className="las la-phone-volume"></i>
-                      {item.FileName || "Chưa có"}
+                      {item.FileName || "Đang cập nhập"}
                     </div>
-
-                    <div
-                      className="_support"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        this.openMaps(item);
-                      }}
-                    >
-                      <i className="las la-blind"></i>
-                      Chỉ đường
-                    </div>
+                    {iOS() ? (
+                      <Link
+                        className="_support"
+                        external
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${item?.Desc.split(
+                          " "
+                        ).join("+")}`}
+                        noLinkClass
+                      >
+                        <i className="las la-blind"></i>
+                        Chỉ đường
+                      </Link>
+                    ) : (
+                      <div
+                        className="_support"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          this.openMaps(item);
+                        }}
+                      >
+                        <i className="las la-blind"></i>
+                        Chỉ đường
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
           </div>
         </div>
+
+        <LoginScreen
+          opened={isOpen}
+          onLoginScreenClosed={() => {
+            this.setState({ isOpen: false, MapsOpen: null });
+          }}
+        >
+          <div className="h-100 pop-maps-detail">
+            <div className="pop-maps-iframe">
+              {MapsOpen?.Map && (
+                <iframe
+                  src={ReactHtmlParser(MapsOpen?.Map)}
+                  frameBorder={0}
+                  allowFullScreen
+                  aria-hidden="false"
+                  tabIndex={0}
+                  loading="lazy"
+                  onLoad={() => f7.dialog.close()}
+                />
+              )}
+              <div
+                className="_back"
+                onClick={() => this.setState({ isOpen: false, MapsOpen: null })}
+              >
+                <i className="las la-arrow-left"></i>
+              </div>
+            </div>
+            <div className="pop-maps-info">
+              <div className="_title">{MapsOpen?.Title}</div>
+              <div className="_address">
+                <i className="las la-map-marked-alt"></i>
+                <div className="_address-value">
+                  {ReactHtmlParser(MapsOpen?.Desc || "Đang cập nhập")}
+                </div>
+              </div>
+              <div className="_phone">
+                <i className="las la-phone-volume"></i>
+                {MapsOpen?.FileName || "Đang cập nhập"}
+              </div>
+              {iOS() ? (
+                <Link
+                  className="_btn-address"
+                  external
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${MapsOpen?.Desc.split(
+                    " "
+                  ).join("+")}`}
+                  noLinkClass
+                >
+                  Chỉ đường
+                </Link>
+              ) : (
+                <button
+                  onClick={() => this.openMaps(MapsOpen)}
+                  type="button"
+                  className="_btn-address"
+                >
+                  Chỉ đường
+                </button>
+              )}
+
+              {MapsOpen?.FileName && (
+                <button type="button" className="_btn-contact">
+                  Liên hệ
+                </button>
+              )}
+            </div>
+          </div>
+        </LoginScreen>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>

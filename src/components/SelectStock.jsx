@@ -17,6 +17,7 @@ import {
 } from "../constants/user";
 import { toast } from "react-toastify";
 import StocksProvinces from "./StocksProvinces";
+import StocksProvincesFilter from "./StocksProvincesFilter";
 
 export default class SelectStock extends React.Component {
   constructor() {
@@ -148,7 +149,7 @@ export default class SelectStock extends React.Component {
     if (!arrStock) return <></>;
     if (window?.GlobalConfig?.APP?.ByProvince) {
       return (
-        <StocksProvinces
+        <StocksProvincesFilter
           isOpen={isOpen}
           onClose={() => this.setState({ isOpen: false })}
           Stocks={arrStock}
