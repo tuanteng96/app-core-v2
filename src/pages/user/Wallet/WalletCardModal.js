@@ -205,7 +205,7 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
                             {formatPriceVietnamese(item.gia_tri)}
                           </div>
                           <div className="price-time">
-                            {moment(item.ngay).fromNow()}
+                            {moment(item.ngay).format("DD/MM/YYYY")}
                           </div>
                         </div>
                         <div className="note">{item.san_pham}</div>

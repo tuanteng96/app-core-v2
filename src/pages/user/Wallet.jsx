@@ -15,7 +15,7 @@ import {
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
 import { getUser } from "../../constants/user";
-import { maxBookDate, formatPriceVietnamese } from "../../constants/format";
+import { maxBookDate, formatPriceVietnamese, arrSortDateTime } from "../../constants/format";
 import moment from "moment";
 import "moment/locale/vi";
 import NotificationIcon from "../../components/NotificationIcon";
@@ -202,8 +202,9 @@ export default class extends React.Component {
       .then((response) => {
         const arrWallet = response.data.data;
         var mm = new MM(clone(response.data));
+        
         this.setState({
-          arrWallet: arrWallet,
+          arrWallet: arrSortDateTime(arrWallet, 'CreateDate'),
           totalWallet: mm.totalWallet(), // Tổng Ví
           demonsWallet: mm.availableWallet(), // Ví khả dụng
           depositWallet: mm.sumAvai(false), // Đặt cọc
@@ -447,7 +448,7 @@ export default class extends React.Component {
                             {formatPriceVietnamese(item.Value)}
                           </div>
                           <div className="price-time">
-                            {moment(item.CreateDate).fromNow()}
+                            {moment(item.CreateDate).format("DD/MM/YYY")}
                           </div>
                         </div>
                         <div className="note">{this.vietnamesText(item)}</div>

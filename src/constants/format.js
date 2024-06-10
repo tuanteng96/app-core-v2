@@ -172,6 +172,13 @@ export const groupbyDDHHMM = (arr, name = "BookDate") => {
     });
 }
 
+export const arrSortDateTime = (arr, name = "BookDate") => {
+    if (!arr) return [];
+    return arr.sort(function(left, right) {
+        return moment.utc(right[name]).diff(moment.utc(left[name]))
+    });
+}
+
 export const groupbyDDHHMM2 = (arr, key) => {
     const newArr = [];
     if (!arr) return false;

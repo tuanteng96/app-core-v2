@@ -111,7 +111,7 @@ export default class extends React.Component {
                 Thẻ bảo hành
               </Link>
               <Link noLinkClass tabLink="#excessiveSv">
-                Hết hạn
+                Hết hạn/Đã SD
               </Link>
             </div>
           </Subnavbar>
