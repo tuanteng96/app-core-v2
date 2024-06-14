@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, Navbar, Link, Toolbar } from "framework7-react";
+import { Page, Navbar, Link, Toolbar, Popup, Sheet } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import userService from "../../service/user.service";
 import ReactHtmlParser from "react-html-parser";
@@ -67,6 +67,7 @@ export default class extends React.Component {
       },
       data: {},
       show: false,
+      popupOpened: false,
     };
   }
 
@@ -133,6 +134,7 @@ export default class extends React.Component {
   }
 
   onSubmit = (values) => {
+  
     const Id = this.$f7route.params.id;
     const { data } = this.state;
 
@@ -161,10 +163,10 @@ export default class extends React.Component {
       dataPost.append("ids", Id);
 
       userService.readedNotification(dataPost).then(() => {
-        this.$f7router.navigate(`/`);
-        toast.success("Xác nhận thành công!");
+        this.$f7router.navigate(`/success-noti/`);
         this.setState({
           btnLoading: false,
+          popupOpened: false,
         });
       });
     });
@@ -250,7 +252,7 @@ export default class extends React.Component {
       const iframeElement = `<iframe src="${oembedUrl}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
       htmlString = htmlString.replace(oembedRegex, iframeElement);
     }
-    return htmlString
+    return htmlString;
   };
 
   render() {
@@ -348,6 +350,122 @@ export default class extends React.Component {
                       )
                     )}
                 </div>
+                <div>
+                  {isExpected(data?.Title) && !data?.IsReaded && (
+                    <>
+                      <button
+                        type="button"
+                        class="btn-login btn-me mt-20px"
+                        onClick={() =>
+                          this.setState({
+                            popupOpened: true,
+                          })
+                        }
+                      >
+                        Đặt lịch ngay
+                      </button>
+                    </>
+                  )}
+                  <Sheet
+                    className="sheet-swipe-product sheet-swipe-service"
+                    style={{ height: "auto", "--f7-sheet-bg-color": "#fff" }}
+                    opened={this.state.popupOpened}
+                    onSheetClosed={() => {
+                      this.setState({ popupOpened: false });
+                    }}
+                    backdrop
+                    // style={{
+                    //   borderRadius: "15px 15px 0 0",
+                    // }}
+                  >
+                    <Formik
+                      initialValues={initialValues}
+                      onSubmit={this.onSubmit}
+                      enableReinitialize={true}
+                    >
+                      {(formikProps) => {
+                        const { values, touched, errors, setFieldValue } =
+                          formikProps;
+                        return (
+                          <Form>
+                            <div className="sheet-modal-swipe-step">
+                              <div className="sheet-modal-swipe__close"></div>
+                              <div className="sheet-swipe-product__content sheet-swipe-service__content">
+                                <div className="sheet-pay-head sheet-service-header">
+                                  Xác nhận đặt lịch
+                                </div>
+                                <div className="sheet-pay-body sheet-service-body">
+                                  <div className="pt-15px pl-15px pr-15px">
+                                    <div className="mb-5px">Thời gian</div>
+                                    <div
+                                      style={{
+                                        padding: "14px 15px",
+                                        border: "1px solid #ebebeb",
+                                        borderRadius: "3px",
+                                        display: "flex",
+                                        justifyContent: "space-between"
+                                      }}
+                                      onClick={() =>
+                                        this.setState({ isOpen: true })
+                                      }
+                                    >
+                                      {values?.BookDate
+                                        ? moment(values?.BookDate).format(
+                                            "HH:mm DD-MM-YYYY"
+                                          )
+                                        : ""}
+                                      <i className="las la-edit font-size-lg pl-5px"></i>
+                                    </div>
+                                  </div>
+                                  <DatePicker
+                                    theme="ios"
+                                    cancelText="Đóng"
+                                    confirmText="Chọn"
+                                    headerFormat="hh:mm DD/MM/YYYY"
+                                    showCaption={true}
+                                    dateConfig={dateConfig}
+                                    value={
+                                      values.BookDate
+                                        ? values.BookDate
+                                        : new Date()
+                                    }
+                                    isOpen={isOpen}
+                                    onSelect={(date) => {
+                                      setFieldValue("BookDate", date);
+                                      this.setState({ isOpen: false });
+                                    }}
+                                    onCancel={() =>
+                                      this.setState({ isOpen: false })
+                                    }
+                                  />
+                                  <div className="sheet-pay-body__btn">
+                                    <button
+                                      style={{borderRadius: "30px"}}
+                                      className={
+                                        "page-btn-order btn-submit-order " +
+                                        (btnLoading ? "loading" : "")
+                                      }
+                                      type="submit"
+                                      // onClick={() => this.submitBooks()}
+                                    >
+                                      <span>Xác nhận ngay</span>
+                                      <div className="loading-icon">
+                                        <div className="loading-icon__item item-1"></div>
+                                        <div className="loading-icon__item item-2"></div>
+                                        <div className="loading-icon__item item-3"></div>
+                                        <div className="loading-icon__item item-4"></div>
+                                      </div>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </Form>
+                        );
+                      }}
+                    </Formik>
+                  </Sheet>
+                </div>
                 {/* <ul className="page-noti__list noti-detail">
                   <li className="readed">
                     <div>Ngày gửi </div>
@@ -387,71 +505,7 @@ export default class extends React.Component {
             </Link>
           ) : (
             <>
-              {isExpected(data?.Title) && !data?.IsReaded ? (
-                <Formik
-                  initialValues={initialValues}
-                  onSubmit={this.onSubmit}
-                  enableReinitialize={true}
-                >
-                  {(formikProps) => {
-                    const { values, touched, errors, setFieldValue } =
-                      formikProps;
-                    return (
-                      <Form className="w-100 h-100 d--f">
-                        <div
-                          className="f--1 d--f fd--c jc--c px-12px"
-                          onClick={() => this.setState({ isOpen: true })}
-                        >
-                          <div
-                            className="font-size-xs"
-                            style={{ lineHeight: "16px" }}
-                          >
-                            Thời gian thực hiện
-                          </div>
-                          <div className="fw-500" style={{ fontSize: "15px" }}>
-                            {values?.BookDate
-                              ? moment(values?.BookDate).format(
-                                  "HH:mm DD-MM-YYYY"
-                                )
-                              : ""}
-                            <i className="las la-edit font-size-lg pl-5px"></i>
-                          </div>
-                        </div>
-                        <DatePicker
-                          theme="ios"
-                          cancelText="Đóng"
-                          confirmText="Chọn"
-                          headerFormat="hh:mm DD/MM/YYYY"
-                          showCaption={true}
-                          dateConfig={dateConfig}
-                          value={values.BookDate ? values.BookDate : new Date()}
-                          isOpen={isOpen}
-                          onSelect={(date) => {
-                            setFieldValue("BookDate", date);
-                            this.setState({ isOpen: false });
-                          }}
-                          onCancel={() => this.setState({ isOpen: false })}
-                        />
-                        <button
-                          type="submit"
-                          className={`btn-submit-order btn-submit-order w-160px ${
-                            btnLoading && "loading"
-                          }`}
-                        >
-                          <span>Xác nhận</span>
-                          <div className="loading-icon">
-                            <div className="loading-icon__item item-1"></div>
-                            <div className="loading-icon__item item-2"></div>
-                            <div className="loading-icon__item item-3"></div>
-                          </div>
-                        </button>
-                      </Form>
-                    );
-                  }}
-                </Formik>
-              ) : (
-                <ToolBarBottom />
-              )}
+              <ToolBarBottom />
             </>
           )}
         </Toolbar>

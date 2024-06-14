@@ -29,7 +29,7 @@ import NotificationDetailPage from "../pages/user/NotificationDetail";
 import ProfilePage from "../pages/user/profile";
 import DetailProfilePage from "../pages/user/DetailProfile";
 import CardServicePage from "../pages/user/cardService"; //Thẻ dịch vụ
-import SchedulePage from "../pages/user/Schedule"; //Đặt lịch
+import SchedulePage from "../pages/user/schedule"; //Đặt lịch
 import ScheduleManagePage from "../pages/user/SchedulesManage"; // Quản lí đặt lịch
 import VoucherPage from "../pages/user/Voucher"; // Mã giảm giá
 import WalletPage from "../pages/user/Wallet"; // Ví điện tử
@@ -68,6 +68,7 @@ import ServiceOriginal from "../pages/shop/ServiceOriginal";
 import GiftGamePage from "../pages/user/GiftGame.jsx";
 import StocksProvince from "../pages/stocks/StocksProvince.jsx";
 import StocksDistrict from "../pages/stocks/StocksDistrict.jsx";
+import layoutSuccess from "../pages/user/layoutSuccess.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -222,6 +223,13 @@ var routes = [{
   {
     path: "/maps/",
     asyncComponent: () => window?.GlobalConfig?.APP?.ByProvince ? MapsPage2 : MapsPage,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  {
+    path: "/success-noti/",
+    asyncComponent: () => layoutSuccess,
     options: {
       transition: "f7-cover",
     },
