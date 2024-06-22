@@ -47,7 +47,7 @@ export default class extends React.Component {
             window.hasPopup = false;
 
             const infoUser = getUser();
-            if (infoUser) {
+            if (infoUser && !window.GlobalConfig.APP.isNotFechToken) {
               UserService.getInfo().then(({ data }) => {
                 if (data?.Status === -1) {
                   SEND_TOKEN_FIREBASE().then(async (response) => {

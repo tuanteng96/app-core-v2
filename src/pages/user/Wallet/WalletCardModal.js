@@ -30,7 +30,7 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
       className={`sheet-detail sheet-detail-wallet sheet-detail-order`}
       style={{
         height: "auto !important",
-        maxHeight: "100%",
+        maxHeight: "70%",
         overflow: "auto",
         "--f7-sheet-bg-color": "#fff",
       }}
