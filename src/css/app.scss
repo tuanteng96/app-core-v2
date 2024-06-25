@@ -661,3 +661,12 @@ body {
         background: #fff;
     }
 }
+
+figure {
+    margin: 0;
+    padding: 0;
+    iframe {
+        width: 100%;
+        display: block;
+    }
+}

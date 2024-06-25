@@ -448,7 +448,7 @@ export default class extends React.Component {
                             {formatPriceVietnamese(item.Value)}
                           </div>
                           <div className="price-time">
-                            {moment(item.CreateDate).format("DD/MM/YYY")}
+                            {moment(item.CreateDate).format("DD/MM/YYYY")}
                           </div>
                         </div>
                         <div className="note">{this.vietnamesText(item)}</div>

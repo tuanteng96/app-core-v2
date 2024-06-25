@@ -24,6 +24,17 @@ export default class extends React.Component {
     return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
   };
 
+  formatHtmlString = (htmlString) => {
+    const oembedRegex = /<oembed[^>]*>/g;
+    const oembedMatch = htmlString.match(oembedRegex);
+    if (oembedMatch) {
+      const oembedUrl = oembedMatch[0].match(/url="([^"]*)"/)[1];
+      const iframeElement = `<iframe src="${oembedUrl}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      htmlString = htmlString.replace(oembedRegex, iframeElement);
+    }
+    return htmlString;
+  };
+
   componentDidMount() {
     const paramsID = this.$f7route.params.postId;
     NewsDataService.getDetailNew(paramsID)
@@ -90,25 +101,32 @@ export default class extends React.Component {
                 </div>
                 <div className="page-news__detail-content">
                   <div className="page-news__detail-shadow">
-                    {ReactHtmlParser(this.fixedContentDomain(arrayItem.Desc), {
-                      transform: (node) => {
-                        if (
-                          node.type === "tag" &&
-                          node.attribs.class === "external"
-                        ) {
-                          return (
-                            <Link
-                              class="external"
-                              onClick={() => OPEN_LINK(node.attribs.href)}
-                            >
-                              {node.children[0].data}
-                            </Link>
-                          );
-                        }
-                      },
-                    })}
                     {ReactHtmlParser(
-                      this.fixedContentDomain(arrayItem.Content),
+                      this.fixedContentDomain(
+                        this.formatHtmlString(arrayItem.Desc)
+                      ),
+                      {
+                        transform: (node) => {
+                          if (
+                            node.type === "tag" &&
+                            node.attribs.class === "external"
+                          ) {
+                            return (
+                              <Link
+                                class="external"
+                                onClick={() => OPEN_LINK(node.attribs.href)}
+                              >
+                                {node.children[0].data}
+                              </Link>
+                            );
+                          }
+                        },
+                      }
+                    )}
+                    {ReactHtmlParser(
+                      this.fixedContentDomain(
+                        this.formatHtmlString(arrayItem.Content)
+                      ),
                       {
                         transform: (node) => {
                           if (
