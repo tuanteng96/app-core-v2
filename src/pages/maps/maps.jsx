@@ -92,7 +92,11 @@ export default class extends React.Component {
   };
 
   openMaps = (item) => {
-    OPEN_LINK(`https://www.google.com/maps/dir/?api=1&destination=${item?.Desc.split(" ").join("+")}`);
+    OPEN_LINK(
+      `https://www.google.com/maps/dir/?api=1&destination=${item?.Desc.split(
+        " "
+      ).join("+")}`
+    );
   };
 
   render() {
@@ -174,19 +178,27 @@ export default class extends React.Component {
                         <i className="las la-star"></i>
                         <i className="las la-star"></i>
                         <i className="las la-star"></i>
-                        {iOS() ? (
-                          <Link
-                            external
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${item?.Desc.split(" ").join("+")}`}
-                            noLinkClass
-                          >
-                            <i className="las la-location-arrow"></i>
-                          </Link>
+                        {!window.GlobalConfig?.APP?.an_chi_duong ? (
+                          <>
+                            {iOS() ? (
+                              <Link
+                                external
+                                href={`https://www.google.com/maps/dir/?api=1&destination=${item?.Desc.split(
+                                  " "
+                                ).join("+")}`}
+                                noLinkClass
+                              >
+                                <i className="las la-location-arrow"></i>
+                              </Link>
+                            ) : (
+                              <i
+                                className="las la-location-arrow"
+                                onClick={() => this.openMaps(item)}
+                              ></i>
+                            )}
+                          </>
                         ) : (
-                          <i
-                            className="las la-location-arrow"
-                            onClick={() => this.openMaps(item)}
-                          ></i>
+                          <></>
                         )}
                       </div>
                       <h3>{item.Title}</h3>

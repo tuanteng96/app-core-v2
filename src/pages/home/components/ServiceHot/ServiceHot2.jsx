@@ -100,7 +100,11 @@ export default class ServiceHot2 extends React.Component {
   };
 
   getColor = (index, arr) => {
-    if (window.GlobalConfig?.APP?.ColorRandom && arr) {
+    if (
+      window.GlobalConfig?.APP?.ColorRandom &&
+      window.GlobalConfig?.APP?.ColorRandom.length > 0 &&
+      arr
+    ) {
       const { ColorRandom } = window.GlobalConfig?.APP;
       let newColorRandom = [];
       if (arr.length > ColorRandom.length) {
@@ -121,7 +125,7 @@ export default class ServiceHot2 extends React.Component {
       }
       return newColorRandom[index];
     }
-    return "#007bff";
+    return "transparent";
   };
 
   render() {
@@ -166,18 +170,23 @@ export default class ServiceHot2 extends React.Component {
                             backgroundImage: `url("${SERVER_APP}/Upload/image/${item.FileName}")`,
                           }}
                         />
-                        <div className="text">
-                          <div>
-                            <h4>{item.Title}</h4>
-                            <div
-                              className="text-desc"
-                              dangerouslySetInnerHTML={{ __html: item.Desc }}
-                            ></div>
-                          </div>
-                          <div className="btns">
-                            <div className="btn-more">Tham gia</div>
-                          </div>
-                        </div>
+                        {window.GlobalConfig?.APP?.ColorRandom &&
+                          window.GlobalConfig?.APP?.ColorRandom.length > 0 && (
+                            <div className="text">
+                              <div>
+                                <h4>{item.Title}</h4>
+                                <div
+                                  className="text-desc"
+                                  dangerouslySetInnerHTML={{
+                                    __html: item.Desc,
+                                  }}
+                                ></div>
+                              </div>
+                              <div className="btns">
+                                <div className="btn-more">Tham gia</div>
+                              </div>
+                            </div>
+                          )}
                       </Link>
                     ))}
                 </Slider>

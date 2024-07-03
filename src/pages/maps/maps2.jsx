@@ -280,29 +280,35 @@ export default class extends React.Component {
                       <i className="las la-phone-volume"></i>
                       {item.FileName || "Đang cập nhập"}
                     </div>
-                    {iOS() ? (
-                      <Link
-                        className="_support"
-                        external
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${item?.Desc.split(
-                          " "
-                        ).join("+")}`}
-                        noLinkClass
-                      >
-                        <i className="las la-blind"></i>
-                        Chỉ đường
-                      </Link>
+                    {!window.GlobalConfig?.APP?.an_chi_duong ? (
+                      <>
+                        {iOS() ? (
+                          <Link
+                            className="_support"
+                            external
+                            href={`https://www.google.com/maps/dir/?api=1&destination=${item?.Desc.split(
+                              " "
+                            ).join("+")}`}
+                            noLinkClass
+                          >
+                            <i className="las la-blind"></i>
+                            Chỉ đường
+                          </Link>
+                        ) : (
+                          <div
+                            className="_support"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              this.openMaps(item);
+                            }}
+                          >
+                            <i className="las la-blind"></i>
+                            Chỉ đường
+                          </div>
+                        )}
+                      </>
                     ) : (
-                      <div
-                        className="_support"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          this.openMaps(item);
-                        }}
-                      >
-                        <i className="las la-blind"></i>
-                        Chỉ đường
-                      </div>
+                      <></>
                     )}
                   </div>
                 </div>
@@ -348,25 +354,32 @@ export default class extends React.Component {
                 <i className="las la-phone-volume"></i>
                 {MapsOpen?.FileName || "Đang cập nhập"}
               </div>
-              {iOS() ? (
-                <Link
-                  className="_btn-address"
-                  external
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${MapsOpen?.Desc.split(
-                    " "
-                  ).join("+")}`}
-                  noLinkClass
-                >
-                  Chỉ đường
-                </Link>
+
+              {!window.GlobalConfig?.APP?.an_chi_duong ? (
+                <>
+                  {iOS() ? (
+                    <Link
+                      className="_btn-address"
+                      external
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${MapsOpen?.Desc.split(
+                        " "
+                      ).join("+")}`}
+                      noLinkClass
+                    >
+                      Chỉ đường
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => this.openMaps(MapsOpen)}
+                      type="button"
+                      className="_btn-address"
+                    >
+                      Chỉ đường
+                    </button>
+                  )}
+                </>
               ) : (
-                <button
-                  onClick={() => this.openMaps(MapsOpen)}
-                  type="button"
-                  className="_btn-address"
-                >
-                  Chỉ đường
-                </button>
+                <></>
               )}
 
               {MapsOpen?.FileName && (
