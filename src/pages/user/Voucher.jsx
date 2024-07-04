@@ -374,7 +374,7 @@ export default class extends React.Component {
                                       <div className="item-sub">
                                         <div className="item-sub__box">
                                           <h5>Số lần sử dụng tối đa</h5>
-                                          <div className="price">{item?.Voucher?.MemberUseMax}</div>
+                                          <div className="price">{item?.Voucher?.MemberUseMax === -1 ? "Không giới hạn" : item?.Voucher?.MemberUseMax}</div>
                                         </div>
                                       </div>
                                       <div className="item-sub">
