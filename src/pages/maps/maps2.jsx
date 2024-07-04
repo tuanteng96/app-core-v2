@@ -40,12 +40,12 @@ export default class extends React.Component {
       let newValues = [...arrayCurrent];
       if (ActiveProvinces) {
         newValues = newValues.filter(
-          (x) => x?.Province?.Parentid === ActiveProvinces?.value
+          (x) => Number(x?.Province?.Parentid) === Number(ActiveProvinces?.value)
         );
       }
       if (ActiveDistricts) {
         newValues = newValues.filter(
-          (x) => x?.District?.ID === ActiveDistricts?.value
+          (x) => Number(x?.District?.ID) === Number(ActiveDistricts?.value)
         );
       }
       this.setState({
@@ -66,6 +66,7 @@ export default class extends React.Component {
           DescSEO: x.Follow,
         }))
       : [];
+
     let newMaps = [];
 
     let Provinces = [];
@@ -100,14 +101,15 @@ export default class extends React.Component {
     }
 
     newMaps = newMaps?.sort(
-      (a, b) => a?.Province?.Parentid - b?.Province?.Parentid
+      (a, b) => Number(a?.Province?.Parentid) - Number(b?.Province?.Parentid)
     );
 
     for (let province of newMaps) {
       let index = Provinces.findIndex(
         (x) =>
-          province?.Province?.Parentid &&
-          province?.Province?.Parentid === x.Parentid
+          Number(
+            province?.Province?.Parentid && province?.Province?.Parentid
+          ) === Number(x.Parentid)
       );
       if (index > -1) {
         let indexDistr = Provinces[index].Districts.findIndex(
@@ -135,6 +137,7 @@ export default class extends React.Component {
         });
       }
     }
+
     this.setState({
       arrMaps: newMaps,
       arrayCurrent: newMaps,

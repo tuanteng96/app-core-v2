@@ -16,7 +16,6 @@ import {
   setStockNameStorage,
 } from "../constants/user";
 import { toast } from "react-toastify";
-import StocksProvinces from "./StocksProvinces";
 import StocksProvincesFilter from "./StocksProvincesFilter";
 
 export default class SelectStock extends React.Component {

@@ -46,12 +46,13 @@ function StocksProvincesFilter({
       for (let province of newStocks) {
         let index = Provinces.findIndex(
           (x) =>
-            province?.Province?.Parentid &&
-            province?.Province?.Parentid === x.Parentid
+            Number(
+              province?.Province?.Parentid && province?.Province?.Parentid
+            ) === Number(x.Parentid)
         );
         if (index > -1) {
           let indexDistr = Provinces[index].Districts.findIndex(
-            (o) => o.ID === province?.District?.ID
+            (o) => Number(o.ID) === Number(province?.District?.ID)
           );
           if (indexDistr === -1) {
             Provinces[index].Districts.push({
@@ -76,12 +77,12 @@ function StocksProvincesFilter({
         }
       }
       newStocks = newStocks?.sort(
-        (a, b) => a?.Province?.Parentid - b?.Province?.Parentid
+        (a, b) => Number(a?.Province?.Parentid) - Number(b?.Province?.Parentid)
       );
       setStocksList(newStocks);
       setStocksProvider(newStocks);
 
-      setProvincesList(Provinces);
+      setProvincesList(Provinces.filter(x => x.Parentid));
     }
   }, [Stocks, isOpen]);
 
@@ -126,12 +127,12 @@ function StocksProvincesFilter({
 
       if (ActiveProvinces) {
         newValues = newValues.filter(
-          (x) => x?.Province?.Parentid === ActiveProvinces?.value
+          (x) => Number(x?.Province?.Parentid) === Number(ActiveProvinces?.value)
         );
       }
       if (ActiveDistricts) {
         newValues = newValues.filter(
-          (x) => x?.District?.ID === ActiveDistricts?.value
+          (x) => Number(x?.District?.ID) === Number(ActiveDistricts?.value)
         );
       }
       setStocksList(newValues);
