@@ -158,34 +158,48 @@ export default class ServiceHot2 extends React.Component {
                         style={this.handStyle()}
                         onClick={() => this.handleUrl(item)}
                       >
-                        <div
-                          className="bg"
-                          style={{
-                            background: this.getColor(index, arrService),
-                          }}
-                        ></div>
-                        <div
-                          className="image"
-                          style={{
-                            backgroundImage: `url("${SERVER_APP}/Upload/image/${item.FileName}")`,
-                          }}
-                        />
+                        {(!window.GlobalConfig?.APP?.ColorRandom ||
+                          window.GlobalConfig?.APP?.ColorRandom.length ===
+                            0) && (
+                          <img
+                            src={SERVER_APP + "/Upload/image/" + item.FileName}
+                            alt={item.title}
+                            style={{
+                              boxShadow: "0 3px 20px rgb(0 0 0 / 4%)",
+                              borderRadius: "10px",
+                            }}
+                          />
+                        )}
                         {window.GlobalConfig?.APP?.ColorRandom &&
                           window.GlobalConfig?.APP?.ColorRandom.length > 0 && (
-                            <div className="text">
-                              <div>
-                                <h4>{item.Title}</h4>
-                                <div
-                                  className="text-desc"
-                                  dangerouslySetInnerHTML={{
-                                    __html: item.Desc,
-                                  }}
-                                ></div>
+                            <>
+                              <div
+                                className="bg"
+                                style={{
+                                  background: this.getColor(index, arrService),
+                                }}
+                              ></div>
+                              <div
+                                className="image"
+                                style={{
+                                  backgroundImage: `url("${SERVER_APP}/Upload/image/${item.FileName}")`,
+                                }}
+                              />
+                              <div className="text">
+                                <div>
+                                  <h4>{item.Title}</h4>
+                                  <div
+                                    className="text-desc"
+                                    dangerouslySetInnerHTML={{
+                                      __html: item.Desc,
+                                    }}
+                                  ></div>
+                                </div>
+                                <div className="btns">
+                                  <div className="btn-more">Tham gia</div>
+                                </div>
                               </div>
-                              <div className="btns">
-                                <div className="btn-more">Tham gia</div>
-                              </div>
-                            </div>
+                            </>
                           )}
                       </Link>
                     ))}
