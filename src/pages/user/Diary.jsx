@@ -1,5 +1,5 @@
-import React from "react";
-import { Page, Link, Navbar, Toolbar } from "framework7-react";
+import React, { createRef } from "react";
+import { Page, Link, Navbar, Toolbar, PhotoBrowser } from "framework7-react";
 import { getUser, getPassword } from "../../constants/user";
 import { groupbyDDHHMM } from "../../constants/format";
 import PageNoData from "../../components/PageNoData";
@@ -10,6 +10,7 @@ import NotificationIcon from "../../components/NotificationIcon";
 import moment from "moment";
 import "moment/locale/vi";
 import { SERVER_APP } from "../../constants/config";
+import Dom7 from "dom7";
 moment.locale("vi");
 
 export default class extends React.Component {
@@ -17,11 +18,39 @@ export default class extends React.Component {
     super();
     this.state = {
       arrDiary: [],
+      photos: [],
     };
+    this.myRef = createRef();
   }
   componentDidMount() {
     this.getDiary();
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.arrDiary.toString() !== prevState.arrDiary.toString()) {
+      let $this = this;
+      if (this?.myRef?.current) {
+        let el = this?.myRef?.current;
+        let Photos = [];
+        Dom7(el)
+          .find("img")
+          .each(function (e) {
+            Photos.push({ url: Dom7(this).attr("src") });
+          });
+        this.setState({ photos: Photos });
+
+        Dom7(el)
+          .find("img")
+          .each(function (e) {
+            Dom7(this).click(function () {
+              let index = $this.state.photos.findIndex(x => x.url === Dom7(this).attr("src"))
+              $this.standalone.open(index);
+            });
+          });
+      }
+    }
+  }
+
   getDiary = () => {
     const infoUser = getUser();
     if (!infoUser) return false;
@@ -30,7 +59,7 @@ export default class extends React.Component {
     UserService.getDiary(member, password).then((response) => {
       const arrDiary = response.data;
       this.setState({
-        arrDiary: groupbyDDHHMM(arrDiary,"CreateDate"),
+        arrDiary: groupbyDDHHMM(arrDiary, "CreateDate"),
       });
     });
   };
@@ -51,8 +80,9 @@ export default class extends React.Component {
       done();
     }, 1000);
   }
+
   render() {
-    const { arrDiary } = this.state;
+    const { arrDiary, photos } = this.state;
     return (
       <Page
         ptr
@@ -84,7 +114,7 @@ export default class extends React.Component {
                     <span>{this.getStuff(item.dayFull)}</span>
                     <span>{this.getDate(item.dayFull)}</span>
                   </h4>
-                  <ul>
+                  <ul ref={this.myRef}>
                     {item.items.map((sub, i) => (
                       <li key={i}>
                         <div className="icon">
@@ -110,6 +140,15 @@ export default class extends React.Component {
               <PageNoData text="Bạn chưa có nhật ký !" />
             )}
           </div>
+          <PhotoBrowser
+            photos={photos}
+            ref={(el) => {
+              this.standalone = el;
+            }}
+            popupCloseLinkText="Đóng"
+            theme="light"
+            type="popup"
+          />
         </div>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />

@@ -53,17 +53,24 @@ export default class extends React.Component {
     this.setState({ loading: true });
     UserService.getVoucher(memberid)
       .then((response) => {
-        const { danh_sach, tot_nhat, contactMiniGame } = response.data.data;
-        this.setState({
-          VoucherAll: danh_sach,
-          VoucherGood: tot_nhat,
-          contactMiniGame: contactMiniGame
-            ? contactMiniGame.filter((x) => x.Status !== 3)
-            : [],
-          loading: false,
-        });
+        if (response.data.data) {
+          const { danh_sach, tot_nhat, contactMiniGame } = response.data.data;
+          this.setState({
+            VoucherAll: danh_sach,
+            VoucherGood: tot_nhat,
+            contactMiniGame: contactMiniGame
+              ? contactMiniGame.filter((x) => x.Status !== 3)
+              : [],
+            loading: false,
+          });
+        } else {
+          this.setState({ loading: false });
+        }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        this.setState({ loading: false });
+        console.log(e);
+      });
   };
 
   loadMore(done) {
@@ -374,7 +381,11 @@ export default class extends React.Component {
                                       <div className="item-sub">
                                         <div className="item-sub__box">
                                           <h5>Số lần sử dụng tối đa</h5>
-                                          <div className="price">{item?.Voucher?.MemberUseMax === -1 ? "Không giới hạn" : item?.Voucher?.MemberUseMax}</div>
+                                          <div className="price">
+                                            {item?.Voucher?.MemberUseMax === -1
+                                              ? "Không giới hạn"
+                                              : item?.Voucher?.MemberUseMax}
+                                          </div>
                                         </div>
                                       </div>
                                       <div className="item-sub">

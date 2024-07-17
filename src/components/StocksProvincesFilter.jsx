@@ -34,7 +34,10 @@ function StocksProvincesFilter({
         let obj = {
           ...x,
         };
-        let newDesc = x.DescSEO ? JSON.parse(x.DescSEO) : null;
+        let newDesc = null;
+        if (x.DescSEO && !x.DescSEO.includes("https://")) {
+          newDesc = JSON.parse(x.DescSEO);
+        }
 
         if (newDesc && newDesc.place && newDesc.place.length > 0) {
           obj.Province = newDesc.place.filter((o) => o.Parentid > 0)[0];
@@ -82,7 +85,7 @@ function StocksProvincesFilter({
       setStocksList(newStocks);
       setStocksProvider(newStocks);
 
-      setProvincesList(Provinces.filter(x => x.Parentid));
+      setProvincesList(Provinces.filter((x) => x.Parentid));
     }
   }, [Stocks, isOpen]);
 
@@ -127,7 +130,8 @@ function StocksProvincesFilter({
 
       if (ActiveProvinces) {
         newValues = newValues.filter(
-          (x) => Number(x?.Province?.Parentid) === Number(ActiveProvinces?.value)
+          (x) =>
+            Number(x?.Province?.Parentid) === Number(ActiveProvinces?.value)
         );
       }
       if (ActiveDistricts) {

@@ -40,7 +40,8 @@ export default class extends React.Component {
       let newValues = [...arrayCurrent];
       if (ActiveProvinces) {
         newValues = newValues.filter(
-          (x) => Number(x?.Province?.Parentid) === Number(ActiveProvinces?.value)
+          (x) =>
+            Number(x?.Province?.Parentid) === Number(ActiveProvinces?.value)
         );
       }
       if (ActiveDistricts) {
@@ -76,7 +77,11 @@ export default class extends React.Component {
         ...x,
         FileName: x.LinkSEO,
       };
-      let newDesc = x.DescSEO ? JSON.parse(x.DescSEO) : null;
+
+      let newDesc = null;
+      if (x.DescSEO && !x.DescSEO.includes("https://")) {
+        newDesc = JSON.parse(x.DescSEO);
+      }
 
       if (newDesc && newDesc.place && newDesc.place.length > 0) {
         obj.Province = newDesc.place.filter((o) => o.Parentid > 0)[0];
@@ -91,7 +96,11 @@ export default class extends React.Component {
         Map: x.Link,
         LinkSEO: x.FileName,
       };
-      let newDesc = x.DescSEO ? JSON.parse(x.DescSEO) : null;
+
+      let newDesc = null;
+      if (x.DescSEO && !x.DescSEO.includes("https://")) {
+        newDesc = JSON.parse(x.DescSEO);
+      }
 
       if (newDesc && newDesc.place && newDesc.place.length > 0) {
         obj.Province = newDesc.place.filter((o) => o.Parentid > 0)[0];
