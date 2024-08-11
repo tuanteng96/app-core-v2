@@ -47,6 +47,135 @@ function FormLogin({ f7, f7router }) {
     mutationFn: (body) => UserService.authSendTokenFirebase(body),
   });
 
+  // const onLoginFirst = ({ values, setErrors, setFieldValue }) =>
+  //   new Promise((resolve, reject) => {
+  //     f7.preloader.show();
+  //     DeviceHelpers.get({
+  //       success: ({ deviceId }) => {
+  //         loginMutation.mutate(
+  //           { ...values, deviceid: deviceId },
+  //           {
+  //             onSettled: ({ data }) => {
+  //               if (data.error || data?.Status === -1) {
+  //                 if (data.error === "Thiết bị chưa được cấp phép") {
+  //                   f7.preloader.hide();
+  //                   f7.dialog.alert(
+  //                     "Tài khoản của bạn đang đăng nhập tại thiết bị khác."
+  //                   );
+  //                 } else {
+  //                   setErrors({
+  //                     username:
+  //                       data?.Status === -1
+  //                         ? "Tài khoản của bạn đã bị vô hiệu hoá."
+  //                         : "Tài khoản & mật khẩu không chính xác.",
+  //                   });
+  //                   setFieldValue("password", "", false);
+  //                   f7.preloader.hide();
+  //                 }
+  //                 reject("Error login");
+  //               } else {
+  //                 SEND_TOKEN_FIREBASE().then(async ({ error, Token }) => {
+  //                   if (!error && Token) {
+  //                     firebaseMutation.mutate(
+  //                       {
+  //                         Token: Token,
+  //                         ID: data.ID,
+  //                         Type: data.acc_type,
+  //                       },
+  //                       {
+  //                         onSettled: () => {
+  //                           SEND_TOKEN_FIREBASE().then(async (response) => {
+  //                             if (!response.error && response.Token) {
+  //                               await UserService.authRemoveFirebase({
+  //                                 Token: response.Token,
+  //                                 ID: data.ID,
+  //                                 Type: data.acc_type,
+  //                               });
+  //                               resolve();
+  //                             } else {
+  //                               resolve();
+  //                             }
+  //                           });
+  //                         },
+  //                       }
+  //                     );
+  //                   }
+  //                 });
+  //               }
+  //             },
+  //           }
+  //         );
+  //       },
+  //     });
+  //   });
+
+  // const onSubmit = (values, { setErrors, setFieldValue }) => {
+  //   onLoginFirst({ values, setErrors, setFieldValue }).then(() => {
+  //     DeviceHelpers.get({
+  //       success: ({ deviceId }) => {
+  //         loginMutation.mutate(
+  //           { ...values, deviceid: deviceId },
+  //           {
+  //             onSettled: ({ data }) => {
+  //               if (data.error || data?.Status === -1) {
+  //                 if (data.error === "Thiết bị chưa được cấp phép") {
+  //                   f7.preloader.hide();
+  //                   f7.dialog.alert(
+  //                     "Tài khoản của bạn đang đăng nhập tại thiết bị khác."
+  //                   );
+  //                 } else {
+  //                   setErrors({
+  //                     username:
+  //                       data?.Status === -1
+  //                         ? "Tài khoản của bạn đã bị vô hiệu hoá."
+  //                         : "Tài khoản & mật khẩu không chính xác.",
+  //                   });
+  //                   delete_cookie("PWD");
+  //                   setFieldValue("password", "", false);
+  //                   f7.preloader.hide();
+  //                 }
+  //               } else {
+  //                 setUserStorage(data.token, data);
+  //                 setUserLoginStorage(values.username, values.password);
+  //                 data?.ByStockID && setStockIDStorage(data.ByStockID);
+  //                 data?.StockName && setStockNameStorage(data.StockName);
+  //                 SEND_TOKEN_FIREBASE().then(async ({ error, Token }) => {
+  //                   if (!error && Token) {
+  //                     firebaseMutation.mutate(
+  //                       {
+  //                         Token: Token,
+  //                         ID: data.ID,
+  //                         Type: data.acc_type,
+  //                       },
+  //                       {
+  //                         onSettled: () => {
+  //                           f7.preloader.hide();
+  //                           f7router.navigate("/", {
+  //                             animate: true,
+  //                             transition: "f7-flip",
+  //                           });
+  //                         },
+  //                       }
+  //                     );
+  //                   } else {
+  //                     setSubscribe(data, () => {
+  //                       f7.preloader.hide();
+  //                       f7router.navigate("/", {
+  //                         animate: true,
+  //                         transition: "f7-flip",
+  //                       });
+  //                     });
+  //                   }
+  //                 });
+  //               }
+  //             },
+  //           }
+  //         );
+  //       },
+  //     });
+  //   });
+  // };
+
   const onSubmit = (values, { setErrors, setFieldValue }) => {
     f7.preloader.show();
     DeviceHelpers.get({
@@ -73,38 +202,47 @@ function FormLogin({ f7, f7router }) {
                   f7.preloader.hide();
                 }
               } else {
-                setUserStorage(data.token, data);
-                setUserLoginStorage(values.username, values.password);
-                data?.ByStockID && setStockIDStorage(data.ByStockID);
-                data?.StockName && setStockNameStorage(data.StockName);
-                SEND_TOKEN_FIREBASE().then(async ({ error, Token }) => {
-                  if (!error && Token) {
-                    firebaseMutation.mutate(
-                      {
-                        Token: Token,
-                        ID: data.ID,
-                        Type: data.acc_type,
-                      },
-                      {
-                        onSettled: () => {
-                          f7.preloader.hide();
-                          f7router.navigate("/", {
-                            animate: true,
-                            transition: "f7-flip",
-                          });
+                if (window?.GlobalConfig?.APP?.OutUser && data?.acc_type === "U") {
+                  setErrors({
+                    username: "Đăng nhập lỗi.",
+                  });
+                  delete_cookie("PWD");
+                  setFieldValue("password", "", false);
+                  f7.preloader.hide();
+                } else {
+                  setUserStorage(data.token, data);
+                  setUserLoginStorage(values.username, values.password);
+                  data?.ByStockID && setStockIDStorage(data.ByStockID);
+                  data?.StockName && setStockNameStorage(data.StockName);
+                  SEND_TOKEN_FIREBASE().then(async ({ error, Token }) => {
+                    if (!error && Token) {
+                      firebaseMutation.mutate(
+                        {
+                          Token: Token,
+                          ID: data.ID,
+                          Type: data.acc_type,
                         },
-                      }
-                    );
-                  } else {
-                    setSubscribe(data, () => {
-                      f7.preloader.hide();
-                      f7router.navigate("/", {
-                        animate: true,
-                        transition: "f7-flip",
+                        {
+                          onSettled: () => {
+                            f7.preloader.hide();
+                            f7router.navigate("/", {
+                              animate: true,
+                              transition: "f7-flip",
+                            });
+                          },
+                        }
+                      );
+                    } else {
+                      setSubscribe(data, () => {
+                        f7.preloader.hide();
+                        f7router.navigate("/", {
+                          animate: true,
+                          transition: "f7-flip",
+                        });
                       });
-                    });
-                  }
-                });
+                    }
+                  });
+                }
               }
             },
           }

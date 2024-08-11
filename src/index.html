@@ -25,7 +25,7 @@
     <link rel="apple-touch-icon" href="static/icons/apple-touch-icon.png">
     <link rel="icon" href="static/icons/favicon.png">
 
-    <script src="https://cser.vn/Admin/ReactCDN/axios.min.js"></script>
+    <script src="https://cserbeauty.com/Admin/ReactCDN/axios.min.js"></script>
 
     <script>
         function readTextFile(file, callback) {
@@ -40,7 +40,7 @@
             rawFile.send(null);
         }
         readTextFile(
-            `${window.location.origin === 'http://localhost:8080' ? "https://cser.vn" : window.location.origin}/brand/global/Global.json?8`,
+            `${window.location.origin === 'http://localhost:8080' ? "https://cserbeauty.com" : window.location.origin}/brand/global/Global.json?8`,
             function (result) {
                 var data = JSON.parse(result);
                 if (data && data.APP && data.APP.Css) {

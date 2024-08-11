@@ -122,7 +122,8 @@ const SheetOrder = ({ item, textPay, loadingText, Banks, MaND }) => {
                   .replaceAll("ID_DH", `${item.ID}`)
               )}
             <div>
-              <div className="mt-10px">
+              {
+                Banks && Banks.length > 1 ? (<div className="mt-10px">
                 <Select
                   options={Banks}
                   className="select-control"
@@ -142,7 +143,9 @@ const SheetOrder = ({ item, textPay, loadingText, Banks, MaND }) => {
                   // menuPortalTarget={document.body}
                   menuPlacement="bottom"
                 />
-              </div>
+              </div>) : (<></>)
+              }
+              
               {ValueBank && (
                 <RenderQR
                   ValueBank={ValueBank}
@@ -199,7 +202,7 @@ export default class extends React.Component {
               ...x,
               value: x.stk,
               label: this.getName(x),
-            }));
+            })).filter(x => x.ma_nh !== "DealToday");
             newMaND = JsonBanks.ma_nhan_dien;
           }
         }

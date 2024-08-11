@@ -104,7 +104,7 @@ export default class extends React.Component {
               ...x,
               value: x.stk,
               label: this.getName(x),
-            }));
+            })).filter(x => x.ma_nh !== "DealToday");
             newMaND = JsonBanks.ma_nhan_dien;
           }
         }

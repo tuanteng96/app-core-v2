@@ -46,13 +46,24 @@ export default class extends React.Component {
     });
     UserService.getListTagService(memberid, 1)
       .then(({ data }) => {
-        this.setState({
-          countSv: data.length || 0,
-          cardSv: data ? data.filter((item) => item.TabIndex === 0) : [],
-          insuranceSV: data ? data.filter((item) => item.TabIndex === 1) : [],
-          excessiveSv: data ? data.filter((item) => item.TabIndex === 2) : [],
-          loading: false,
-        });
+        if(!data?.error) {
+          this.setState({
+            countSv: data.length || 0,
+            cardSv: data ? data.filter((item) => item.TabIndex === 0) : [],
+            insuranceSV: data ? data.filter((item) => item.TabIndex === 1) : [],
+            excessiveSv: data ? data.filter((item) => item.TabIndex === 2) : [],
+            loading: false,
+          });
+        }
+        else {
+          this.setState({
+            countSv: 0,
+            cardSv: [],
+            insuranceSV: [],
+            excessiveSv: [],
+            loading: false,
+          });
+        }
       })
       .catch((e) => console.log(e));
   };

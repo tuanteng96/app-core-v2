@@ -1,5 +1,5 @@
 import React from "react";
-import { App, View } from "framework7-react";
+import { App, View, f7 } from "framework7-react";
 
 import {
   app_request,
@@ -49,7 +49,7 @@ export default class extends React.Component {
             const infoUser = getUser();
             if (infoUser && !window.GlobalConfig.APP.isNotFechToken) {
               UserService.getInfo().then(({ data }) => {
-                if (data?.Status === -1) {
+                if (data?.acc_type !== "M" && window.GlobalConfig?.APP?.OutUser) {
                   SEND_TOKEN_FIREBASE().then(async (response) => {
                     if (!response.error && response.Token) {
                       const { ID, acc_type } = data;
@@ -63,47 +63,65 @@ export default class extends React.Component {
                     }
                     iOS() && REMOVE_BADGE();
                     await localStorage.clear();
-                    location.reload();
+                    f7.views.main.router.navigate(`/`);
                   });
-                } else if (data?.error && data?.error.indexOf("TOKEN") > -1) {
-                  removeUserStorage();
-                } else if (data?.token_renew) {
-                  setUserStorage(data.token_renew, data);
-                } else if (data?.token) {
-                  setUserStorage(data.token, data);
                 } else {
-                  // Không phải lỗi Token
-                }
-                if (
-                  window?.GlobalConfig?.APP?.DeviceCheck &&
-                  data?.Status !== -1
-                ) {
-                  DeviceHelpers.get({
-                    success: ({ deviceId }) => {
-                      if (data?.DeviceIDs && data?.DeviceIDs !== deviceId) {
-                        this.dialog.alert(
-                          "Phiên đăng nhập của bạn đã hết hạn.",
-                          () => {
-                            SEND_TOKEN_FIREBASE().then(async (response) => {
-                              if (!response.error && response.Token) {
-                                const { ID, acc_type } = data;
-                                await UserService.authRemoveFirebase({
-                                  Token: response.Token,
-                                  ID: ID,
-                                  Type: acc_type,
-                                });
-                              } else {
-                                app_request("unsubscribe", "");
-                              }
-                              iOS() && REMOVE_BADGE();
-                              await localStorage.clear();
-                              location.reload();
-                            });
-                          }
-                        );
+                  if (data?.Status === -1) {
+                    SEND_TOKEN_FIREBASE().then(async (response) => {
+                      if (!response.error && response.Token) {
+                        const { ID, acc_type } = data;
+                        await UserService.authRemoveFirebase({
+                          Token: response.Token,
+                          ID: ID,
+                          Type: acc_type,
+                        });
+                      } else {
+                        app_request("unsubscribe", "");
                       }
-                    },
-                  });
+                      iOS() && REMOVE_BADGE();
+                      await localStorage.clear();
+                      location.reload();
+                    });
+                  } else if (data?.error && data?.error.indexOf("TOKEN") > -1) {
+                    removeUserStorage();
+                  } else if (data?.token_renew) {
+                    setUserStorage(data.token_renew, data);
+                  } else if (data?.token) {
+                    setUserStorage(data.token, data);
+                  } else {
+                    // Không phải lỗi Token
+                  }
+                  if (
+                    window?.GlobalConfig?.APP?.DeviceCheck &&
+                    data?.Status !== -1
+                  ) {
+                    DeviceHelpers.get({
+                      success: ({ deviceId }) => {
+                        if (data?.DeviceIDs && data?.DeviceIDs !== deviceId) {
+                          this.dialog.alert(
+                            "Phiên đăng nhập của bạn đã hết hạn.",
+                            () => {
+                              SEND_TOKEN_FIREBASE().then(async (response) => {
+                                if (!response.error && response.Token) {
+                                  const { ID, acc_type } = data;
+                                  await UserService.authRemoveFirebase({
+                                    Token: response.Token,
+                                    ID: ID,
+                                    Type: acc_type,
+                                  });
+                                } else {
+                                  app_request("unsubscribe", "");
+                                }
+                                iOS() && REMOVE_BADGE();
+                                await localStorage.clear();
+                                location.reload();
+                              });
+                            }
+                          );
+                        }
+                      },
+                    });
+                  }
                 }
               });
             }
