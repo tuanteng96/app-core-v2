@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import NewsDataService from "../../../service/news.service";
-import { SERVER_APP } from "../../../constants/config";
 import { getUser } from "../../../constants/user";
 import userService from "../../../service/user.service";
+import { toAbsoluteUrl } from "../../../constants/assetPath";
 
 window.PopUpVQMM = localStorage.getItem("_vqmm") || true;
 
@@ -32,18 +32,17 @@ function PopupImages({ f7 }) {
                   localStorage.setItem("_vqmm", false);
                 }
               });
-          }
-          else {
+          } else {
             setData(data.data[0]);
             setVisible(true);
-            localStorage.removeItem("_vqmm")
+            localStorage.removeItem("_vqmm");
           }
         }
       } else {
         if (data && data.data && data.data.length > 0) {
           setData(data.data[0]);
           setVisible(true);
-          localStorage.removeItem("_vqmm")
+          localStorage.removeItem("_vqmm");
         }
       }
     });
@@ -127,7 +126,7 @@ function PopupImages({ f7 }) {
         </div>
         <img
           className="w-100"
-          src={SERVER_APP + "/Upload/image/" + data.FileName}
+          src={toAbsoluteUrl("/Upload/image/" + data.FileName)}
           alt={data.Title}
         />
       </div>

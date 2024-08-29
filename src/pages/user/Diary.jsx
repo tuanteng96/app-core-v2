@@ -43,7 +43,9 @@ export default class extends React.Component {
           .find("img")
           .each(function (e) {
             Dom7(this).click(function () {
-              let index = $this.state.photos.findIndex(x => x.url === Dom7(this).attr("src"))
+              let index = $this.state.photos.findIndex(
+                (x) => x.url === Dom7(this).attr("src")
+              );
               $this.standalone.open(index);
             });
           });
@@ -127,7 +129,7 @@ export default class extends React.Component {
                           {ReactHtmlParser(
                             sub.Content.replaceAll(
                               "/Upload/image/",
-                              SERVER_APP + "/Upload/image/"
+                              (window.SERVER || SERVER_APP) + "/Upload/image/"
                             )
                           )}
                         </div>

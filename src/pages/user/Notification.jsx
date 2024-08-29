@@ -21,7 +21,7 @@ import moment from "moment";
 import "moment/locale/vi";
 import { REMOVE_BADGE, SET_BADGE } from "../../constants/prom21";
 import { iOS } from "../../constants/helpers";
-import { SERVER_APP } from "../../constants/config";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 moment.locale("vi");
 
 export default class extends React.Component {
@@ -277,7 +277,7 @@ export default class extends React.Component {
                 {arrNoti && arrNoti.length === 0 && (
                   <div className="no-notification">
                     <img
-                      src={`${SERVER_APP}/app2021/images/no-notification.png`}
+                      src={toAbsoluteUrl(`/app2021/images/no-notification.png`)}
                     />
                   </div>
                 )}

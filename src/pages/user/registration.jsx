@@ -1,5 +1,4 @@
 import React from "react";
-import { SERVER_APP } from "./../../constants/config";
 import { Page, Link, Toolbar } from "framework7-react";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
@@ -15,6 +14,7 @@ import { SEND_TOKEN_FIREBASE } from "../../constants/prom21";
 import { setSubscribe } from "../../constants/subscribe";
 import DeviceHelpers from "../../constants/DeviceHelpers";
 import { FormRegistration } from "./components";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -199,7 +199,7 @@ export default class extends React.Component {
               <div className="logo">
                 <img
                   className="logo-reg"
-                  src={SERVER_APP + "/app/images/logo-app.png"}
+                  src={toAbsoluteUrl("/app/images/logo-app.png")}
                 />
               </div>
               <div className="title">Xin chào, Bắt đầu tạo tài khoản nào</div>

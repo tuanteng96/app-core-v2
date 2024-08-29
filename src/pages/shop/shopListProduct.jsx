@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from "react";
-import { SERVER_APP } from "./../../constants/config";
 import { formatPriceVietnamese, checkSale } from "../../constants/format";
 import _ from "lodash";
 import {
@@ -22,6 +21,7 @@ import RenderTagsProd from "./components/RenderTagsProd";
 import { TruncateLines } from "react-truncate-lines";
 import clsx from "clsx";
 import { toast } from "react-toastify";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 const ButtonCart = ({ item, f7, f7router }) => {
   const [loading, setLoading] = useState(false);
@@ -435,9 +435,9 @@ export default class extends React.Component {
                               >
                                 <div className="page-shop__list-img">
                                   <img
-                                    src={
-                                      SERVER_APP + "/Upload/image/" + item.photo
-                                    }
+                                    src={toAbsoluteUrl(
+                                      "/Upload/image/" + item.photo
+                                    )}
                                     alt={item.title}
                                   />
                                   <RenderTagsProd

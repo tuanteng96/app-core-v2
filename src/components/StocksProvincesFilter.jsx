@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { createPortal } from "react-dom";
-import { Link } from "framework7-react";
 import { getStockIDStorage } from "../constants/user";
 import clsx from "clsx";
 import SelectPicker from "./Selects/SelectPicker";
 import ReactHtmlParser from "react-html-parser";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { f7 } from "framework7-react";
 
 function StocksProvincesFilter({
   isOpen,
@@ -14,6 +13,7 @@ function StocksProvincesFilter({
   Stocks,
   onChange,
   StockActive,
+  isChangeBrands = false,
 }) {
   let [StocksList, setStocksList] = useState([]);
   let [StocksProvider, setStocksProvider] = useState([]);
@@ -154,7 +154,7 @@ function StocksProvincesFilter({
             exit={{ opacity: 0 }}
             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
             style={{
-              zIndex: 100000,
+              zIndex: 10000,
               background: "rgb(0 0 0 / 55%)",
             }}
             onClick={onClose}
@@ -176,8 +176,8 @@ function StocksProvincesFilter({
             exit={{ y: "100%" }}
             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
             style={{
-              zIndex: 100001,
-              height: "40%",
+              zIndex: 10001,
+              height: "50%",
               borderRadius: "5px 5px 0 0",
               overflow: "hidden",
             }}
@@ -252,6 +252,26 @@ function StocksProvincesFilter({
                     </div>
                   ))}
               </div>
+              {/* {isChangeBrands && (
+                <div
+                  className="border-top bg-white text-center text-danger py-15px"
+                  style={{
+                    fontSize: "15px",
+                  }}
+                  onClick={() => {
+                    f7.dialog.confirm(
+                      "Bạn muốn thay đổi chi nhánh ?",
+                      async () => {
+                        await localStorage.clear();
+                        f7.views.main.router.navigate("/");
+                        onClose();
+                      }
+                    );
+                  }}
+                >
+                  Đổi chi nhánh
+                </div>
+              )} */}
             </div>
           </motion.div>
         </>

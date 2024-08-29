@@ -1,9 +1,9 @@
 import React from "react";
-import { SERVER_APP } from "../../../../constants/config";
 import { checkSale, formatPriceVietnamese } from "../../../../constants/format";
 import { Link } from "framework7-react";
 import RenderTagsProd from "../../../shop/components/RenderTagsProd";
 import { TruncateLines } from "react-truncate-lines";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 
 export default class ProductItem extends React.Component {
   constructor() {
@@ -14,15 +14,15 @@ export default class ProductItem extends React.Component {
   render() {
     const { item, source } = this.props;
     return (
-      <Link href={"/shop/detail/" + item.id} className="page-shop__list-item">
+      <Link href={"/shop/detail/" + item.id} className="page-shop__list-item border rounded overflow-hidden">
         <div className="page-shop__list-img">
           <RenderTagsProd status={item?.source?.Status} />
           <img
-            src={SERVER_APP + "/Upload/image/" + item.photo}
+            src={toAbsoluteUrl("/Upload/image/" + item.photo)}
             alt={item.title}
           />
         </div>
-        <div className="page-shop__list-text">
+        <div className="page-shop__list-text pb-0">
           <h3 className="w-100">
             <TruncateLines lines={2} ellipsis={<span>...</span>}>
               {item.title}

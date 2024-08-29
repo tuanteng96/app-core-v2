@@ -1,11 +1,11 @@
 import React from "react";
-import { SERVER_APP } from "../../constants/config";
 import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
 import { Page, Link, Navbar, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
 import SkeletonNews from "../news/SkeletonNews";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -93,7 +93,9 @@ export default class extends React.Component {
                         >
                           <div className="images">
                             <img
-                              src={SERVER_APP + "/upload/image/" + item.source.Thumbnail}
+                              src={toAbsoluteUrl(
+                                "/upload/image/" + item.source.Thumbnail
+                              )}
                               alt={item.source.Title}
                             />
                           </div>

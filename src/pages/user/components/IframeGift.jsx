@@ -17,11 +17,11 @@ function IframeGift({ f7, params }) {
       f7.dialog.preloader("Đang tải hộp quà ... ");
     }
   }, []);
-  console.log("1")
+  
   return (
     <IframeComm
       attributes={{
-        src: `${SERVER_APP}/minigame/hop-qua?v=${new Date().valueOf()}&DepartmentID=${params?.DepartmentID}&EndDate=${params?.EndDate}`,
+        src: `${(window.SERVER || SERVER_APP)}/minigame/hop-qua?v=${new Date().valueOf()}&DepartmentID=${params?.DepartmentID}&EndDate=${params?.EndDate}`,
         width: "100%",
         height: "100%",
         frameBorder: 0,

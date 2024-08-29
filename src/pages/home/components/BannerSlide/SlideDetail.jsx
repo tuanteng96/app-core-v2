@@ -7,6 +7,7 @@ import AdvDataService from "../../../../service/adv.service";
 import { SERVER_APP } from "../../../../constants/config";
 import ReactHtmlParser from "react-html-parser";
 import { OPEN_LINK } from "../../../../constants/prom21";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 export default class SlideList extends React.Component {
   constructor() {
     super();
@@ -27,7 +28,7 @@ export default class SlideList extends React.Component {
   }
   fixedContentDomain = (content) => {
     if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+    return content.replace(/src=\"\//g, 'src="' + (window.SERVER || SERVER_APP) + "/");
   };
 
   render() {
@@ -60,7 +61,7 @@ export default class SlideList extends React.Component {
                 <div className="page-news__detail-img">
                   <img
                     className="w-100"
-                    src={`${SERVER_APP}/upload/image/${arrayItem.FileName}`}
+                    src={toAbsoluteUrl(`/upload/image/${arrayItem.FileName}`)}
                   />
                 </div>
                 <div className="page-news__detail-content">

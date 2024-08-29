@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import ReactHtmlParser from "react-html-parser";
 import SkeletonNews from "../news/SkeletonNews";
 import NewsDataService from "../../../../service/news.service";
-import { SERVER_APP } from "../../../../constants/config";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 
 export default class NewsList extends React.Component {
   constructor() {
@@ -66,7 +66,11 @@ export default class NewsList extends React.Component {
         <div className="page-news__list">
           <div className="page-news__list-head">
             <h5>
-              <Link href={`/news-list/${NewTitle && NewTitle.length > 0 && NewTitle[0].ID}`}>
+              <Link
+                href={`/news-list/${
+                  NewTitle && NewTitle.length > 0 && NewTitle[0].ID
+                }`}
+              >
                 {NewTitle && NewTitle.length > 0 && NewTitle[0].Title}{" "}
                 <i className="las la-angle-right"></i>
               </Link>
@@ -87,7 +91,9 @@ export default class NewsList extends React.Component {
                       >
                         <div className="images">
                           <img
-                            src={SERVER_APP + "/upload/image/" + item.source.Thumbnail}
+                            src={toAbsoluteUrl(
+                              "/upload/image/" + item.source.Thumbnail
+                            )}
                             alt={item.source.Title}
                           />
                         </div>

@@ -6,8 +6,8 @@ import NewsDataService from "../../service/news.service";
 import { Page, Link, Navbar, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
-import Dom7 from "dom7";
 import { OPEN_LINK } from "../../constants/prom21";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -21,7 +21,10 @@ export default class extends React.Component {
 
   fixedContentDomain = (content) => {
     if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+    return content.replace(
+      /src=\"\//g,
+      'src="' + (window.SERVER || SERVER_APP) + "/"
+    );
   };
 
   formatHtmlString = (htmlString) => {
@@ -97,7 +100,7 @@ export default class extends React.Component {
             <div className="page-news">
               <div className="page-news__detail">
                 <div className="page-news__detail-img">
-                  <img src={SERVER_APP + arrayItem.Thumbnail_web} />
+                  <img src={toAbsoluteUrl(arrayItem.Thumbnail_web)} />
                 </div>
                 <div className="page-news__detail-content">
                   <div className="page-news__detail-shadow">
@@ -150,7 +153,7 @@ export default class extends React.Component {
                         {PhotoList.map((x, index) => (
                           <div class="mt-12px" key={index}>
                             <img
-                              src={SERVER_APP + "/upload/image/" + x}
+                              src={toAbsoluteUrl("/upload/image/" + x)}
                               alt=""
                             />
                           </div>

@@ -254,14 +254,12 @@
             }
         }
         .body {
-            padding: 15px 15px 5px 15px;
+            padding: 15px;
             .page-shop__list-item {
                 box-shadow: none;
                 margin: 0;
                 .page-shop__list-img {
-                    img {
-                        border-radius: 6px;
-                    }
+                    padding: 15px;
                 }
                 .page-shop__list-text {
                     h3 {
@@ -334,11 +332,9 @@
     outline: none;
     .bg {
         overflow: hidden;
-        height: 180px;
+        height: 90px;
         position: relative;
-        border-radius: 10px;
         z-index: 2;
-        opacity: .8;
     }
     .image {
         height: 100%;

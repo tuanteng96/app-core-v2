@@ -1,5 +1,4 @@
 import React from "react";
-import { SERVER_APP } from "../constants/config";
 import {
   maxBookDate,
   formatPriceVietnamese,
@@ -9,6 +8,7 @@ import {
 } from "../constants/format";
 import { Popover, Link } from "framework7-react";
 import NoProduct from "../assets/images/no-product.png";
+import { toAbsoluteUrl } from "../constants/assetPath";
 
 export default class ItemCardService extends React.Component {
   checkStatus = (status) => {
@@ -24,7 +24,7 @@ export default class ItemCardService extends React.Component {
           ) : (
             <img
               className="w-100"
-              src={SERVER_APP + "/Upload/image/" + item.Product.Thumbnail}
+              src={toAbsoluteUrl("/Upload/image/" + item.Product.Thumbnail)}
               onError={(e) => {
                 e.target.src = NoProduct;
               }}

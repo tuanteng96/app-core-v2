@@ -15,6 +15,7 @@ import BookDataService from "../../service/book.service";
 import moment from "moment";
 import "moment/locale/vi";
 import { SERVER_APP } from "../../constants/config";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 moment.locale("vi");
 
@@ -241,7 +242,7 @@ export default class extends React.Component {
 
   fixedContentDomain = (content) => {
     if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+    return content.replace(/src=\"\//g, 'src="' + (window.SERVER || SERVER_APP) + "/");
   };
 
   formatHtmlString = (htmlString) => {
@@ -330,7 +331,7 @@ export default class extends React.Component {
                       style={{
                         borderRadius: "5px",
                       }}
-                      src={`${SERVER_APP}/${data.Thumbnail}`}
+                      src={toAbsoluteUrl(`/${data.Thumbnail}`)}
                       alt={data && data.Title}
                     />
                   </div>

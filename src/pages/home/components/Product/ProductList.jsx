@@ -57,14 +57,12 @@ export default class ProductList extends React.Component {
                   </h5>
                 </div>
                 <div className="body">
-                  <Row>
+                  <div className="grid grid-cols-2 gap-15px">
                     {arrCateList &&
                       arrCateList.map((item, index) => (
-                        <Col width="50" key={index}>
-                          <ProductItem item={item} source={item.source} />
-                        </Col>
+                          <ProductItem key={index} item={item} source={item.source} />
                       ))}
-                  </Row>
+                  </div>
                 </div>
               </div>
             )}

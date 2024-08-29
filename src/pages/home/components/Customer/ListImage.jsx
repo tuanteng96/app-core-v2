@@ -1,10 +1,10 @@
 import React from "react";
 import NewsDataService from "../../../../service/news.service";
 import Slider from "react-slick";
-import { SERVER_APP } from "../../../../constants/config";
 import BeforeAfterSlider from "react-before-after-slider";
 import SkeletonCustomer from "../Customer/SkeletonCustomer";
 import { FaCheck } from "react-icons/fa";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 
 export default class ListImage extends React.Component {
   constructor() {
@@ -24,9 +24,18 @@ export default class ListImage extends React.Component {
       .then((response) => {
         const arrPhotoCustomer = response.data.data;
         this.setState({
-          arrPhotoCustomer: arrPhotoCustomer && arrPhotoCustomer.length > 0 && arrPhotoCustomer.filter(item => item.IsPublic > 0),
-          PhotoCustomerActive: arrPhotoCustomer && arrPhotoCustomer.length > 0 && arrPhotoCustomer[0],
-          isActivePhoto: arrPhotoCustomer && arrPhotoCustomer.length > 0 && arrPhotoCustomer[0].ID,
+          arrPhotoCustomer:
+            arrPhotoCustomer &&
+            arrPhotoCustomer.length > 0 &&
+            arrPhotoCustomer.filter((item) => item.IsPublic > 0),
+          PhotoCustomerActive:
+            arrPhotoCustomer &&
+            arrPhotoCustomer.length > 0 &&
+            arrPhotoCustomer[0],
+          isActivePhoto:
+            arrPhotoCustomer &&
+            arrPhotoCustomer.length > 0 &&
+            arrPhotoCustomer[0].ID,
           isLoading: false,
         });
       })
@@ -74,7 +83,7 @@ export default class ListImage extends React.Component {
       variableWidth: true,
       slidesToScroll: 5,
     };
-    
+
     if (arrPhotoCustomer && arrPhotoCustomer.length > 0) {
       return (
         <div className="home-page__client">
@@ -83,10 +92,16 @@ export default class ListImage extends React.Component {
             <React.Fragment>
               <div className="box">
                 <BeforeAfterSlider
-                  before={`${SERVER_APP}/Upload/image/${PhotoCustomerActive && PhotoCustomerActive.FileName2
-                    }`}
-                  after={`${SERVER_APP}/Upload/image/${PhotoCustomerActive && PhotoCustomerActive.FileName
-                    }`}
+                  before={toAbsoluteUrl(
+                    `/Upload/image/${
+                      PhotoCustomerActive && PhotoCustomerActive.FileName2
+                    }`
+                  )}
+                  after={toAbsoluteUrl(
+                    `/Upload/image/${
+                      PhotoCustomerActive && PhotoCustomerActive.FileName
+                    }`
+                  )}
                   className="box-beforeafter"
                   width={this.handStyleWidth()}
                   height={230}
@@ -103,8 +118,9 @@ export default class ListImage extends React.Component {
                       if (index > 10) return false;
                       return (
                         <div
-                          className={`list-client__item ${isActivePhoto === item.ID ? "active" : ""
-                            }`}
+                          className={`list-client__item ${
+                            isActivePhoto === item.ID ? "active" : ""
+                          }`}
                           key={item.ID}
                           style={this.handStyleAfter()}
                           onClick={() => this.handlePhotoCustomer(item)}
@@ -112,7 +128,9 @@ export default class ListImage extends React.Component {
                           <div className="image">
                             <img
                               className="animate__animated"
-                              src={`${SERVER_APP}/Upload/image/${item.FileName2}`}
+                              src={toAbsoluteUrl(
+                                `/Upload/image/${item.FileName2}`
+                              )}
                               alt=""
                             />
                             <FaCheck />

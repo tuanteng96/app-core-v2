@@ -1,10 +1,9 @@
 import React from "react";
 import { Link, Page } from "framework7-react";
-import IconForgot from "../../assets/images/forgot-change.png";
 import userService from "../../service/user.service";
 import { toast } from "react-toastify";
-import { SERVER_APP } from "../../constants/config";
 import { FormForgotChange } from "./components";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -129,9 +128,13 @@ export default class extends React.Component {
             </div>
             <img
               className="logo-reg"
-              src={`${SERVER_APP}/app2021/images/forgot-password.png`}
+              src={toAbsoluteUrl(`/app2021/images/forgot-password.png`)}
             />
-            <FormForgotChange f7={this.$f7} f7route={this.$f7route} f7router={this.$f7router}/>
+            <FormForgotChange
+              f7={this.$f7}
+              f7route={this.$f7route}
+              f7router={this.$f7router}
+            />
           </div>
         </div>
       </Page>

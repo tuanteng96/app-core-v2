@@ -49,7 +49,10 @@ export default class extends React.Component {
             const infoUser = getUser();
             if (infoUser && !window.GlobalConfig.APP.isNotFechToken) {
               UserService.getInfo().then(({ data }) => {
-                if (data?.acc_type !== "M" && window.GlobalConfig?.APP?.OutUser) {
+                if (
+                  data?.acc_type !== "M" &&
+                  window.GlobalConfig?.APP?.OutUser
+                ) {
                   SEND_TOKEN_FIREBASE().then(async (response) => {
                     if (!response.error && response.Token) {
                       const { ID, acc_type } = data;
@@ -62,7 +65,14 @@ export default class extends React.Component {
                       app_request("unsubscribe", "");
                     }
                     iOS() && REMOVE_BADGE();
+                    let CrDomain = localStorage.getItem("DOMAIN");
+
                     await localStorage.clear();
+
+                    if (CrDomain) {
+                      localStorage.setItem("DOMAIN", CrDomain);
+                    }
+
                     f7.views.main.router.navigate(`/`);
                   });
                 } else {
@@ -78,8 +88,15 @@ export default class extends React.Component {
                       } else {
                         app_request("unsubscribe", "");
                       }
+                      let CrDomain = localStorage.getItem("DOMAIN");
+
                       iOS() && REMOVE_BADGE();
                       await localStorage.clear();
+
+                      if (CrDomain) {
+                        localStorage.setItem("DOMAIN", CrDomain);
+                      }
+
                       location.reload();
                     });
                   } else if (data?.error && data?.error.indexOf("TOKEN") > -1) {
@@ -112,8 +129,17 @@ export default class extends React.Component {
                                 } else {
                                   app_request("unsubscribe", "");
                                 }
+
                                 iOS() && REMOVE_BADGE();
+
+                                let CrDomain = localStorage.getItem("DOMAIN");
+
                                 await localStorage.clear();
+
+                                if (CrDomain) {
+                                  localStorage.setItem("DOMAIN", CrDomain);
+                                }
+
                                 location.reload();
                               });
                             }
@@ -238,7 +264,14 @@ export default class extends React.Component {
                 app_request("unsubscribe", "");
               }
               iOS() && REMOVE_BADGE();
+              let CrDomain = localStorage.getItem("DOMAIN");
+
               await localStorage.clear();
+
+              if (CrDomain) {
+                localStorage.setItem("DOMAIN", CrDomain);
+              }
+
               this.$f7.views.main.router.navigate("/", {
                 reloadCurrent: true,
               });

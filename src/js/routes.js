@@ -40,6 +40,8 @@ import OrderPage from "../pages/user/userOrder";
 import EditEmailPage from "../pages/user/editEmail";
 import EditPasswordPage from "../pages/user/editPassword";
 
+import BrandsPage from "../pages/brands";
+
 //Employee - Nhân viên
 
 import EmployeeServicePage from "../pages/employee/timeKeeping/employeeService";
@@ -61,9 +63,7 @@ import PosPage from "../pages/pos/Pos";
 
 import SearchPage from "../pages/search/index";
 import NotFoundPage from "../pages/404.jsx";
-import {
-  getUser
-} from "../constants/user";
+import { getUser } from "../constants/user";
 import ServiceOriginal from "../pages/shop/ServiceOriginal";
 import GiftGamePage from "../pages/user/GiftGame.jsx";
 import StocksProvince from "../pages/stocks/StocksProvince.jsx";
@@ -82,8 +82,13 @@ function checkAuth(to, from, resolve, reject) {
 
 const checkRouterHome = () => {
   const infoUser = getUser();
-
   const ACC_TYPE = infoUser && infoUser.acc_type;
+
+  // let DOMAIN = localStorage.getItem("DOMAIN")
+  // if (!DOMAIN) {
+  //   return BrandsPage;
+  // }
+
   if (window?.GlobalConfig?.APP?.OnlyStaff && !infoUser) {
     return LoginPage;
   }
@@ -108,9 +113,20 @@ const checkRouterHome = () => {
   return HomeIndex;
 };
 
-var routes = [{
+var routes = [
+  {
     path: "/",
     asyncComponent: () => checkRouterHome(),
+    options: {
+      transition: "f7-flip",
+    },
+  },
+  {
+    path: "/brands/",
+    asyncComponent: () => BrandsPage,
+    options: {
+      transition: "f7-cover",
+    },
   },
   {
     path: "/bao-kg/",
@@ -182,7 +198,7 @@ var routes = [{
   },
   {
     path: "/shop/:cateId",
-    async (routeTo, routeFrom, resolve, reject) {
+    async(routeTo, routeFrom, resolve, reject) {
       const cateID = routeTo.params.cateId;
       const cateidparams = routeTo.query.cateid;
       if (Number(cateID) === 795 || Number(cateidparams) === 795) {
@@ -198,7 +214,7 @@ var routes = [{
   },
   {
     path: "/shop/list/:parentId/:cateId",
-    async (routeTo, routeFrom, resolve, reject) {
+    async(routeTo, routeFrom, resolve, reject) {
       const cateParentID = routeTo.params.parentId;
       if (cateParentID === "795") {
         resolve({
@@ -222,7 +238,8 @@ var routes = [{
   },
   {
     path: "/maps/",
-    asyncComponent: () => window?.GlobalConfig?.APP?.ByProvince ? MapsPage2 : MapsPage,
+    asyncComponent: () =>
+      window?.GlobalConfig?.APP?.ByProvince ? MapsPage2 : MapsPage,
     options: {
       transition: "f7-cover",
     },

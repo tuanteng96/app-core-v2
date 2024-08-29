@@ -20,7 +20,7 @@ import staffService from "../../../service/staff.service";
 import "moment/locale/vi";
 import moment from "moment";
 import LoadingChart from "../../../components/Loading/LoadingChart";
-import { SERVER_APP } from "../../../constants/config";
+import { toAbsoluteUrl } from "../../../constants/assetPath";
 moment.locale("vi");
 
 const Photos = ({ PhotoList }) => {
@@ -30,7 +30,7 @@ const Photos = ({ PhotoList }) => {
   useEffect(() => {
     if (PhotoList) {
       setPhotoWeb(() =>
-        PhotoList.map((item) => `${SERVER_APP}/upload/image/${item.Src}`)
+        PhotoList.map((item) => toAbsoluteUrl(`/upload/image/${item.Src}`))
       );
     }
   }, [PhotoList]);

@@ -153,6 +153,7 @@ export default class SelectStock extends React.Component {
           onClose={() => this.setState({ isOpen: false })}
           Stocks={arrStock}
           onChange={(val) => this.updateStockCr(val)}
+          isChangeBrands={true}
         />
       );
     }
@@ -189,6 +190,20 @@ export default class SelectStock extends React.Component {
               ))}
           </div>
         </ActionsGroup>
+        {/* <ActionsGroup>
+          <ActionsButton
+            className="fw-400"
+            color="red"
+            onClick={() => {
+              f7.dialog.confirm("Bạn muốn thay đổi chi nhánh ?", async () => {
+                await localStorage.clear();
+                f7.views.main.router.navigate("/");
+              });
+            }}
+          >
+            Đổi chi nhánh
+          </ActionsButton>
+        </ActionsGroup> */}
         <ActionsGroup>
           <ActionsButton color="red">Đóng</ActionsButton>
         </ActionsGroup>

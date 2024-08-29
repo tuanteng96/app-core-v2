@@ -1,9 +1,6 @@
-import {
-    SERVER_APP
-} from "../constants/config";
-import imgNoProduct from "./../assets/images/no-product.png";
 import moment from 'moment';
 import 'moment/locale/vi';
+import { toAbsoluteUrl } from "./assetPath";
 moment.locale('vi');
 
 //Format VNĐ
@@ -83,24 +80,24 @@ export const percentagesSale = (Price, PriceSale) => {
     //Check avatar Null
 export const checkImageProduct = (src) => {
         if (src === "null.gif" || src === "") {
-            return SERVER_APP + "/app2021/images/no-product.png"
+            return toAbsoluteUrl("/app2021/images/no-product.png")
         } else {
-            return SERVER_APP + "/Upload/image/" + src;
+            return toAbsoluteUrl("/Upload/image/" + src);
         }
     }
     //Check avatar Null
 export const checkAvt = (src) => {
     if (src === "null.gif" || src === "" || src === undefined) {
-        return SERVER_APP + "/app2021/images/avatar-null.png"
+        return toAbsoluteUrl("/app2021/images/avatar-null.png")
     } else {
-        return SERVER_APP + "/Upload/image/" + src;
+        return toAbsoluteUrl("/Upload/image/" + src);
     }
 }
 export const checkAvt2 = (src) => {
     if (src === "null.gif" || src === "") {
-        return SERVER_APP + "/app2021/images/avatar-null2.png"
+        return toAbsoluteUrl("/app2021/images/avatar-null2.png")
     } else {
-        return SERVER_APP + "/Upload/image/" + src;
+        return toAbsoluteUrl("/Upload/image/" + src);
     }
 }
 

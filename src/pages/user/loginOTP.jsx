@@ -1,8 +1,8 @@
 import React from "react";
-import { SERVER_APP } from "../../constants/config";
 import { Page, Link } from "framework7-react";
 import { iOS } from "../../constants/helpers";
 import { FormLoginSMS } from "./components";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -38,7 +38,9 @@ export default class extends React.Component {
     return (
       <Page noNavbar noToolbar name="login">
         <div
-          className={`page-wrapper page-login d--f fd--c jc--sb ${iOS() && "page-login-iphone"}`}
+          className={`page-wrapper page-login d--f fd--c jc--sb ${
+            iOS() && "page-login-iphone"
+          }`}
         >
           {!window?.GlobalConfig?.APP?.OnlyStaff && (
             <div className="page-login__back">
@@ -63,7 +65,7 @@ export default class extends React.Component {
           <div className={`page-login__content ${this.getClassStyle()}`}>
             <div className="page-login__logo">
               <div className="logo">
-                <img src={SERVER_APP + "/app/images/logo-app.png"} />
+                <img src={toAbsoluteUrl("/app/images/logo-app.png")} />
               </div>
               <div className="title">Xin chào, Bắt đầu đăng nhập nào</div>
             </div>

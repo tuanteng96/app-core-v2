@@ -10,6 +10,7 @@ import { iOS } from "../../constants/helpers";
 import { SERVER_APP } from "../../constants/config";
 import { uuid } from "../../constants/helpers";
 import { FormForgotSMS } from "./components";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -173,12 +174,12 @@ export default class extends React.Component {
             <div className="page-forgot-about">
               <h4>Quên mật khẩu</h4>
               <div className="desc">
-                Nhập số điện thoại hoặc email chúng tôi sẽ gửi cho
-                bạn một mã OTP hoặc liên kết đặt lại mật khẩu.
+                Nhập số điện thoại hoặc email chúng tôi sẽ gửi cho bạn một mã
+                OTP hoặc liên kết đặt lại mật khẩu.
               </div>
               <img
                 className="logo-reg"
-                src={`${SERVER_APP}/app2021/images/forgot-password.png`}
+                src={toAbsoluteUrl(`/app2021/images/forgot-password.png`)}
               />
             </div>
             {window?.GlobalConfig?.SMSOTP ? (
@@ -188,7 +189,7 @@ export default class extends React.Component {
                 {iOS() && Uuid && (
                   <IframeResizer
                     heightCalculationMethod="bodyScroll"
-                    src={`${SERVER_APP}/App2021/forgotUI?uuid=${Uuid}&color=${window?.GlobalConfig?.APP?.Css[
+                    src={`${(window.SERVER || SERVER_APP)}/App2021/forgotUI?uuid=${Uuid}&color=${window?.GlobalConfig?.APP?.Css[
                       "--ezs-color"
                     ].replaceAll("#", "")}`}
                     style={{ border: 0 }}

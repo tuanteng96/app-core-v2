@@ -49,8 +49,14 @@ export default class extends React.Component {
               app_request("unsubscribe", "");
             }
             iOS() && REMOVE_BADGE();
+            let CrDomain = localStorage.getItem("DOMAIN");
+
             await localStorage.clear();
-            await new Promise((resolve) => setTimeout(resolve, 800));
+
+            if (CrDomain) {
+              localStorage.setItem("DOMAIN", CrDomain);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 300));
           });
         } else {
           this.setState({
@@ -79,8 +85,15 @@ export default class extends React.Component {
             app_request("unsubscribe", "");
           }
           iOS() && REMOVE_BADGE();
+          let CrDomain = localStorage.getItem("DOMAIN");
+
           await localStorage.clear();
-          await new Promise((resolve) => setTimeout(resolve, 800));
+
+          if (CrDomain) {
+            localStorage.setItem("DOMAIN", CrDomain);
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 300));
           f7.dialog.close();
           $$this.$f7router.navigate("/", {
             reloadCurrent: true,

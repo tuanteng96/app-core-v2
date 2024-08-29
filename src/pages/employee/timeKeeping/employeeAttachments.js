@@ -13,11 +13,11 @@ import {
 } from "framework7-react";
 import NotificationIcon from "../../../components/NotificationIcon";
 import StaffService from "../../../service/staff.service";
-import { SERVER_APP } from "../../../constants/config";
 import ToolBarBottom from "../../../components/ToolBarBottom";
 import PageNoData from "../../../components/PageNoData";
 import moment from "moment";
 import "moment/locale/vi";
+import { toAbsoluteUrl } from "../../../constants/assetPath";
 moment.locale("vi");
 
 export default class employeeAttachments extends React.Component {
@@ -43,7 +43,7 @@ export default class employeeAttachments extends React.Component {
           ListAttachments:
             data?.data?.Attachments?.map((x) => ({
               ...x,
-              url: SERVER_APP + "/upload/image/" + x.Src,
+              url: toAbsoluteUrl("/upload/image/" + x.Src),
               caption:
                 moment(x.CreateDate).format("HH:mm DD-MM-YYYY") +
                 " - " +
@@ -96,7 +96,7 @@ export default class employeeAttachments extends React.Component {
                       >
                         <div>
                           <img
-                            src={SERVER_APP + "/upload/image/" + item.Src}
+                            src={toAbsoluteUrl("/upload/image/" + item.Src)}
                             alt={item.ServiceTitle}
                           />
                         </div>

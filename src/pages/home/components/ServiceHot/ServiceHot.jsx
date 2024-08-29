@@ -3,11 +3,11 @@ import { f7, Link } from "framework7-react";
 import Slider from "react-slick";
 import ShopDataService from "../../../../service/shop.service";
 import SkeletonServiceHot from "./SkeletonServiceHot";
-import { SERVER_APP } from "../../../../constants/config";
 import { getStockIDStorage, getUser } from "../../../../constants/user";
 import { Fragment } from "react";
 import ShopListServiceItem from "../../../shop/shopListServiceItem";
 import clsx from "clsx";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 
 export default class ServiceHot extends React.Component {
   constructor() {
@@ -204,7 +204,7 @@ export default class ServiceHot extends React.Component {
                               >
                                 <div className="images bd-rd3">
                                   <img
-                                    src={SERVER_APP + item.root.Thumbnail_web}
+                                    src={toAbsoluteUrl(item.root.Thumbnail_web)}
                                     alt={item.root.Title}
                                   />
                                 </div>

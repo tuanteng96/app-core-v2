@@ -1,5 +1,4 @@
 import React from "react";
-import { SERVER_APP } from "./../../constants/config";
 import { Page, Link, Toolbar, Navbar } from "framework7-react";
 import ReactHtmlParser from "react-html-parser";
 import ToolBarBottom from "../../components/ToolBarBottom";

@@ -1,5 +1,4 @@
 import React from "react";
-import { SERVER_APP } from "./../../constants/config";
 import { formatPriceVietnamese } from "../../constants/format";
 import { getStockIDStorage, getUser } from "../../constants/user";
 import ShopDataService from "./../../service/shop.service";
@@ -9,6 +8,7 @@ import { toast } from "react-toastify";
 import { FaShippingFast } from "react-icons/fa";
 import SkeletonPayInfo from "./components/Pay/SkeletonPayInfo";
 import clsx from "clsx";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -197,9 +197,9 @@ export default class extends React.Component {
                             )}
                           >
                             <img
-                              src={
-                                SERVER_APP + "/Upload/image/" + item.ProdThumb
-                              }
+                              src={toAbsoluteUrl(
+                                "/Upload/image/" + item.ProdThumb
+                              )}
                               alt={item.ProdTitle}
                             />
                           </div>

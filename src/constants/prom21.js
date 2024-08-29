@@ -8,7 +8,7 @@ export const PHOTO_TO_SERVER = (_opt) => {
     maxheight: 1500,
     ext: "jpg",
     pref: "IMG",
-    server: `${SERVER_APP}/api/v3/file?cmd=upload&autn=AAAA&token=${getToken()}`,
+    server: `${(window?.SERVER || SERVER_APP)}/api/v3/file?cmd=upload&autn=AAAA&token=${getToken()}`,
   };
   opt = Object.assign(opt, _opt);
 
@@ -137,5 +137,12 @@ export const GET_DEVICE = () => {
   var t = window.app21 || {};
   if (typeof t.prom !== "undefined") {
     return t.prom("GET_INFO");
+  }
+};
+
+export const SET_BACKGROUND = (color) => {
+  var t = window.app21 || {};
+  if (typeof t.prom !== "undefined") {
+    return t.prom("BACKGROUND", color);
   }
 };

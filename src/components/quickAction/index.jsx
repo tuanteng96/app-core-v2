@@ -5,7 +5,7 @@ import { CALL_PHONE, OPEN_LINK } from "../../constants/prom21";
 import userService from "../../service/user.service";
 import { iOS } from "./../../constants/helpers";
 import ZaloIcon from "../../assets/images/zalo-icon.png";
-import { SERVER_APP } from "../../constants/config";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class quickAction extends React.Component {
   constructor() {
@@ -63,7 +63,7 @@ export default class quickAction extends React.Component {
               {window?.GlobalConfig?.APP?.isIconSocial ? (
                 <img
                   className="icon-social w-100 h-100 rounded-circle"
-                  src={SERVER_APP + "/app2021/images/icon-social/phone.png"}
+                  src={toAbsoluteUrl("/app2021/images/icon-social/phone.png")}
                 />
               ) : (
                 <FaWhatsapp />
@@ -91,7 +91,7 @@ export default class quickAction extends React.Component {
               {iOS() ? (
                 <Link external href={zalo} noLinkClass className="item">
                   <img
-                    src={SERVER_APP + ZaloIcon}
+                    src={ZaloIcon}
                     style={{ borderRadius: "100%" }}
                   />
                 </Link>
@@ -100,11 +100,13 @@ export default class quickAction extends React.Component {
                   {window?.GlobalConfig?.APP?.isIconSocial ? (
                     <img
                       className="icon-social w-100 h-100 rounded-circle"
-                      src={SERVER_APP + "/app2021/images/icon-social/zalo.png"}
+                      src={toAbsoluteUrl(
+                        "/app2021/images/icon-social/zalo.png"
+                      )}
                     />
                   ) : (
                     <img
-                      src={SERVER_APP + ZaloIcon}
+                      src={ZaloIcon}
                       style={{ borderRadius: "100%" }}
                     />
                   )}
@@ -118,11 +120,11 @@ export default class quickAction extends React.Component {
             <div className="btn-quick-img">
               <img
                 className="icon-social w-100 h-100 rounded-circle"
-                src={SERVER_APP + "/app2021/images/icon-social/quick.png"}
+                src={toAbsoluteUrl("/app2021/images/icon-social/quick.png")}
               />
               <img
                 className="icon-social w-100 h-100 rounded-circle"
-                src={SERVER_APP + "/app2021/images/icon-social/close.png"}
+                src={toAbsoluteUrl("/app2021/images/icon-social/close.png")}
               />
             </div>
           ) : (

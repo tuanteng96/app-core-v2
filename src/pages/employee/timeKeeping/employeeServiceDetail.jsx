@@ -21,7 +21,6 @@ import { formatPriceVietnamese } from "../../../constants/format";
 import staffService from "../../../service/staff.service";
 import userService from "../../../service/user.service";
 import { toast } from "react-toastify";
-import { SERVER_APP } from "../../../constants/config";
 import { VscChromeClose, VscCloudUpload } from "react-icons/vsc";
 import { TiCameraOutline } from "react-icons/ti";
 import SkeletonDetail from "./skeleton/SkeletonDetail";
@@ -31,6 +30,7 @@ import ReactStars from "react-rating-stars-component";
 
 import moment from "moment";
 import "moment/locale/vi";
+import { toAbsoluteUrl } from "../../../constants/assetPath";
 moment.locale("vi");
 
 toast.configure();
@@ -303,7 +303,7 @@ export default class employeeServiceDetail extends React.Component {
       .then((response) => {
         response.data.data.map((item) => {
           const itemPhoto = {
-            url: `${SERVER_APP}/Upload/image/${item.Src}`,
+            url: toAbsoluteUrl(`/Upload/image/${item.Src}`),
             id: item.ID,
             OrderServiceID: item.OrderServiceID,
           };

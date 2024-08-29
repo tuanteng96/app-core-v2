@@ -1,11 +1,11 @@
 import React from "react";
-import { SERVER_APP } from "./../../constants/config";
 import ShopDataService from "./../../service/shop.service";
 import { Page, Link, Toolbar, Navbar } from "framework7-react";
 import ReactHtmlParser from "react-html-parser";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
 import { getStockIDStorage } from "../../constants/user";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -70,7 +70,7 @@ export default class extends React.Component {
                   >
                     <div className="page-shop__cate-img">
                       <img
-                        src={SERVER_APP + "/Upload/image/" + item.Thumbnail2}
+                        src={toAbsoluteUrl("/Upload/image/" + item.Thumbnail2)}
                         alt={item.Title}
                       />
                     </div>

@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "framework7-react";
-import { SERVER_APP } from "../../../../constants/config";
 import { PopupConfirm } from "../PopupConfirm";
 import BookDataService from "../../../../service/book.service";
 import { getStockIDStorage, getUser } from "../../../../constants/user";
 import { toast } from "react-toastify";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 
 export default class CardServiceItem extends React.Component {
   constructor() {
@@ -78,7 +78,7 @@ export default class CardServiceItem extends React.Component {
       <>
         <Link onClick={() => this.handleUrl(item)} noLinkClass>
           <img
-            src={`${SERVER_APP}/Upload/image/${item.FileName}`}
+            src={toAbsoluteUrl(`/Upload/image/${item.FileName}`)}
             alt={item.Title}
           />
           <div className="text">{item.Title}</div>

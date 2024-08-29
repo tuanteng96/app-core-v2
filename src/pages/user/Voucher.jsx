@@ -25,11 +25,11 @@ import ToolBarBottom from "../../components/ToolBarBottom";
 import Skeleton from "react-loading-skeleton";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
-import { SERVER_APP } from "../../constants/config";
 
 import moment from "moment";
 import "moment/locale/vi";
 import clsx from "clsx";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 moment.locale("vi");
 
 export default class extends React.Component {
@@ -149,7 +149,7 @@ export default class extends React.Component {
                                   window?.GlobalConfig?.APP?.notFilterVoucher &&
                                     "no-filter"
                                 )}
-                                src={SERVER_APP + "/app/images/logo-app.png"}
+                                src={toAbsoluteUrl("/app/images/logo-app.png")}
                               />
                             </div>
                             <div className="voucher-icon__line"></div>
@@ -251,7 +251,7 @@ export default class extends React.Component {
                                     window?.GlobalConfig?.APP
                                       ?.notFilterVoucher && "no-filter"
                                   )}
-                                  src={SERVER_APP + "/app/images/logo-app.png"}
+                                  src={toAbsoluteUrl("/app/images/logo-app.png")}
                                 />
                               </div>
                               <div className="voucher-icon__line"></div>

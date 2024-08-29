@@ -3,13 +3,13 @@ import { Link } from "framework7-react";
 import React, { Fragment } from "react";
 import NewsDataService from "../../../../service/news.service";
 import Slider from "react-slick";
-import { SERVER_APP } from "../../../../constants/config";
 
 import { getStockIDStorage, getUser } from "../../../../constants/user";
 
 import BookDataService from "../../../../service/book.service";
 import { toast } from "react-toastify";
 import { PopupConfirm } from "../PopupConfirm";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 
 export default class ServiceHot2 extends React.Component {
   constructor() {
@@ -27,7 +27,7 @@ export default class ServiceHot2 extends React.Component {
     this.getServiceHot();
   }
   handStyle = () => {
-    const _width = this.state.width - 90;
+    const _width = this.state.width - 0;
     return Object.assign({
       width: _width,
     });
@@ -128,79 +128,98 @@ export default class ServiceHot2 extends React.Component {
     return "transparent";
   };
 
+  getRandomImage = () => {
+    const { IconsRandom } = window.GlobalConfig?.APP;
+    let newBgRandom = IconsRandom || [];
+    return toAbsoluteUrl(newBgRandom[Math.floor(Math.random() * newBgRandom.length)])
+  }
+
   render() {
     const { arrService, isLoading, initialValues, show, btnLoading } =
       this.state;
     const settingsNews = {
-      className: "slider variable-width",
       dots: false,
       arrows: false,
       infinite: true,
+      speed: 500,
       slidesToShow: 1,
-      centerPadding: "20px",
-      variableWidth: true,
-      autoplay: true,
-      autoplaySpeed: 7000,
-      centerMode: true,
+      slidesToScroll: 1,
+      autoplay: false,
     };
     return (
       <Fragment>
         {arrService && arrService.length > 0 && (
           <div className="home-page__news mb-0 pt-8px bg-transparent">
-            <div className="page-news__list">
-              <div className="page-news__list-ul">
+            <div className="">
+              <div className="rounded-lg overflow-hidden">
                 <Slider {...settingsNews}>
                   {arrService &&
                     arrService.slice(0, 6).map((item, index) => (
                       <Link
-                        className="service-hot2"
+                        className="service-hot2 d-block"
                         key={index}
                         style={this.handStyle()}
                         onClick={() => this.handleUrl(item)}
                       >
-                        {(!window.GlobalConfig?.APP?.ColorRandom ||
-                          window.GlobalConfig?.APP?.ColorRandom.length ===
-                            0) && (
-                          <img
-                            src={SERVER_APP + "/Upload/image/" + item.FileName}
-                            alt={item.title}
+                        <div
+                          className="bg"
+                          style={{
+                            background: this.getColor(index, arrService),
+                          }}
+                        ></div>
+                        <div
+                          className="d-flex position-absolute top-0 left-0 h-100 w-100"
+                          style={{ zIndex: 2 }}
+                        >
+                          <div
+                            className="p-15px"
                             style={{
-                              boxShadow: "0 3px 20px rgb(0 0 0 / 4%)",
-                              borderRadius: "10px",
+                              aspectRatio: "1",
                             }}
-                          />
-                        )}
-                        {window.GlobalConfig?.APP?.ColorRandom &&
-                          window.GlobalConfig?.APP?.ColorRandom.length > 0 && (
-                            <>
-                              <div
-                                className="bg"
-                                style={{
-                                  background: this.getColor(index, arrService),
-                                }}
-                              ></div>
-                              <div
-                                className="image"
-                                style={{
-                                  backgroundImage: `url("${SERVER_APP}/Upload/image/${item.FileName}")`,
-                                }}
+                          >
+                            <img
+                              className="w-100 h-100 object-cover rounded-lg"
+                              src={item.FileName ? toAbsoluteUrl(
+                                `/Upload/image/${item.FileName}`
+                              ) :  this.getRandomImage()}
+                              alt=""
+                            />
+                          </div>
+                          <div className="f--1 pt-15px pr-15px pb-15px d--f jc--c fd--c">
+                            <div
+                              className="text-white fw-500 mb-2px"
+                              style={{
+                                fontSize: "18px",
+                              }}
+                            >
+                              {item.Title}
+                            </div>
+                            <div
+                              className="text-desc"
+                              dangerouslySetInnerHTML={{
+                                __html: item.Desc,
+                              }}
+                            ></div>
+                          </div>
+                          <div className="d--f px-15px">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="#fff"
+                              style={{
+                                width: "20px",
+                              }}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                               />
-                              <div className="text">
-                                <div>
-                                  <h4>{item.Title}</h4>
-                                  <div
-                                    className="text-desc"
-                                    dangerouslySetInnerHTML={{
-                                      __html: item.Desc,
-                                    }}
-                                  ></div>
-                                </div>
-                                <div className="btns">
-                                  <div className="btn-more">Tham gia</div>
-                                </div>
-                              </div>
-                            </>
-                          )}
+                            </svg>
+                          </div>
+                        </div>
                       </Link>
                     ))}
                 </Slider>

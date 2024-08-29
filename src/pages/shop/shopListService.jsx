@@ -7,8 +7,6 @@ import {
   Link,
   Toolbar,
   Navbar,
-  Sheet,
-  PageContent,
   Button,
   Searchbar,
   Subnavbar,
@@ -24,6 +22,7 @@ import NoProduct from "../../assets/images/no-product.png";
 import clsx from "clsx";
 import axios from "axios";
 import PickerDetail from "./components/PickerDetail";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 const CancelToken = axios.CancelToken;
 let cancel;
@@ -189,7 +188,10 @@ export default class extends React.Component {
 
   fixedContentDomain = (content) => {
     if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+    return content.replace(
+      /src=\"\//g,
+      'src="' + (window.SERVER || SERVER_APP)+ "/"
+    );
   };
 
   loadMoreAsync = () => {
@@ -205,7 +207,13 @@ export default class extends React.Component {
     let stockid = getStockIDStorage();
     stockid ? stockid : 0;
 
-    ShopDataService.getServiceParent(CateID, stockid, Pi + 1, window?.GlobalConfig?.APP?.UIBase ? 6 : 4, 1)
+    ShopDataService.getServiceParent(
+      CateID,
+      stockid,
+      Pi + 1,
+      window?.GlobalConfig?.APP?.UIBase ? 6 : 4,
+      1
+    )
       .then(({ data }) => {
         const { lst, pcount, pi } = data;
         const arrServiceNew = [...arrService, ...lst];
@@ -304,11 +312,9 @@ export default class extends React.Component {
                                   onClick={() =>
                                     this.setState({ idOpen: item.root.ID })
                                   }
-                                  src={
-                                    SERVER_APP +
-                                    "/Upload/image/" +
-                                    item.root.Thumbnail
-                                  }
+                                  src={toAbsoluteUrl(
+                                    "/Upload/image/" + item.root.Thumbnail
+                                  )}
                                   alt={item.root.Title}
                                   onError={(e) => {
                                     e.target.src = NoProduct;
@@ -361,7 +367,11 @@ export default class extends React.Component {
                                   )}
                                   <PickerDetail item={item}>
                                     {({ open }) => (
-                                      <Button fill className="show-more" onClick={open}>
+                                      <Button
+                                        fill
+                                        className="show-more"
+                                        onClick={open}
+                                      >
                                         Chi tiết{" "}
                                         <i className="las la-angle-right"></i>
                                       </Button>

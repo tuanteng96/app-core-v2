@@ -1,7 +1,7 @@
 import React from "react";
 import Slider from "react-slick";
 import NewsDataService from "../../../../service/news.service";
-import { SERVER_APP } from "../../../../constants/config";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 
 export default class Reviews extends React.Component {
   constructor() {
@@ -71,7 +71,9 @@ export default class Reviews extends React.Component {
                       <div className="reviews-info">
                         <div className="reviews-info__img">
                           <img
-                            src={`${SERVER_APP}/upload/image/${item.FileName}`}
+                            src={toAbsoluteUrl(
+                              `/upload/image/${item.FileName}`
+                            )}
                             alt={item.Title}
                           />
                         </div>

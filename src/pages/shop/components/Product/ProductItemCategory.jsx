@@ -1,11 +1,11 @@
 import { Link } from "framework7-react";
 import React from "react";
-import { SERVER_APP } from "../../../../constants/config";
 import ReactHtmlParser from "react-html-parser";
 import { getStockIDStorage, getUser } from "../../../../constants/user";
 import { PopupConfirm } from "../../../home/components/PopupConfirm";
 import { toast } from "react-toastify";
 import BookDataService from "../../../../service/book.service";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 
 export default class ProductItemCategory extends React.Component {
   constructor() {
@@ -77,7 +77,7 @@ export default class ProductItemCategory extends React.Component {
             <div className="image">
               <img
                 className={`${isUI > 0 ? "h-auto" : ""}`}
-                src={SERVER_APP + "/Upload/image/" + item.FileName}
+                src={toAbsoluteUrl("/Upload/image/" + item.FileName)}
                 alt={item.Title}
               />
             </div>

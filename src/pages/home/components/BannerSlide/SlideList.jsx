@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "framework7-react";
 import NewsDataService from "../../../../service/news.service";
 import Slider from "react-slick";
-import { SERVER_APP } from "../../../../constants/config";
 import Skeleton from "react-loading-skeleton";
 import { validURL } from "../../../../constants/helpers";
 import { PopupConfirm } from "../PopupConfirm";
@@ -10,6 +9,7 @@ import BookDataService from "../../../../service/book.service";
 import { toast } from "react-toastify";
 import { getStockIDStorage, getUser } from "../../../../constants/user";
 import { OPEN_LINK } from "../../../../constants/prom21";
+import { toAbsoluteUrl } from "../../../../constants/assetPath";
 
 export default class SlideList extends React.Component {
   constructor() {
@@ -137,9 +137,9 @@ export default class SlideList extends React.Component {
                             key={item.ID}
                           >
                             <img
-                              src={
-                                SERVER_APP + "/Upload/image/" + item.FileName
-                              }
+                              src={toAbsoluteUrl(
+                                "/Upload/image/" + item.FileName
+                              )}
                               alt={item.Title}
                             />
                           </Link>

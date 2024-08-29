@@ -1,10 +1,6 @@
 import React from "react";
 import { SERVER_APP } from "./../../constants/config";
-import {
-  formatPriceVietnamese,
-  checkSale,
-  percentagesSale,
-} from "../../constants/format";
+import { formatPriceVietnamese, checkSale } from "../../constants/format";
 import { getUser, setViewed, getStockIDStorage } from "../../constants/user";
 import ShopDataService from "./../../service/shop.service";
 import CartToolBar from "../../components/CartToolBar";
@@ -27,6 +23,7 @@ import _ from "lodash";
 import NoProduct from "../../assets/images/no-product.png";
 import { checkSLDisabled } from "../../constants/helpers";
 import { OPEN_LINK } from "../../constants/prom21";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -70,7 +67,7 @@ export default class extends React.Component {
       let ptotosNew = [];
       for (let photo in images) {
         var itemPhoho = {};
-        itemPhoho.url = SERVER_APP + "/Upload/image/" + images[photo].Value;
+        itemPhoho.url = toAbsoluteUrl("/Upload/image/" + images[photo].Value);
         itemPhoho.caption = images[photo].Title;
         ptotosNew.push(itemPhoho);
       }
@@ -407,7 +404,10 @@ export default class extends React.Component {
 
   fixedContentDomain = (content) => {
     if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+    return content.replace(
+      /src=\"\//g,
+      'src="' + (window.SERVER || SERVER_APP) + "/"
+    );
   };
 
   loadRefresh(done) {
@@ -492,11 +492,9 @@ export default class extends React.Component {
                 <div className="page-shop__detail-img">
                   <img
                     onClick={() => this.standaloneDark.open(0)}
-                    src={
-                      SERVER_APP +
-                      "/Upload/image/" +
-                      arrProductCurrent.Thumbnail
-                    }
+                    src={toAbsoluteUrl(
+                      "/Upload/image/" + arrProductCurrent.Thumbnail
+                    )}
                     alt={arrProductCurrent.title}
                     onError={(e) => {
                       e.target.src = NoProduct;
@@ -603,11 +601,9 @@ export default class extends React.Component {
                               {/* href={`/shop/detail/${item.Id}/`} */}
                               <div className="img">
                                 <img
-                                  src={
-                                    SERVER_APP +
-                                    "/Upload/image/" +
-                                    item.Product.Thumbnail
-                                  }
+                                  src={toAbsoluteUrl(
+                                    "/Upload/image/" + item.Product.Thumbnail
+                                  )}
                                   alt={item.Product.Title}
                                 />
                                 <span className="badgess">{item.qty}</span>
@@ -767,7 +763,7 @@ export default class extends React.Component {
               <div className="sheet-pay-head">
                 <div className="image">
                   <img
-                    src={SERVER_APP + "/Upload/image/" + arrProduct.Thumbnail}
+                    src={toAbsoluteUrl("/Upload/image/" + arrProduct.Thumbnail)}
                     alt={arrProduct.Title}
                   />
                 </div>

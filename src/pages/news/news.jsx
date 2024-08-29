@@ -1,5 +1,4 @@
 import React, { Suspense } from "react";
-import { SERVER_APP } from "./../../constants/config";
 import { Page, Link, Toolbar } from "framework7-react";
 import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
@@ -21,6 +20,7 @@ import {
   getStockIDStorage,
   setStockNameStorage,
 } from "../../constants/user";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -194,7 +194,7 @@ export default class extends React.Component {
                     <div className="page-news__dear-img">
                       <a href={"/news/detail/" + item.ID + "/"}>
                         <img
-                          src={SERVER_APP + item.Thumbnail_web}
+                          src={toAbsoluteUrl(item.Thumbnail_web)}
                           alt={item.Title}
                         />
                       </a>
@@ -218,7 +218,7 @@ export default class extends React.Component {
                     return (
                       <div className="page-news__slide-item" key={item.ID}>
                         <img
-                          src={SERVER_APP + "/Upload/image/" + item.FileName}
+                          src={toAbsoluteUrl("/Upload/image/" + item.FileName)}
                           alt={item.Title}
                         />
                       </div>
@@ -249,7 +249,7 @@ export default class extends React.Component {
                           <div className="images">
                             <a href={"/news/detail/" + item.ID + "/"}>
                               <img
-                                src={SERVER_APP + item.Thumbnail_web}
+                                src={toAbsoluteUrl(item.Thumbnail_web)}
                                 alt={item.Title}
                               />
                             </a>

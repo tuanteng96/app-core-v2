@@ -7,6 +7,7 @@ import { SERVER_APP } from "../../constants/config";
 import NoProduct from "../../assets/images/no-product.png";
 import ReactHtmlParser from "react-html-parser";
 import ShopListServiceItem from "./shopListServiceItem";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -43,7 +44,10 @@ export default class extends React.Component {
 
   fixedContentDomain = (content) => {
     if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+    return content.replace(
+      /src=\"\//g,
+      'src="' + (window.SERVER || SERVER_APP) + "/"
+    );
   };
 
   render() {
@@ -73,7 +77,7 @@ export default class extends React.Component {
         <div>
           <div>
             <img
-              src={SERVER_APP + "/Upload/image/" + data?.root.Thumbnail}
+              src={toAbsoluteUrl("/Upload/image/" + data?.root.Thumbnail)}
               alt={data?.root.Title}
               onError={(e) => {
                 e.target.src = NoProduct;

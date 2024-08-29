@@ -19,7 +19,7 @@ function PickerDetail({ children, item }) {
 
   const fixedContentDomain = (content) => {
     if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+    return content.replace(/src=\"\//g, 'src="' + (window.SERVER || SERVER_APP) + "/");
   };
 
   return (
