@@ -69,6 +69,7 @@ import GiftGamePage from "../pages/user/GiftGame.jsx";
 import StocksProvince from "../pages/stocks/StocksProvince.jsx";
 import StocksDistrict from "../pages/stocks/StocksDistrict.jsx";
 import layoutSuccess from "../pages/user/layoutSuccess.jsx";
+import HistoryServicePage from "../pages/user/HistoryService.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -131,6 +132,14 @@ var routes = [
   {
     path: "/bao-kg/",
     asyncComponent: () => ReportKGPage,
+    beforeEnter: checkAuth,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  {
+    path: "/lich-su-dich-vu/",
+    asyncComponent: () => HistoryServicePage,
     beforeEnter: checkAuth,
     options: {
       transition: "f7-cover",

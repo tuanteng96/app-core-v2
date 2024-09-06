@@ -683,3 +683,19 @@ figure {
 .gap-15px {
     gap: 15px;
 }
+
+.desc-flash {
+    color: #999;
+    font-weight: 300;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 6px;
+}
+
+.desc-flash p {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}

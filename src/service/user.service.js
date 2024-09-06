@@ -178,6 +178,9 @@ class UserService {
   checkAuthenVQMM(body) {
     return http.post(`/api/v3/contact23@checkContact`, JSON.stringify(body))
   }
+  historyService(memberid) {
+    return http.get(`/services/preview.aspx?a=1&token=${getToken()}&cmd=loadOrderService&MemberID=${memberid}&IsMember=0&fromOrderAdd=0`)
+  }
 }
 
 export default new UserService();
