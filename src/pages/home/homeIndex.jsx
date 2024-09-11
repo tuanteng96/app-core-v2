@@ -43,6 +43,7 @@ import ServiceHot2 from "./components/ServiceHot/ServiceHot2";
 import ServiceHot from "./components/ServiceHot/ServiceHot";
 import Reviews from "./components/Reviews/Reviews";
 import PopupImages from "./components/PopupImages";
+import moment from "moment";
 
 export default class extends React.Component {
   constructor() {
@@ -100,7 +101,6 @@ export default class extends React.Component {
         }
         setTimeout(() => {
           if (indexCurrentStock <= 0 && indexStock <= 0 && countStock > 2) {
-            
             removeStockNameStorage();
             this.setState({
               isOpenStock: true,
@@ -140,7 +140,7 @@ export default class extends React.Component {
     bodyData.append("remove_repwd", true);
 
     UserService.updatePassword(bodyData)
-      .then(({data}) => {
+      .then(({ data }) => {
         setTimeout(() => {
           self.$f7.preloader.hide();
           if (data.error) {
@@ -263,6 +263,7 @@ export default class extends React.Component {
                   )}
                 </div>
               </div>
+              
               <ServiceHot2
                 id="APP.SALE"
                 f7router={this.$f7router}
@@ -315,9 +316,9 @@ export default class extends React.Component {
             </div>
           </div>
         </div>
-        
-        <PopupImages f7={this.$f7}/>
-        
+
+        <PopupImages f7={this.$f7} />
+
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>

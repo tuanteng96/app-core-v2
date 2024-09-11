@@ -85,10 +85,10 @@ const checkRouterHome = () => {
   const infoUser = getUser();
   const ACC_TYPE = infoUser && infoUser.acc_type;
 
-  // let DOMAIN = localStorage.getItem("DOMAIN")
-  // if (!DOMAIN) {
-  //   return BrandsPage;
-  // }
+  let DOMAIN = localStorage.getItem("DOMAIN")
+  if (window?.GlobalConfig?.APP?.isMulti && !DOMAIN) {
+    return BrandsPage;
+  }
 
   if (window?.GlobalConfig?.APP?.OnlyStaff && !infoUser) {
     return LoginPage;

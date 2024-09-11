@@ -14,9 +14,13 @@ import {
   setStockIDStorage,
   getStockIDStorage,
   setStockNameStorage,
+  getUser,
+  app_request,
 } from "../constants/user";
 import { toast } from "react-toastify";
 import StocksProvincesFilter from "./StocksProvincesFilter";
+import { SEND_TOKEN_FIREBASE } from "../constants/prom21";
+import userService from "../service/user.service";
 
 export default class SelectStock extends React.Component {
   constructor() {
@@ -146,6 +150,7 @@ export default class SelectStock extends React.Component {
     const { isOpen, arrStock } = this.state;
     const StockID = this.state.StockID && this.state.StockID;
     if (!arrStock) return <></>;
+    
     if (window?.GlobalConfig?.APP?.ByProvince) {
       return (
         <StocksProvincesFilter
@@ -190,20 +195,44 @@ export default class SelectStock extends React.Component {
               ))}
           </div>
         </ActionsGroup>
-        {/* <ActionsGroup>
-          <ActionsButton
-            className="fw-400"
-            color="red"
-            onClick={() => {
-              f7.dialog.confirm("Bạn muốn thay đổi chi nhánh ?", async () => {
-                await localStorage.clear();
-                f7.views.main.router.navigate("/");
-              });
-            }}
-          >
-            Đổi chi nhánh
-          </ActionsButton>
-        </ActionsGroup> */}
+        {window?.GlobalConfig?.APP?.isMulti && (
+          <ActionsGroup>
+            <ActionsButton
+              className="fw-400"
+              color="red"
+              onClick={() => {
+                f7.dialog.confirm("Bạn muốn thay đổi chi nhánh ?", async () => {
+                  if (getUser()) {
+                    SEND_TOKEN_FIREBASE().then(async (response) => {
+                      if (!response.error && response.Token) {
+                        const { ID, acc_type } = getUser();
+                        await userService.authRemoveFirebase({
+                          Token: response.Token,
+                          ID: ID,
+                          Type: acc_type,
+                        });
+                      } else {
+                        app_request("unsubscribe", "");
+                      }
+                      iOS() && REMOVE_BADGE();
+                      await localStorage.clear();
+
+                      f7.dialog.close();
+                      f7.views.main.router.navigate("/");
+                    });
+                  } else {
+                    f7.dialog.close();
+                    await localStorage.clear();
+                    f7.views.main.router.navigate("/");
+                  }
+                });
+              }}
+            >
+              Đổi chi nhánh
+            </ActionsButton>
+          </ActionsGroup>
+        )}
+
         <ActionsGroup>
           <ActionsButton color="red">Đóng</ActionsButton>
         </ActionsGroup>

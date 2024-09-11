@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { createPortal } from "react-dom";
-import { getStockIDStorage } from "../constants/user";
+import { app_request, getStockIDStorage, getUser } from "../constants/user";
 import clsx from "clsx";
 import SelectPicker from "./Selects/SelectPicker";
 import ReactHtmlParser from "react-html-parser";
 import { f7 } from "framework7-react";
+import { REMOVE_BADGE, SEND_TOKEN_FIREBASE } from "../constants/prom21";
+import userService from "../service/user.service";
+import { iOS } from "../constants/helpers";
 
 function StocksProvincesFilter({
   isOpen,
@@ -252,7 +255,7 @@ function StocksProvincesFilter({
                     </div>
                   ))}
               </div>
-              {/* {isChangeBrands && (
+              {window?.GlobalConfig?.APP?.isMulti && isChangeBrands && (
                 <div
                   className="border-top bg-white text-center text-danger py-15px"
                   style={{
@@ -262,16 +265,38 @@ function StocksProvincesFilter({
                     f7.dialog.confirm(
                       "Bạn muốn thay đổi chi nhánh ?",
                       async () => {
-                        await localStorage.clear();
-                        f7.views.main.router.navigate("/");
-                        onClose();
+                        if (getUser()) {
+                          SEND_TOKEN_FIREBASE().then(async (response) => {
+                            if (!response.error && response.Token) {
+                              const { ID, acc_type } = getUser();
+                              await userService.authRemoveFirebase({
+                                Token: response.Token,
+                                ID: ID,
+                                Type: acc_type,
+                              });
+                            } else {
+                              app_request("unsubscribe", "");
+                            }
+                            iOS() && REMOVE_BADGE();
+                            await localStorage.clear();
+
+                            f7.dialog.close();
+                            f7.views.main.router.navigate("/");
+                            onClose();
+                          });
+                        } else {
+                          f7.dialog.close();
+                          await localStorage.clear();
+                          f7.views.main.router.navigate("/");
+                          onClose();
+                        }
                       }
                     );
                   }}
                 >
                   Đổi chi nhánh
                 </div>
-              )} */}
+              )}
             </div>
           </motion.div>
         </>

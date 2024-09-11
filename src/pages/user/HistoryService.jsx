@@ -134,12 +134,20 @@ export default class extends React.Component {
                         }}
                       ></div>
                       <div
-                        class="bg-primary-light text-primary px-3 py-1 rounded"
+                        class="px-3 py-1 rounded overflow-hidden position-relative"
                         style={{
-                          background: "#E1F0FF",
                           padding: "0.25rem 0.75rem",
+                          zIndex: 1,
                         }}
                       >
+                        <div
+                          className="position-absolute w-100 h-100 top-0 left-0"
+                          style={{
+                            background: "var(--ezs-color)",
+                            zIndex: "-1",
+                            opacity: ".2",
+                          }}
+                        ></div>
                         Ngày {moment(item.dayFull).format("ll")}
                       </div>
                     </div>
