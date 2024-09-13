@@ -91,7 +91,7 @@ export default class quickAction extends React.Component {
               {iOS() ? (
                 <Link external href={zalo} noLinkClass className="item">
                   <img
-                    src={ZaloIcon}
+                    src={toAbsoluteUrl("/app2021/images/zalo-icon.png")}
                     style={{ borderRadius: "100%" }}
                   />
                 </Link>
@@ -106,7 +106,7 @@ export default class quickAction extends React.Component {
                     />
                   ) : (
                     <img
-                      src={ZaloIcon}
+                      src={toAbsoluteUrl("/app2021/images/zalo-icon.png")}
                       style={{ borderRadius: "100%" }}
                     />
                   )}

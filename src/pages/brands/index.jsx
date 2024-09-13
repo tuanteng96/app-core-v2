@@ -212,7 +212,7 @@ export default class Report extends React.Component {
         httpCommon.defaults.baseURL = Domain;
 
         localStorage.setItem("DOMAIN", Domain);
-        localStorage.setItem("GlobalConfig", Domain);
+        localStorage.setItem("GlobalConfig", data);
 
         resetForm();
 
