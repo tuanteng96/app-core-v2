@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import StocksProvincesFilter from "./StocksProvincesFilter";
 import { SEND_TOKEN_FIREBASE } from "../constants/prom21";
 import userService from "../service/user.service";
+import { iOS } from "../constants/helpers";
 
 export default class SelectStock extends React.Component {
   constructor() {

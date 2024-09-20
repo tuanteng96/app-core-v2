@@ -122,29 +122,26 @@ export default class SlideList extends React.Component {
                 <div className={`body-slide ${this.props.className}`}>
                   <Slider {...settingsBanner}>
                     {arrBanner &&
-                      arrBanner.map((item, index) => {
-                        if (index >= 5) return null;
-                        return (
-                          <Link
-                            noLinkClass
-                            onClick={() => this.handleUrl(item)}
-                            className={`body-slide__item d-block ${
-                              !window.GlobalConfig.APP.Home?.SliderFull &&
-                              "rounded"
-                            } overflow-hidden ${
-                              validURL(item.Link) ? "external" : ""
-                            }`}
-                            key={item.ID}
-                          >
-                            <img
-                              src={toAbsoluteUrl(
-                                "/Upload/image/" + item.FileName
-                              )}
-                              alt={item.Title}
-                            />
-                          </Link>
-                        );
-                      })}
+                      arrBanner.map((item, index) => (
+                        <Link
+                          noLinkClass
+                          onClick={() => this.handleUrl(item)}
+                          className={`body-slide__item d-block ${
+                            !window.GlobalConfig.APP.Home?.SliderFull &&
+                            "rounded"
+                          } overflow-hidden ${
+                            validURL(item.Link) ? "external" : ""
+                          }`}
+                          key={item.ID}
+                        >
+                          <img
+                            src={toAbsoluteUrl(
+                              "/Upload/image/" + item.FileName
+                            )}
+                            alt={item.Title}
+                          />
+                        </Link>
+                      ))}
                   </Slider>
                 </div>
               </div>
