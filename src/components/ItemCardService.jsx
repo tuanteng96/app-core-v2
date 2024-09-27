@@ -42,10 +42,15 @@ export default class ItemCardService extends React.Component {
                   <span>{formatPriceVietnamese(item.OrderItem.ToPay)}</span>
                 </li>
               )}
-
+              {maxBookDate(item.Services) && (
+                <li>
+                  <span>Dùng lần cuối : </span>
+                  <span>{maxBookDate(item.Services)}</span>
+                </li>
+              )}
               <li>
-                <span>Dùng lần cuối : </span>
-                <span>{maxBookDate(item.Services)}</span>
+                <span>Ngày mua thẻ : </span>
+                <span>{formatDateSv(item?.OrderItem?.CreateDate)}</span>
               </li>
               <li>
                 <span>Hạn sử dụng : </span>
