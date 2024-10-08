@@ -267,11 +267,14 @@ export default class Report extends React.Component {
         QRStocks = QRValue.split("&")[1];
         QRDomain = QRValue.split("&")[2];
       }
-
+      
       axios
         .get(QRDomain + "/brand/global/Global.json")
         .then(({ data }) => {
           let datars = data;
+
+          httpCommon.defaults.baseURL = QRDomain;
+
           if (QRToken && QRStocks) {
             DeviceHelpers.get({
               success: ({ deviceId }) => {
@@ -294,6 +297,7 @@ export default class Report extends React.Component {
                       );
                       f7.dialog.close();
                     }
+                    httpCommon.defaults.baseURL = window?.SERVER || window.location.origin
                   } else {
                     setUserStorage(data.token, data);
                     data?.ByStockID && setStockIDStorage(data.ByStockID);
@@ -354,6 +358,8 @@ export default class Report extends React.Component {
         .catch(() => {
           f7.dialog.close();
           toast.error("Tên miền không hợp lệ.");
+
+          httpCommon.defaults.baseURL = window?.SERVER || window.location.origin
         });
     });
   };
