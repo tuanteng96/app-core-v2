@@ -43,7 +43,6 @@ import ServiceHot2 from "./components/ServiceHot/ServiceHot2";
 import ServiceHot from "./components/ServiceHot/ServiceHot";
 import Reviews from "./components/Reviews/Reviews";
 import PopupImages from "./components/PopupImages";
-import moment from "moment";
 
 export default class extends React.Component {
   constructor() {

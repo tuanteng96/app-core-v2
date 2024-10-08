@@ -2,12 +2,27 @@ import React, { useState } from "react";
 import { Navbar, Page, f7 } from "framework7-react";
 import axios from "axios";
 import httpCommon from "../../service/http-common";
-import { OPEN_QRCODE, SET_BACKGROUND } from "../../constants/prom21";
+import {
+  OPEN_QRCODE,
+  SEND_TOKEN_FIREBASE,
+  SET_BACKGROUND,
+} from "../../constants/prom21";
 import { toast } from "react-toastify";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { toAbsoluteUrl } from "../../constants/assetPath";
 import { iOS } from "../../constants/helpers";
+import DeviceHelpers from "../../constants/DeviceHelpers";
+import { setSubscribe } from "../../constants/subscribe";
+import { ref, set } from "firebase/database";
+import { database } from "../../firebase/firebase";
+import {
+  setStockIDStorage,
+  setStockNameStorage,
+  setUserLoginStorage,
+  setUserStorage,
+} from "../../constants/user";
+import userService from "../../service/user.service";
 
 const brandSchema = Yup.object().shape({
   Domain: Yup.string()
@@ -188,7 +203,9 @@ export default class Report extends React.Component {
   onSubmit = (values, { resetForm, setFieldError }) => {
     f7.dialog.preloader("Đang thực hiện ...");
 
-    let Domain = "https://" + values.Domain.replaceAll("https://", "").replaceAll("http://", "");
+    let Domain =
+      "https://" +
+      values.Domain.replaceAll("https://", "").replaceAll("http://", "");
     axios
       .get(Domain + "/brand/global/Global.json")
       .then(({ data }) => {
@@ -231,42 +248,108 @@ export default class Report extends React.Component {
 
       let QRValue = value?.data || "";
       let QRSplit = QRValue.split('"');
+
+      let QRToken = "";
+      let QRStocks = "";
+
       if (iOS()) {
         QRValue = QRSplit[1];
       }
 
-      const QRDomain = "https://" + QRValue.split("&")[0].replaceAll("https://", "").replaceAll("http://", "");
+      let QRDomain =
+        "https://" +
+        QRValue.split("&")[0]
+          .replaceAll("https://", "")
+          .replaceAll("http://", "");
+
+      if (QRValue.split("&").length > 1) {
+        QRToken = QRValue.split("&")[0];
+        QRStocks = QRValue.split("&")[1];
+        QRDomain = QRValue.split("&")[2];
+      }
 
       axios
         .get(QRDomain + "/brand/global/Global.json")
         .then(({ data }) => {
-          if (data && data.APP && data.APP.Css) {
-            for (const key in data.APP.Css) {
-              document.documentElement.style.setProperty(
-                key,
-                data.APP.Css[key]
-              );
-            }
+          let datars = data;
+          if (QRToken && QRStocks) {
+            DeviceHelpers.get({
+              success: ({ deviceId }) => {
+                userService.QRCodeLogin(QRToken, deviceId).then(({ data }) => {
+                  if (data.error || data?.Status === -1) {
+                    if (data.error === "Thiết bị chưa được cấp phép") {
+                      f7.dialog.close();
+                      f7.dialog.alert(
+                        "Tài khoản của bạn đang đăng nhập tại thiết bị khác."
+                      );
+                    } else {
+                      toast.error(
+                        data?.Status === -1
+                          ? "Tài khoản của bạn đã bị vô hiệu hoá."
+                          : "Mã QR Code không hợp lệ hoặc đã hết hạn.",
+                        {
+                          position: toast.POSITION.TOP_LEFT,
+                          autoClose: 3000,
+                        }
+                      );
+                      f7.dialog.close();
+                    }
+                  } else {
+                    setUserStorage(data.token, data);
+                    data?.ByStockID && setStockIDStorage(data.ByStockID);
+                    data?.StockName && setStockNameStorage(data.StockName);
+                    SEND_TOKEN_FIREBASE().then(async ({ error, Token }) => {
+                      if (!error && Token) {
+                        userService
+                          .authSendTokenFirebase({
+                            Token: Token,
+                            ID: data.ID,
+                            Type: data.acc_type,
+                          })
+                          .then(() => {
+                            set(
+                              ref(database, `/qrcode/${QRStocks}/${QRToken}`),
+                              null
+                            ).then(() => {
+                              if (data?.acc_type === "M") {
+                                setUserLoginStorage(data?.MobilePhone, null);
+                              }
+                              this.setGlobal({ data: datars, QRDomain });
+                              f7.dialog.close();
+                              f7.views.main.router.navigate("/", {
+                                animate: true,
+                                transition: "f7-flip",
+                              });
+                            });
+                          });
+                      } else {
+                        setSubscribe(data, () => {
+                          set(
+                            ref(
+                              database,
+                              `/qrcode/${qrcodeStock}/${qrcodeLogin}`
+                            ),
+                            null
+                          ).then(() => {
+                            this.setGlobal({ data: datars, QRDomain });
+                            f7.dialog.close();
+                            f7.views.main.router.navigate("/", {
+                              animate: true,
+                              transition: "f7-flip",
+                            });
+                          });
+                        });
+                      }
+                    });
+                  }
+                });
+              },
+            });
+          } else {
+            this.setGlobal({ data, QRDomain });
+            f7.dialog.close();
+            f7.views.main.router.navigate("/");
           }
-          SET_BACKGROUND(data?.APP?.Css["--ezs-color"] + ";0");
-
-          if (data.APP.FontSize && data.APP.FontSize.length > 0) {
-            for (let key of data.APP.FontSize) {
-              document.documentElement.style.setProperty(key.name, key.size);
-            }
-          }
-
-          window.GlobalConfig = data;
-
-          window.SERVER = QRDomain;
-
-          httpCommon.defaults.baseURL = QRDomain;
-
-          localStorage.setItem("DOMAIN", QRDomain);
-          localStorage.setItem("GlobalConfig", QRDomain);
-
-          f7.dialog.close();
-          f7.views.main.router.navigate("/");
         })
         .catch(() => {
           f7.dialog.close();
@@ -274,6 +357,140 @@ export default class Report extends React.Component {
         });
     });
   };
+
+  setGlobal = ({ data, QRDomain }) => {
+    if (data && data.APP && data.APP.Css) {
+      for (const key in data.APP.Css) {
+        document.documentElement.style.setProperty(key, data.APP.Css[key]);
+      }
+    }
+    SET_BACKGROUND(data?.APP?.Css["--ezs-color"] + ";0");
+
+    if (data.APP.FontSize && data.APP.FontSize.length > 0) {
+      for (let key of data.APP.FontSize) {
+        document.documentElement.style.setProperty(key.name, key.size);
+      }
+    }
+
+    window.GlobalConfig = data;
+
+    window.SERVER = QRDomain;
+
+    httpCommon.defaults.baseURL = QRDomain;
+
+    localStorage.setItem("DOMAIN", QRDomain);
+    localStorage.setItem("GlobalConfig", QRDomain);
+  };
+
+  // QRDebug = () => {
+  //   let val = "38685-83229028906225068177&11409&https://cserbeauty.com";
+  //   f7.dialog.preloader("Đang thực hiện ...");
+
+  //   let QRValue = val;
+
+  //   let QRToken = "";
+  //   let QRStocks = "";
+
+  //   let QRDomain =
+  //     "https://" +
+  //     QRValue.split("&")[0]
+  //       .replaceAll("https://", "")
+  //       .replaceAll("http://", "");
+
+  //   if (QRValue.split("&").length > 1) {
+  //     QRToken = QRValue.split("&")[0];
+  //     QRStocks = QRValue.split("&")[1];
+  //     QRDomain = QRValue.split("&")[2];
+  //   }
+
+  //   axios
+  //     .get(QRDomain + "/brand/global/Global.json")
+  //     .then(({ data }) => {
+  //       let datars = data;
+  //       if (QRToken && QRStocks) {
+  //         DeviceHelpers.get({
+  //           success: ({ deviceId }) => {
+  //             userService.QRCodeLogin(QRToken, deviceId).then(({ data }) => {
+  //               if (data.error || data?.Status === -1) {
+  //                 if (data.error === "Thiết bị chưa được cấp phép") {
+  //                   f7.dialog.close();
+  //                   f7.dialog.alert(
+  //                     "Tài khoản của bạn đang đăng nhập tại thiết bị khác."
+  //                   );
+  //                 } else {
+  //                   toast.error(
+  //                     data?.Status === -1
+  //                       ? "Tài khoản của bạn đã bị vô hiệu hoá."
+  //                       : "Mã QR Code không hợp lệ hoặc đã hết hạn.",
+  //                     {
+  //                       position: toast.POSITION.TOP_LEFT,
+  //                       autoClose: 3000,
+  //                     }
+  //                   );
+  //                   f7.dialog.close();
+  //                 }
+  //               } else {
+  //                 setUserStorage(data.token, data);
+  //                 data?.ByStockID && setStockIDStorage(data.ByStockID);
+  //                 data?.StockName && setStockNameStorage(data.StockName);
+  //                 SEND_TOKEN_FIREBASE().then(async ({ error, Token }) => {
+  //                   if (!error && Token) {
+  //                     userService
+  //                       .authSendTokenFirebase({
+  //                         Token: Token,
+  //                         ID: data.ID,
+  //                         Type: data.acc_type,
+  //                       })
+  //                       .then(() => {
+  //                         set(
+  //                           ref(database, `/qrcode/${QRStocks}/${QRToken}`),
+  //                           null
+  //                         ).then(() => {
+  //                           if (data?.acc_type === "M") {
+  //                             setUserLoginStorage(data?.MobilePhone, null);
+  //                           }
+  //                           this.setGlobal({ data: datars, QRDomain });
+  //                           f7.dialog.close();
+  //                           f7.views.main.router.navigate("/", {
+  //                             animate: true,
+  //                             transition: "f7-flip",
+  //                           });
+  //                         });
+  //                       });
+  //                   } else {
+  //                     setSubscribe(data, () => {
+  //                       set(
+  //                         ref(
+  //                           database,
+  //                           `/qrcode/${qrcodeStock}/${qrcodeLogin}`
+  //                         ),
+  //                         null
+  //                       ).then(() => {
+  //                         this.setGlobal({ data: datars, QRDomain });
+  //                         f7.dialog.close();
+  //                         f7.views.main.router.navigate("/", {
+  //                           animate: true,
+  //                           transition: "f7-flip",
+  //                         });
+  //                       });
+  //                     });
+  //                   }
+  //                 });
+  //               }
+  //             });
+  //           },
+  //         });
+  //       } else {
+  //         this.setGlobal({ data, QRDomain });
+  //         f7.dialog.close();
+  //         f7.views.main.router.navigate("/");
+  //       }
+  //     })
+  //     .catch(() => {
+  //       f7.dialog.close();
+  //       toast.error("Tên miền không hợp lệ.");
+  //     });
+  // };
 
   render() {
     return (
