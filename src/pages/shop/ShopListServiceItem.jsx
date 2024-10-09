@@ -3,7 +3,7 @@ import { Link } from "framework7-react";
 import React, { useState } from "react";
 import { checkSale, formatPriceVietnamese } from "../../constants/format";
 import { getStockIDStorage, getUser } from "../../constants/user";
-import ShopDataService from '../../service/shop.service'
+import ShopDataService from "../../service/shop.service";
 import { toast } from "react-toastify";
 import { TruncateLines } from "react-truncate-lines";
 
@@ -90,6 +90,7 @@ function ShopListServiceItem({ item, CateId, f7router, lines }) {
           item.items.length > 0 &&
           item.items
             .filter((item) => isPublic(item))
+            .reverse()
             .slice(0, itemShow)
             .map((subitem) => (
               <li key={subitem.ID}>
