@@ -263,7 +263,7 @@ export default class extends React.Component {
                   )}
                 </div>
               </div>
-              {window?.GlobalConfig?.APP?.isHotConter ? (
+              {window?.GlobalConfig?.APP?.isHotCenter ? (
                 <ServiceHot3
                   id="APP.SALE"
                   f7router={this.$f7router}
