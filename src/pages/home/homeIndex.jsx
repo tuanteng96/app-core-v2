@@ -43,6 +43,7 @@ import ServiceHot2 from "./components/ServiceHot/ServiceHot2";
 import ServiceHot from "./components/ServiceHot/ServiceHot";
 import Reviews from "./components/Reviews/Reviews";
 import PopupImages from "./components/PopupImages";
+import ServiceHot3 from "./components/ServiceHot/ServiceHot3";
 
 export default class extends React.Component {
   constructor() {
@@ -262,13 +263,22 @@ export default class extends React.Component {
                   )}
                 </div>
               </div>
-              
-              <ServiceHot2
-                id="APP.SALE"
-                f7router={this.$f7router}
-                f7={this.$f7}
-                OpenStock={this.handleStock}
-              />
+              {window?.GlobalConfig?.APP?.isHotConter ? (
+                <ServiceHot3
+                  id="APP.SALE"
+                  f7router={this.$f7router}
+                  f7={this.$f7}
+                  OpenStock={this.handleStock}
+                />
+              ) : (
+                <ServiceHot2
+                  id="APP.SALE"
+                  f7router={this.$f7router}
+                  f7={this.$f7}
+                  OpenStock={this.handleStock}
+                />
+              )}
+
               <ServiceHot f7router={this.$f7router} />
               <SlideList
                 className={`banner-main bg-white ${
