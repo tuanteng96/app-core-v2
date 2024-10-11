@@ -318,7 +318,7 @@ export default class extends React.Component {
                 f7router={this.$f7router}
                 f7={this.$f7}
               /> */}
-              <ProductList />
+              <ProductList f7router={this.$f7router} f7={this.$f7} />
               <Reviews />
               <ListImage />
               <NewsList />
