@@ -1,10 +1,14 @@
 import React from "react";
-import { Link } from "framework7-react";
-import { getUser } from "../constants/user";
+import { Link, Popover } from "framework7-react";
+import { getStockIDStorage, getUser } from "../constants/user";
 import iconBook from "../assets/images/bookicon.png";
 import { checkRole } from "../constants/checkRole";
 import PrivateNav from "../auth/PrivateNav";
 import { CheckPrivateNav } from "../constants/checkRouterHome";
+import AdvDataService from "../service/adv.service";
+import BookDataService from "../service/book.service";
+import { PopupConfirm } from "../pages/home/components/PopupConfirm";
+import { toast } from "react-toastify";
 
 export default class ToolBarCustom extends React.Component {
   constructor() {
@@ -12,6 +16,8 @@ export default class ToolBarCustom extends React.Component {
     this.state = {
       currentUrl: "",
       infoUser: getUser(),
+      arrCateAdv: [],
+      isLoading: true,
     };
   }
   componentDidMount() {
@@ -19,6 +25,9 @@ export default class ToolBarCustom extends React.Component {
     const TYPE = checkRole();
     if (TYPE && TYPE === "ADMIN") {
       $$(".js-toolbar-bottom").find("a").eq(1).addClass("js-active");
+    }
+    if (window?.GlobalConfig?.APP?.UIBase) {
+      this.getMenuShop();
     }
   }
 
@@ -65,6 +74,20 @@ export default class ToolBarCustom extends React.Component {
     }
   }
 
+  getMenuShop = () => {
+    AdvDataService.getMenuShop()
+      .then((response) => {
+        const arrCateAdv = response.data.data;
+        this.setState({
+          arrCateAdv: arrCateAdv,
+          isLoading: false,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   checkTotal = () => {
     const TYPE = checkRole();
 
@@ -83,8 +106,67 @@ export default class ToolBarCustom extends React.Component {
     return 5;
   };
 
+  handleUrl = (item) => {
+    const userCurent = getUser();
+    if (item.Link && item.Link.includes("/schedule/")) {
+      const url = `${item.Link}&note=${encodeURIComponent(item.Title)}`;
+      this.$f7.views.main.router.navigate(userCurent ? url : "/login/");
+    } else if (item.Link && item.Link.includes("/pupup-contact/")) {
+      this.setState({
+        show: true,
+        initialValues: item,
+      });
+    } else {
+      this.$f7.views.main.router.navigate(item.Link);
+    }
+  };
+
+  onHide = () => {
+    this.setState({
+      show: false,
+      initialValues: null,
+    });
+  };
+  onSubmit = (values) => {
+    let StockID = getStockIDStorage();
+    if (!StockID) {
+      toast.error("Vui lòng chọn cơ sở !", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 1000,
+      });
+    } else {
+      this.setState({
+        btnLoading: true,
+      });
+      var p = {
+        contact: {
+          Fullname: values.Fullname,
+          Phone1: values.Phone,
+          Address: "",
+          Email: "",
+          Content: values.Content,
+        },
+      };
+      BookDataService.bookContact(p)
+        .then(({ data }) => {
+          toast.success("Đăng ký chương trình ưu đãi thành công !", {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 1000,
+          });
+          this.setState({
+            btnLoading: false,
+            show: false,
+            initialValues: null,
+          });
+        })
+        .catch((error) => console.log(error));
+    }
+  };
+
   menuToolbar = () => {
     const TYPE = checkRole();
+    const { initialValues, show, btnLoading } = this.state;
+
     switch (TYPE) {
       case "STAFF":
         return (
@@ -221,13 +303,68 @@ export default class ToolBarCustom extends React.Component {
               </>
             ) : (
               <>
-                <Link
-                  noLinkClass
-                  href="/shop/"
-                  className="page-toolbar-bottom__link js-toolbar-link"
-                >
-                  <i className="las la-shopping-cart"></i>
-                </Link>
+                {window?.GlobalConfig?.APP?.UIBase && (
+                  <>
+                    <Link
+                      noLinkClass
+                      popoverOpen=".popover-menu"
+                      className="page-toolbar-bottom__link js-toolbar-link"
+                    >
+                      <i className="las la-shopping-cart"></i>
+                    </Link>
+                    <Popover
+                      className="popover-menu"
+                      style={{
+                        width: "calc(100% - 10px)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          padding: "8px 0",
+                        }}
+                      >
+                        {this.state.arrCateAdv &&
+                          this.state.arrCateAdv.map((item, index) => (
+                            <Link
+                              noLinkClass
+                              popoverClose
+                              key={index}
+                              onClick={() => this.handleUrl(item)}
+                              style={{
+                                borderBottom:
+                                  this.state.arrCateAdv.length - 1 === index
+                                    ? "none"
+                                    : "1px solid #e8e8e8",
+                                padding: "12px 16px",
+                                color: "#000",
+                                fontSize: "15px",
+                              }}
+                            >
+                              {item.Title}
+                            </Link>
+                          ))}
+                      </div>
+                    </Popover>
+                    <PopupConfirm
+                      initialValue={initialValues}
+                      show={show}
+                      onHide={() => this.onHide()}
+                      onSubmit={(values) => this.onSubmit(values)}
+                      btnLoading={btnLoading}
+                    />
+                  </>
+                )}
+                {!window?.GlobalConfig?.APP?.UIBase && (
+                  <Link
+                    noLinkClass
+                    href="/shop/"
+                    className="page-toolbar-bottom__link js-toolbar-link"
+                  >
+                    <i className="las la-shopping-cart"></i>
+                  </Link>
+                )}
               </>
             )}
             {window?.GlobalConfig?.APP?.isSell ? (
@@ -338,13 +475,70 @@ export default class ToolBarCustom extends React.Component {
               </>
             ) : (
               <>
-                <Link
-                  noLinkClass
-                  href="/shop/"
-                  className="page-toolbar-bottom__link js-toolbar-link"
-                >
-                  <i className="las la-shopping-cart"></i>
-                </Link>
+                <>
+                  {window?.GlobalConfig?.APP?.UIBase && (
+                    <>
+                      <Link
+                        noLinkClass
+                        popoverOpen=".popover-menu"
+                        className="page-toolbar-bottom__link js-toolbar-link"
+                      >
+                        <i className="las la-shopping-cart"></i>
+                      </Link>
+                      <Popover
+                        className="popover-menu"
+                        style={{
+                          width: "calc(100% - 10px)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            padding: "8px 0",
+                          }}
+                        >
+                          {this.state.arrCateAdv &&
+                            this.state.arrCateAdv.map((item, index) => (
+                              <Link
+                                noLinkClass
+                                popoverClose
+                                key={index}
+                                onClick={() => this.handleUrl(item)}
+                                style={{
+                                  borderBottom:
+                                    this.state.arrCateAdv.length - 1 === index
+                                      ? "none"
+                                      : "1px solid #e8e8e8",
+                                  padding: "12px 16px",
+                                  color: "#000",
+                                  fontSize: "15px",
+                                }}
+                              >
+                                {item.Title}
+                              </Link>
+                            ))}
+                        </div>
+                      </Popover>
+                      <PopupConfirm
+                        initialValue={initialValues}
+                        show={show}
+                        onHide={() => this.onHide()}
+                        onSubmit={(values) => this.onSubmit(values)}
+                        btnLoading={btnLoading}
+                      />
+                    </>
+                  )}
+                  {!window?.GlobalConfig?.APP?.UIBase && (
+                    <Link
+                      noLinkClass
+                      href="/shop/"
+                      className="page-toolbar-bottom__link js-toolbar-link"
+                    >
+                      <i className="las la-shopping-cart"></i>
+                    </Link>
+                  )}
+                </>
               </>
             )}
             {window?.GlobalConfig?.APP?.isSell ? (
@@ -397,6 +591,7 @@ export default class ToolBarCustom extends React.Component {
   };
 
   render() {
+    console.log(this.state.arrCateAdv);
     return (
       <div className="page-toolbar">
         <div
