@@ -61,6 +61,7 @@ export default class NewsList extends React.Component {
       centerPadding: "20px",
       variableWidth: true,
     };
+    if(!arrNews || arrNews.length === 0) return <></>
     return (
       <div className="home-page__news">
         <div className="page-news__list">
