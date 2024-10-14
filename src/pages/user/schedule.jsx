@@ -132,29 +132,33 @@ export default class extends React.Component {
       BookDataService.getBookId(ID)
         .then(({ data }) => {
           const currentBook = data.data;
-          
+
           let serviceNotes = "";
           let AmountPeople = {
             label: "1 khách",
             value: 1,
           };
           let descSplit = currentBook?.Desc?.split("\n");
-          for (let i of descSplit) {
-            if (i.includes("Số lượng khách:")) {
-              let SL = Number(i.match(/\d+/)[0]);
-              AmountPeople = {
-                label: SL + " khách",
-                value: SL,
-              };
-            }
-            if (i.includes("Ghi chú:")) {
-              serviceNotes = i.replaceAll("Ghi chú: ", "");
-              let indexCut = serviceNotes && serviceNotes.indexOf('(Thay đổi từ')
-              if(indexCut > -1) {
-                serviceNotes = serviceNotes.substring(0, indexCut)
+          if (descSplit) {
+            for (let i of descSplit) {
+              if (i.includes("Số lượng khách:")) {
+                let SL = Number(i.match(/\d+/)[0]);
+                AmountPeople = {
+                  label: SL + " khách",
+                  value: SL,
+                };
+              }
+              if (i.includes("Ghi chú:")) {
+                serviceNotes = i.replaceAll("Ghi chú: ", "");
+                let indexCut =
+                  serviceNotes && serviceNotes.indexOf("(Thay đổi từ");
+                if (indexCut > -1) {
+                  serviceNotes = serviceNotes.substring(0, indexCut);
+                }
               }
             }
           }
+
           if (currentBook) {
             this.setState({
               DateTimeBook: {
@@ -168,7 +172,7 @@ export default class extends React.Component {
               serviceNote: serviceNotes,
               selectedService: currentBook.Roots,
               AmountPeople,
-              OldBook: currentBook
+              OldBook: currentBook,
             });
           }
 
@@ -263,7 +267,7 @@ export default class extends React.Component {
       selectedService,
       StaffSelected,
       AmountPeople,
-      OldBook
+      OldBook,
     } = this.state;
 
     const infoUser = getUser();
@@ -282,10 +286,52 @@ export default class extends React.Component {
           " " +
           DateTimeBook.time
         : "";
-      let newDesc = window.GlobalConfig?.APP?.SL_khach && AmountPeople
-      ? (`Số lượng khách: ${AmountPeople.value}. \nGhi chú: ${(serviceNote || "") + (OldBook ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(OldBook?.BookDate).format("HH:mm DD-MM-YYYY")}` : "")}`)
-      : (serviceNote || "") + (OldBook ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(OldBook?.BookDate).format("HH:mm DD-MM-YYYY")})` : "");
-      
+
+    //selectedService
+    let Tags = [];
+
+    if (selectedService && selectedService.length > 0) {
+      if (
+        selectedService.some(
+          (item) =>
+            item.OsBook > 0 ||
+            item.OsDoing > 0 ||
+            item.OsNew > 0 ||
+            item.OsBH > 0
+        )
+      ) {
+        Tags.push("Có thẻ");
+      }
+      if (
+        selectedService.some(
+          (item) =>
+            item.OsBook === 0 &&
+            item.OsDoing === 0 &&
+            item.OsNew === 0 &&
+            item.OsBH === 0
+        )
+      ) {
+        Tags.push("Không thẻ");
+      }
+    }
+
+    let newDesc =
+      window.GlobalConfig?.APP?.SL_khach && AmountPeople
+        ? `Số lượng khách: ${AmountPeople.value}. \nTags: ${Tags.toString()} \nGhi chú: ${
+            (serviceNote || "") +
+            (OldBook
+              ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(
+                  OldBook?.BookDate
+                ).format("HH:mm DD-MM-YYYY")}`
+              : "")
+          }`
+        : (serviceNote || "") +
+          (OldBook
+            ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(
+                OldBook?.BookDate
+              ).format("HH:mm DD-MM-YYYY")})`
+            : "");
+
     const dataSubmit = {
       booking: [
         {

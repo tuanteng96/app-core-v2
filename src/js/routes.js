@@ -371,6 +371,7 @@ var routes = [
   {
     path: "/wallet/", // Ví điện tử
     asyncComponent: () => WalletPage,
+    beforeEnter: checkAuth,
   },
   {
     path: "/diary/", // Nhật ký

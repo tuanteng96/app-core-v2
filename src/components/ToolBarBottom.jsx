@@ -591,7 +591,6 @@ export default class ToolBarCustom extends React.Component {
   };
 
   render() {
-    console.log(this.state.arrCateAdv);
     return (
       <div className="page-toolbar">
         <div
