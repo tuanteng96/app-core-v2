@@ -699,3 +699,7 @@ figure {
     text-overflow: ellipsis;
     word-wrap: break-word;
 }
+
+.bg-color-white > .page-content {
+    background: #fff;
+}

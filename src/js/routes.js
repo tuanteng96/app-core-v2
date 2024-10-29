@@ -70,6 +70,7 @@ import StocksProvince from "../pages/stocks/StocksProvince.jsx";
 import StocksDistrict from "../pages/stocks/StocksDistrict.jsx";
 import layoutSuccess from "../pages/user/layoutSuccess.jsx";
 import HistoryServicePage from "../pages/user/HistoryService.jsx";
+import AffPage from "../pages/user/Aff.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -367,6 +368,10 @@ var routes = [
   {
     path: "/voucher/", // Mã giảm giá
     asyncComponent: () => VoucherPage,
+  },
+  {
+    path: "/aff/", // Mã giảm giá
+    asyncComponent: () => AffPage,
   },
   {
     path: "/wallet/", // Ví điện tử

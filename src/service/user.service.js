@@ -89,6 +89,15 @@ class UserService {
       `/api/v3/OrderService?cmd=get_service_unrate&mid=${memberid}${params}`
     );
   }
+  getAff(data, token = '') {
+    return http.post(
+      `/api/v3/member23@MemberByAffMemberID`, JSON.stringify(data),{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  }
   postReviews(memberid, data) {
     return http.post(
       `/api/v3/OrderService?cmd=get_service_unrate&mid=${memberid}`,

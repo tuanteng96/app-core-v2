@@ -6,6 +6,7 @@ import imgOrder from "../../assets/images/order.svg";
 import imgDiary from "../../assets/images/diary.svg";
 import imgCoupon from "../../assets/images/coupon.svg";
 import imgEvaluate from "../../assets/images/evaluate.svg";
+import imgAff from "../../assets/images/affiliate-svgrepo-com.svg";
 import { checkAvt } from "../../constants/format";
 import { getUser, getPassword, app_request } from "../../constants/user";
 import { Page, Link, Toolbar, Row, Col, f7 } from "framework7-react";
@@ -212,59 +213,74 @@ export default class extends React.Component {
           </div>
         </div>
         <div className="profile-function">
-          <Row>
-            <Col width="33">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3,minmax(0,1fr))",
+              gap: "10px"
+            }}
+          >
+            <div width="33">
               <Link noLinkClass href="/wallet/">
                 <div className="image">
                   <img src={imgWallet} />
                 </div>
                 <span>Ví & Thẻ tiền</span>
               </Link>
-            </Col>
-            <Col width="33">
+            </div>
+            <div width="33">
               <Link noLinkClass href="/diary/">
                 <div className="image">
                   <img src={imgDiary} />
                 </div>
                 <span>Nhật ký</span>
               </Link>
-            </Col>
-            <Col width="33">
+            </div>
+            <div width="33">
               <Link noLinkClass href="/order/">
                 <div className="image">
                   <img src={imgOrder} />
                 </div>
                 <span>Đơn hàng</span>
               </Link>
-            </Col>
-            <Col width="33">
+            </div>
+            <div width="33">
               <Link noLinkClass href="/voucher/">
                 <div className="image">
                   <img src={imgCoupon} />
                 </div>
                 <span>Mã giảm giá</span>
               </Link>
-            </Col>
+            </div>
             {!window?.GlobalConfig?.APP?.isSell && (
-              <Col width="33">
+              <div width="33">
                 <Link noLinkClass href="/rating/">
                   <div className="image">
                     <img src={imgEvaluate} />
                   </div>
                   <span>Đánh giá</span>
                 </Link>
-              </Col>
+              </div>
             )}
-            <Col width="33">
+            {window?.GlobalConfig?.Admin?.maff && (
+              <div width="33">
+                <Link noLinkClass href="/aff/">
+                  <div className="image">
+                    <img style={{width: "35px"}} src={imgAff} />
+                  </div>
+                  <span>Người giới thiệu</span>
+                </Link>
+              </div>
+            )}
+            <div width="33">
               <Link noLinkClass href="/maps/">
                 <div className="image">
                   <img src={imgLocation} />
                 </div>
                 <span>Liên hệ</span>
               </Link>
-            </Col>
-            {window?.GlobalConfig?.APP?.isSell && <Col width="33"></Col>}
-          </Row>
+            </div>
+          </div>
         </div>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
