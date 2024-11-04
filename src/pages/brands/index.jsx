@@ -350,7 +350,7 @@ export default class Report extends React.Component {
               },
             });
           } else {
-            this.setGlobal({ data, QRDomain });
+            this.setGlobal({ data: datars, QRDomain });
             f7.dialog.close();
             f7.views.main.router.navigate("/");
           }
@@ -385,7 +385,7 @@ export default class Report extends React.Component {
     httpCommon.defaults.baseURL = QRDomain;
 
     localStorage.setItem("DOMAIN", QRDomain);
-    localStorage.setItem("GlobalConfig", QRDomain);
+    localStorage.setItem("GlobalConfig", data);
   };
 
   // QRDebug = () => {
