@@ -136,6 +136,9 @@ export default class extends React.Component {
                 userData?.ByStockID && setStockIDStorage(userData.ByStockID);
                 userData?.StockName && setStockNameStorage(userData.StockName);
                 setUserLoginStorage(username, password);
+
+                localStorage.setItem("_Subscribe", true);
+                window.Subscribe && window.Subscribe();
               });
             }
           })

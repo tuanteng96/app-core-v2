@@ -93,6 +93,8 @@ export default class extends React.Component {
                       iOS() && REMOVE_BADGE();
                       await localStorage.clear();
 
+                      window.UnSubscribe && window.UnSubscribe();
+
                       if (CrDomain) {
                         localStorage.setItem("DOMAIN", CrDomain);
                       }
@@ -101,6 +103,7 @@ export default class extends React.Component {
                     });
                   } else if (data?.error && data?.error.indexOf("TOKEN") > -1) {
                     removeUserStorage();
+                    window.UnSubscribe && window.UnSubscribe();
                   } else if (data?.token_renew) {
                     setUserStorage(data.token_renew, data);
                   } else if (data?.token) {
@@ -136,6 +139,8 @@ export default class extends React.Component {
 
                                 await localStorage.clear();
 
+                                window.UnSubscribe && window.UnSubscribe();
+
                                 if (CrDomain) {
                                   localStorage.setItem("DOMAIN", CrDomain);
                                 }
@@ -150,6 +155,11 @@ export default class extends React.Component {
                   }
                 }
               });
+            }
+
+            if (infoUser && !localStorage.getItem("_Subscribe")) {
+              localStorage.setItem("_Subscribe", true);
+              window.Subscribe && window.Subscribe();
             }
             //console.log("Lần đầu mở App");
           },

@@ -113,6 +113,8 @@ function FormLogin({ f7, f7router }) {
                       });
                     }
                   });
+                  localStorage.setItem("_Subscribe", true);
+                  window.Subscribe && window.Subscribe()
                 }
               }
             },
@@ -206,6 +208,8 @@ function FormLogin({ f7, f7router }) {
                       });
                     }
                   });
+                  localStorage.setItem("_Subscribe", true);
+                  window.Subscribe && window.Subscribe()
                 }
               },
             }

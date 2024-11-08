@@ -221,6 +221,7 @@ export default class SelectStock extends React.Component {
                       f7.dialog.close();
                       f7.views.main.router.navigate("/");
                     });
+                    window.UnSubscribe && window.UnSubscribe()
                   } else {
                     f7.dialog.close();
                     await localStorage.clear();

@@ -57,6 +57,8 @@ export default class extends React.Component {
             if (CrDomain) {
               localStorage.setItem("DOMAIN", CrDomain);
             }
+            window.UnSubscribe && window.UnSubscribe()
+
             await new Promise((resolve) => setTimeout(resolve, 300));
           });
         } else {
@@ -93,6 +95,8 @@ export default class extends React.Component {
           if (CrDomain) {
             localStorage.setItem("DOMAIN", CrDomain);
           }
+          
+          window.UnSubscribe && window.UnSubscribe()
 
           await new Promise((resolve) => setTimeout(resolve, 300));
           f7.dialog.close();

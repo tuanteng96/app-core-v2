@@ -21,7 +21,9 @@ import DeviceHelpers from "../../../constants/DeviceHelpers";
 const phoneRegExp = /((09|03|07|08|05)+([0-9]{8})\b)/g;
 
 const regSchema = Yup.object().shape({
-  fullname: Yup.string().min(4, "Họ tên phải có ít nhất 4 kí tự.").required("Vui lòng nhập họ tên."),
+  fullname: Yup.string()
+    .min(4, "Họ tên phải có ít nhất 4 kí tự.")
+    .required("Vui lòng nhập họ tên."),
   password: Yup.string()
     .min(4, "Mật khẩu phải có ít nhất 4 kí tự.")
     .required("Vui lòng nhập mật khẩu."),
@@ -31,7 +33,6 @@ const regSchema = Yup.object().shape({
 });
 
 function FormRegistration({ f7, f7router, openSelectStock }) {
-  
   const [initialValues] = useState({
     fullname: "",
     password: "",
@@ -213,6 +214,9 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
                     });
                   }
                 });
+
+                localStorage.setItem("_Subscribe", true);
+                window.Subscribe && window.Subscribe();
               }
             },
           }

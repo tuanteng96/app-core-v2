@@ -284,6 +284,7 @@ function StocksProvincesFilter({
                             f7.views.main.router.navigate("/");
                             onClose();
                           });
+                          window.UnSubscribe && window.UnSubscribe()
                         } else {
                           f7.dialog.close();
                           await localStorage.clear();
