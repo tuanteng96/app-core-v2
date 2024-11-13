@@ -91,7 +91,7 @@ class UserService {
   }
   getAff(data, token = '') {
     return http.post(
-      `/api/v3/member23@MemberByAffMemberID`, JSON.stringify(data),{
+      `/api/v3/member23@MemberByAffMemberID`, JSON.stringify(data), {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -113,11 +113,19 @@ class UserService {
     return http.get(
       `/api/v3/noti2?cmd=nextoffset&acctype=${acctype}&accid=${accid}&offset=${offset}&next=${next}${
         refresh ? "&refresh=1" : ""
-      }`
+      }`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }
     );
   }
   getNotiDetail(Id) {
-    return http.get(`/api/v3/noticlient?cmd=detail&ids=${Id}`);
+    return http.get(`/api/v3/noticlient?cmd=detail&ids=${Id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
   }
   confirmBook(data) {
     return http.post(
@@ -126,10 +134,18 @@ class UserService {
     );
   }
   deleteNotification(data) {
-    return http.post(`/api/v3/noti2/?cmd=clear2`, data);
+    return http.post(`/api/v3/noti2/?cmd=clear2`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
   }
   readedNotification(data) {
-    return http.post(`/api/v3/noti2/?cmd=readed2`, data);
+    return http.post(`/api/v3/noti2/?cmd=readed2`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
   }
   getOrderAll(memberID) {
     return http.get(

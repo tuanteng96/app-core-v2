@@ -17,7 +17,7 @@ export default class extends React.Component {
       filter: {
         AFFMemberID: "",
         Pi: 1,
-        Ps: 15,
+        Ps: 10,
       },
       showPreloader: false,
     };
@@ -29,7 +29,7 @@ export default class extends React.Component {
     let newFilter = {
       AFFMemberID: memberid,
       Pi: 1,
-      Ps: 15,
+      Ps: 10,
     };
     this.getAff(newFilter);
   }
@@ -64,7 +64,7 @@ export default class extends React.Component {
   }
 
   loadMore = () => {
-    let { filter, items, Total } = this.state;
+    let { filter, items, Total, showPreloader } = this.state;
     if (showPreloader) return false;
     if (items.length >= Total) return false;
     let newFilters = {
@@ -74,7 +74,7 @@ export default class extends React.Component {
     this.setState({
       showPreloader: true,
     });
-    getAff(newFilters);
+    this.getAff(newFilters);
   };
 
   render() {
@@ -84,6 +84,7 @@ export default class extends React.Component {
         bgColor="white"
         name="aff"
         ptr
+        infinite
         infiniteDistance={50}
         infinitePreloader={showPreloader}
         onInfinite={() => this.loadMore()}
