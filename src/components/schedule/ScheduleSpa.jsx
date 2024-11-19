@@ -210,7 +210,10 @@ export default class ScheduleSpa extends React.Component {
         }
         newListTime.push({
           Time: datetime,
-          Disable: moment().diff(datetime, "minutes") > 0 || isDayOff,
+          Disable:
+            moment()
+              .add(window?.GlobalConfig?.APP?.ScheduledMinutes || 0, "minutes")
+              .diff(datetime, "minutes") > 0 || isDayOff,
         });
       }
 
@@ -348,7 +351,9 @@ export default class ScheduleSpa extends React.Component {
                             })
                           }
                         >
-                          {DateTimeBook.nameStock ? "Thay đổi cơ sở ?" : "Chọn cơ sở ?"}
+                          {DateTimeBook.nameStock
+                            ? "Thay đổi cơ sở ?"
+                            : "Chọn cơ sở ?"}
                         </div>
                       </div>
                       <StocksProvincesFilter
