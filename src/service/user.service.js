@@ -98,6 +98,15 @@ class UserService {
       }
     );
   }
+  getPoints(data, token = '') {
+    return http.post(
+      `/api/v3/MemberPoint27@Get`, JSON.stringify(data), {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  }
   postReviews(memberid, data) {
     return http.post(
       `/api/v3/OrderService?cmd=get_service_unrate&mid=${memberid}`,

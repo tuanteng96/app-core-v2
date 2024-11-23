@@ -71,6 +71,7 @@ import StocksDistrict from "../pages/stocks/StocksDistrict.jsx";
 import layoutSuccess from "../pages/user/layoutSuccess.jsx";
 import HistoryServicePage from "../pages/user/HistoryService.jsx";
 import AffPage from "../pages/user/Aff.jsx";
+import PointPage from "../pages/user/Point.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -86,7 +87,7 @@ const checkRouterHome = () => {
   const infoUser = getUser();
   const ACC_TYPE = infoUser && infoUser.acc_type;
 
-  let DOMAIN = localStorage.getItem("DOMAIN")
+  let DOMAIN = localStorage.getItem("DOMAIN");
   if (window?.GlobalConfig?.APP?.isMulti && !DOMAIN) {
     return BrandsPage;
   }
@@ -255,6 +256,14 @@ var routes = [
     },
   },
   {
+    path: "/user/customer-branch",
+    asyncComponent: () =>
+      window?.GlobalConfig?.APP?.ByProvince ? MapsPage2 : MapsPage,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  {
     path: "/success-noti/",
     asyncComponent: () => layoutSuccess,
     options: {
@@ -328,6 +337,14 @@ var routes = [
     },
   },
   {
+    path: "/user/customer-service", // Thẻ dịch vụ
+    asyncComponent: () => CardServicePage,
+    beforeEnter: checkAuth,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  {
     path: "/schedule/", // Thẻ dịch vụ
     asyncComponent: () => SchedulePage,
     beforeEnter: checkAuth,
@@ -374,7 +391,16 @@ var routes = [
     asyncComponent: () => AffPage,
   },
   {
+    path: "/points/", // Mã giảm giá
+    asyncComponent: () => PointPage,
+  },
+  {
     path: "/wallet/", // Ví điện tử
+    asyncComponent: () => WalletPage,
+    beforeEnter: checkAuth,
+  },
+  {
+    path: "/user/customer-wallet-card", // Ví điện tử
     asyncComponent: () => WalletPage,
     beforeEnter: checkAuth,
   },
@@ -383,7 +409,7 @@ var routes = [
     asyncComponent: () => DiaryPage,
   },
   {
-    path: "/rating/", // Nhật ký
+    path: "/rating/", // Đánh giá
     asyncComponent: () => RatingListPage,
   },
   {

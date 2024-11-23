@@ -1,6 +1,7 @@
 import React from "react";
 import bgImage from "../../assets/images/headerbottombgapp.png";
 import imgWallet from "../../assets/images/wallet.svg";
+import imgPoint from "../../assets/images/point.png";
 import imgLocation from "../../assets/images/location.svg";
 import imgOrder from "../../assets/images/order.svg";
 import imgDiary from "../../assets/images/diary.svg";
@@ -230,6 +231,14 @@ export default class extends React.Component {
                   <img src={imgWallet} />
                 </div>
                 <span>Ví & Thẻ tiền</span>
+              </Link>
+            </div>
+            <div width="33">
+              <Link noLinkClass href="/points/">
+                <div className="image">
+                  <img src={imgPoint} />
+                </div>
+                <span>Tích điểm</span>
               </Link>
             </div>
             <div width="33">
