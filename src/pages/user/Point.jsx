@@ -99,7 +99,7 @@ export default class extends React.Component {
         infinitePreloader={showPreloader}
         onInfinite={() => this.loadMore()}
         onPtrRefresh={this.loadRefresh.bind(this)}
-        //noToolbar
+        noToolbar
       >
         <Navbar>
           <div className="page-navbar">
@@ -109,7 +109,7 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Tích điểm</span>
+              <span className="title">Tích điểm ({this.state.TotalPoint} điểm)</span>
             </div>
           </div>
         </Navbar>
@@ -167,15 +167,6 @@ export default class extends React.Component {
             </>
           )}
         </div>
-        <Toolbar position="bottom">
-          <div className="d--f jc--sb px-15px w-100">
-            <div style={{
-                fontSize: "15px",
-                textTransform: "uppercase"
-            }}>Tổng điểm</div>
-            <div className="text-success fw-600">{this.state.TotalPoint}</div>
-          </div>
-        </Toolbar>
       </Page>
     );
   }
