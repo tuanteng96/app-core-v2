@@ -188,6 +188,12 @@ export default class extends React.Component {
   componentDidMount() {
     this.getWallet();
     this.getCardWallet();
+
+    if(this.$f7route?.query?.tab) {
+      this.setState({
+        tabCurrent: this.$f7route?.query?.tab
+      })
+    }
   }
 
   getWallet = () => {
