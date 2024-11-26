@@ -169,7 +169,7 @@ export default class extends React.Component {
                 AtHome: currentBook.AtHome,
                 isOther: this.isOther(currentBook.BookDate),
               },
-              serviceNote: serviceNotes,
+              serviceNote: serviceNotes.replaceAll("</br>", "\n"),
               selectedService: currentBook.Roots,
               AmountPeople,
               OldBook: currentBook,
@@ -318,14 +318,14 @@ export default class extends React.Component {
     let newDesc =
       window.GlobalConfig?.APP?.SL_khach && AmountPeople
         ? `Số lượng khách: ${AmountPeople.value}. \nTags: ${Tags.toString()} \nGhi chú: ${
-            (serviceNote || "") +
+            (serviceNote ? serviceNote.replaceAll("\n", "</br>") : "") +
             (OldBook
               ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(
                   OldBook?.BookDate
                 ).format("HH:mm DD-MM-YYYY")}`
               : "")
           }`
-        : (serviceNote || "") +
+        : (serviceNote ? serviceNote.replaceAll("\n", "</br>") : "") +
           (OldBook
             ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(
                 OldBook?.BookDate
