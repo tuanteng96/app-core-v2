@@ -13,8 +13,8 @@ export default class ScheduleSuccess extends React.Component {
         <GrCheckmark />
         <h4>Lịch hẹn đang chờ xử lý</h4>
         <div className="desc">
-          <span>Chúc mừng bạn đã đặt lịch thành công.</span>
-          <span>Vui lòng chờ đợi. Chúng tôi sẽ phản hồi thông tin sớm nhất.</span>
+          {window?.GlobalConfig?.Admin?.text_dat_lich ||
+            "Chúc mừng bạn đã đặt lịch thành công. Vui lòng chờ đợi. Chúng tôi sẽ phản hồi thông tin sớm nhất."}
         </div>
         <Link
           noLinkClass

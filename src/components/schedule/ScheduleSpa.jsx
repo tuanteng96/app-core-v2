@@ -144,8 +144,40 @@ export default class ScheduleSpa extends React.Component {
   };
 
   getListChoose = (DateChoose, ListLock) => {
-    const { TimeOpen, TimeClose, TimeNext } =
-      window?.GlobalConfig?.APP?.Booking;
+    const { TimeNext } = window?.GlobalConfig?.APP?.Booking;
+    let TimeOpen = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
+    let TimeClose = window?.GlobalConfig?.APP?.Booking?.TimeClose;
+
+    //
+    const { arrStock } = this.state;
+    const { DateTimeBook } = this.props;
+    let indexCr = arrStock
+      ? arrStock.findIndex((x) => x.ID === Number(DateTimeBook.stock))
+      : -1;
+
+    if(indexCr > -1) {
+      let StockI = arrStock[indexCr].NameFr
+      if(StockI) {
+        let timeSplit = StockI.split(";")
+        var isValid = (time) => /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(time);
+        if(timeSplit && timeSplit.length >= 1 && isValid(timeSplit[0]) && isValid(timeSplit[1])) {
+          TimeOpen.hour = timeSplit[0].split(":")[0]
+          TimeOpen.minute = timeSplit[0].split(":")[1]
+          TimeClose.hour = timeSplit[1].split(":")[0]
+          TimeClose.minute = timeSplit[1].split(":")[1]
+        }
+        else {
+          TimeOpen = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
+          TimeClose = window?.GlobalConfig?.APP?.Booking?.TimeClose;
+        }
+      }
+      else {
+        TimeOpen = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
+        TimeClose = window?.GlobalConfig?.APP?.Booking?.TimeClose;
+      }
+    }
+    
+    //
     const indexLock =
       ListLock &&
       ListLock.findIndex(
