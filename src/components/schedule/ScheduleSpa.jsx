@@ -156,7 +156,7 @@ export default class ScheduleSpa extends React.Component {
       : -1;
 
     if(indexCr > -1) {
-      let StockI = arrStock[indexCr].NameFr
+      let StockI = arrStock[indexCr].KeySEO
       if(StockI) {
         let timeSplit = StockI.split(";")
         var isValid = (time) => /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(time);
