@@ -73,7 +73,7 @@ function FormLogin({ f7, f7router }) {
                   f7.preloader.hide();
                 }
               } else {
-                if (window?.GlobalConfig?.APP?.OutUser && data?.acc_type === "U") {
+                if (data.ID !== 1 && window?.GlobalConfig?.APP?.OutUser && data?.acc_type === "U") {
                   setErrors({
                     username: "Đăng nhập lỗi.",
                   });
