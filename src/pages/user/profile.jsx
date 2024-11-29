@@ -20,6 +20,7 @@ import {
   SET_BADGE,
 } from "../../constants/prom21";
 import { iOS } from "../../constants/helpers";
+import { toAbsoluteUrl } from "../../constants/assetPath";
 
 export default class extends React.Component {
   constructor() {
@@ -236,7 +237,7 @@ export default class extends React.Component {
             <div width="33">
               <Link noLinkClass href="/points/">
                 <div className="image">
-                  <img src={imgPoint} />
+                  <img src={toAbsoluteUrl(imgPoint)} />
                 </div>
                 <span>Tích điểm</span>
               </Link>
