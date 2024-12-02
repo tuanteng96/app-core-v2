@@ -460,7 +460,8 @@ export default class extends React.Component {
                                     }
                                   >
                                     {item.source.IsDisplayPrice === 0 ? (
-                                      <span className="price-to">Liên hệ</span>
+                                      <></>
+                                      // <span className="price-to">Liên hệ</span>
                                     ) : (
                                       <React.Fragment>
                                         <span className="price-to">

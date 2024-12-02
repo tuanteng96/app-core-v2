@@ -525,51 +525,110 @@ export default class extends React.Component {
                     <div className="title">Mã sản phẩm</div>
                     <div className="text">{arrProductCurrent.DynamicID}</div>
                   </li>
-                  <li className="product">
-                    <div className="title">
-                      Giá
-                      {arrProductCurrent.IsDisplayPrice !== 0 &&
-                      checkSale(
-                        arrProductCurrent.SaleBegin,
-                        arrProductCurrent.SaleEnd,
-                        arrProductCurrent.PriceSale
-                      ) === true
-                        ? " gốc"
-                        : ""}
-                    </div>
-                    <div className="text">
-                      {arrProductCurrent.IsDisplayPrice === 1 && (
-                        <React.Fragment>
-                          {!statusLoading
-                            ? formatPriceVietnamese(
-                                arrProductCurrent.PriceProduct
-                              )
-                            : "..."}
-                          <b>₫</b>
-                        </React.Fragment>
-                      )}
-                      {arrProductCurrent.IsDisplayPrice !== 1 && (
-                        <React.Fragment>Liên hệ</React.Fragment>
-                      )}
-                    </div>
-                  </li>
-                  {arrProductCurrent.IsDisplayPrice !== 0 && (
-                    <li className="product-sale">
-                      <div className="title">
-                        <span>Giảm</span>
-                        {/* <div className="badges badges-danger">
+                  {arrProductCurrent?.IsService !== 1 ? (
+                    <>
+                      <li className="product">
+                        <div className="title">
+                          Giá
+                          {arrProductCurrent.IsDisplayPrice !== 0 &&
+                          checkSale(
+                            arrProductCurrent.SaleBegin,
+                            arrProductCurrent.SaleEnd,
+                            arrProductCurrent.PriceSale
+                          ) === true
+                            ? " gốc"
+                            : ""}
+                        </div>
+                        <div className="text">
+                          {arrProductCurrent.IsDisplayPrice === 1 && (
+                            <React.Fragment>
+                              {!statusLoading
+                                ? formatPriceVietnamese(
+                                    arrProductCurrent.PriceProduct
+                                  )
+                                : "..."}
+                              <b>₫</b>
+                            </React.Fragment>
+                          )}
+                          {arrProductCurrent.IsDisplayPrice !== 1 && (
+                            <React.Fragment>Liên hệ</React.Fragment>
+                          )}
+                        </div>
+                      </li>
+                      {arrProductCurrent.IsDisplayPrice !== 0 && (
+                        <li className="product-sale">
+                          <div className="title">
+                            <span>Giảm</span>
+                            {/* <div className="badges badges-danger">
                           {percentagesSale(
                             arrProductCurrent.PriceProduct,
                             arrProductCurrent.PriceSale
                           )}
                           %
                         </div> */}
-                      </div>
-                      <div className="text">
-                        {formatPriceVietnamese(arrProduct.PriceSale)}
-                        <b>₫</b>
-                      </div>
-                    </li>
+                          </div>
+                          <div className="text">
+                            {formatPriceVietnamese(arrProduct.PriceSale)}
+                            <b>₫</b>
+                          </div>
+                        </li>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {arrProductCurrent.IsDisplayPrice !== 0 ? (
+                        <>
+                          <li className="product">
+                            <div className="title">
+                              Giá
+                              {arrProductCurrent.IsDisplayPrice !== 0 &&
+                              checkSale(
+                                arrProductCurrent.SaleBegin,
+                                arrProductCurrent.SaleEnd,
+                                arrProductCurrent.PriceSale
+                              ) === true
+                                ? " gốc"
+                                : ""}
+                            </div>
+                            <div className="text">
+                              {arrProductCurrent.IsDisplayPrice === 1 && (
+                                <React.Fragment>
+                                  {!statusLoading
+                                    ? formatPriceVietnamese(
+                                        arrProductCurrent.PriceProduct
+                                      )
+                                    : "..."}
+                                  <b>₫</b>
+                                </React.Fragment>
+                              )}
+                              {arrProductCurrent.IsDisplayPrice !== 1 && (
+                                <React.Fragment>Liên hệ</React.Fragment>
+                              )}
+                            </div>
+                          </li>
+                          {arrProductCurrent.IsDisplayPrice !== 0 && (
+                            <li className="product-sale">
+                              <div className="title">
+                                <span>Giảm</span>
+                                {/* <div className="badges badges-danger">
+                          {percentagesSale(
+                            arrProductCurrent.PriceProduct,
+                            arrProductCurrent.PriceSale
+                          )}
+                          %
+                        </div> */}
+                              </div>
+                              <div className="text">
+                                {formatPriceVietnamese(arrProduct.PriceSale)}
+                                <b>₫</b>
+                              </div>
+                            </li>
+                          )}
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </>
                   )}
 
                   {arrProductCurrent.SaleDecs && (
@@ -915,8 +974,6 @@ export default class extends React.Component {
                 <button
                   className={`page-btn-order btn-submit-order bg-success ${
                     statusLoading ? "loading" : ""
-                  } ${
-                    arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"
                   }`}
                   onClick={() =>
                     this.$f7.views.main.router.navigate(
@@ -928,7 +985,7 @@ export default class extends React.Component {
                 >
                   <span>Đặt lịch ngay</span>
                 </button>
-                {!window?.GlobalConfig?.APP?.Services?.HideButtonOrder && (
+                {(!window?.GlobalConfig?.APP?.Services?.HideButtonOrder && arrProductCurrent.IsDisplayPrice !== 0) && (
                   <button
                     className={`page-btn-order btn-submit-order ${
                       statusLoading ? "loading" : ""

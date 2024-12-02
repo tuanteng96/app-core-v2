@@ -696,6 +696,11 @@
                                     }
                                 }
                             }
+                            &:last-child {
+                                a {
+                                    border-bottom: 0;
+                                }
+                            }
                         }
                     }
                 }
