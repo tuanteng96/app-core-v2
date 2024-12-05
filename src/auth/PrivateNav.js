@@ -7,14 +7,14 @@ PrivateNav.propTypes = {
   // auth: PropTypes.object.isRequired
 };
 
-function PrivateNav({ roles, text, icon, className, href }) {
+function PrivateNav({ roles, text, icon, className, href, ...props }) {
   const infoUser = getUser();
   const userRoles = infoUser.GroupTitles;
   const hasRole = roles === 'all' || Array.isArray(roles) && roles.some((role) => userRoles.includes(role));
   const hasRoleLength = Array.isArray(userRoles) && userRoles.length === 0 && Array.isArray(roles) && roles.length === 0 ;
   if (hasRole || hasRoleLength || Number(infoUser.acc_group) === 1) {
     return (
-      <Link noLinkClass href={href} className={className}>
+      <Link noLinkClass href={href} className={className} {...props}>
         <i className={icon}></i>
         <span>{text}</span>
       </Link>

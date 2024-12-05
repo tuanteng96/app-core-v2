@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Popover } from "framework7-react";
+import { f7ready, Link, List, ListItem, Popover } from "framework7-react";
 import { getStockIDStorage, getUser } from "../constants/user";
 import iconBook from "../assets/images/bookicon.png";
 import { checkRole } from "../constants/checkRole";
@@ -9,6 +9,7 @@ import AdvDataService from "../service/adv.service";
 import BookDataService from "../service/book.service";
 import { PopupConfirm } from "../pages/home/components/PopupConfirm";
 import { toast } from "react-toastify";
+import PrivateNavReport from "../auth/PrivateNavReport";
 
 export default class ToolBarCustom extends React.Component {
   constructor() {
@@ -18,6 +19,7 @@ export default class ToolBarCustom extends React.Component {
       infoUser: getUser(),
       arrCateAdv: [],
       isLoading: true,
+      currenRouter: "",
     };
   }
   componentDidMount() {
@@ -29,6 +31,18 @@ export default class ToolBarCustom extends React.Component {
     if (window?.GlobalConfig?.APP?.UIBase) {
       this.getMenuShop();
     }
+
+    f7ready((f7) => {
+      f7.views.main.on("routeChange", (newRoute) => {
+        let Info = getUser();
+        this.setState({
+          currenRouter:
+            Info && Info?.acc_type === "U" && newRoute.url === "/"
+              ? "/report/"
+              : newRoute.url,
+        });
+      });
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -185,13 +199,7 @@ export default class ToolBarCustom extends React.Component {
               roles={"all"}
               href="/employee/statistical/"
             />
-            <PrivateNav
-              className="page-toolbar-bottom__link js-toolbar-link"
-              icon="las la-chart-bar"
-              text="Báo cáo"
-              roles={["director"]}
-              href="/report/"
-            />
+            <PrivateNavReport currenRouter={this.state.currenRouter} />
             {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
               <Link
                 noLinkClass
@@ -221,13 +229,16 @@ export default class ToolBarCustom extends React.Component {
               roles={[]}
               href="/employee/statistical/"
             />
-            <PrivateNav
+            <PrivateNavReport currenRouter={this.state.currenRouter} />
+            {/* <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
               icon="las la-chart-bar"
-              text="Báo cáo"
+              text="Báo cáo1"
               roles={[]}
-              href="/report/"
-            />
+              //href="/report/"
+              popoverOpen=".popover-report"
+            /> */}
+
             {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
               <Link
                 noLinkClass

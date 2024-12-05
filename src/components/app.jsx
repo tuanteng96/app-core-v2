@@ -51,7 +51,8 @@ export default class extends React.Component {
               UserService.getInfo().then(({ data }) => {
                 if (
                   data?.acc_type !== "M" &&
-                  window.GlobalConfig?.APP?.OutUser
+                  window.GlobalConfig?.APP?.OutUser &&
+                  data?.ID !== 1
                 ) {
                   SEND_TOKEN_FIREBASE().then(async (response) => {
                     if (!response.error && response.Token) {

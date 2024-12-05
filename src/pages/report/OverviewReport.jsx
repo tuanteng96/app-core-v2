@@ -5,6 +5,7 @@ import NotificationIcon from "../../components/NotificationIcon";
 import SelectStock from "../../components/SelectStock";
 import { getStockIDStorage, getUser } from "../../constants/user";
 import IframeReport from "./IframeReport";
+import IframeReportOverview from "./IframeReportOverview";
 
 window.Info = {
   User: getUser(),
@@ -43,7 +44,7 @@ export default class Report extends React.Component {
             </div>
             <div className="page-navbar__title">
               <span className="title">
-                Báo cáo chi tiết
+                Báo cáo tổng quan
               </span>
             </div>
             <div className="page-navbar__noti">
@@ -52,7 +53,7 @@ export default class Report extends React.Component {
           </div>
         </Navbar>
         <div className="h-100">
-          <IframeReport f7={this.$f7} />
+          <IframeReportOverview f7={this.$f7} />
         </div>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />

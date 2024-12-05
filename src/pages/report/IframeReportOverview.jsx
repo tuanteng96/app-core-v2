@@ -13,7 +13,7 @@ window.Info = {
 
 window.token = localStorage.getItem("token");
 
-function IframeReport({ f7 }) {
+function IframeReportOverview({ f7 }) {
   const iframeRef = useRef(null);
   const [isShow, setIsShow] = useState(false);
 
@@ -42,13 +42,14 @@ function IframeReport({ f7 }) {
           };
         }
       }
+
       window.Info = {
         ...window.Info,
-
         CrStockID: getStockIDStorage(),
         rightsSum: rightsSum,
         Stocks: getUser()["Info"]["StockRights"],
         ...getUser(),
+        rightTree: InfoU?.rightTree,
       };
       window.token = localStorage.getItem("token");
       setIsShow(true);
@@ -73,7 +74,7 @@ function IframeReport({ f7 }) {
       attributes={{
         src: `${
           (window.SERVER || SERVER_APP)
-        }/App23/index.html?v=${new Date().valueOf()}`,
+        }/Admin/Reports/index.html?v=${new Date().valueOf()}`,
         width: "100%",
         height: "100%",
         frameBorder: 0,
@@ -89,4 +90,4 @@ function IframeReport({ f7 }) {
   );
 }
 
-export default IframeReport;
+export default IframeReportOverview;

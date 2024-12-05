@@ -53,8 +53,10 @@ import EmployeeStatisticalPage from "../pages/employee/statistical/employeeStati
 import employeeListImagesPage from "../pages/employee/timeKeeping/employeeListImages";
 import employeeAttachments from "../pages/employee/timeKeeping/employeeAttachments";
 import ReportKGPage from "../pages/report-kg/ReportKG";
+
 // Thống kê
 import ReportPage from "../pages/report/index";
+import OverviewReportPage from "../pages/report/OverviewReport.jsx"
 
 import WheelSpinPage from "../pages/user/WheelSpin.jsx";
 
@@ -487,6 +489,13 @@ var routes = [
   {
     path: "/report/", // Báo cáo ngày
     asyncComponent: () => ReportPage,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  {
+    path: "/report-tq/", // Báo cáo ngày
+    asyncComponent: () => OverviewReportPage,
     options: {
       transition: "f7-cover",
     },
