@@ -56,7 +56,7 @@ import ReportKGPage from "../pages/report-kg/ReportKG";
 
 // Thống kê
 import ReportPage from "../pages/report/index";
-import OverviewReportPage from "../pages/report/OverviewReport.jsx"
+import OverviewReportPage from "../pages/report/OverviewReport.jsx";
 
 import WheelSpinPage from "../pages/user/WheelSpin.jsx";
 
@@ -103,6 +103,9 @@ const checkRouterHome = () => {
 
   if (ACC_TYPE === "U") {
     if (infoUser.ID === 1) {
+      if (window?.GlobalConfig?.APP?.fwf_report) {
+        return OverviewReportPage;
+      }
       return ReportPage;
     } else {
       const groupRole = infoUser.GroupTitles;

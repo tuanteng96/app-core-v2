@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Page } from "framework7-react";
+import { f7, Link, Page } from "framework7-react";
 import userService from "../../service/user.service";
 import { toast } from "react-toastify";
 import IframeResizer from "iframe-resizer-react";
@@ -44,7 +44,11 @@ export default class extends React.Component {
       }
     });
 
-    if (!iOS() && !window?.GlobalConfig?.SMSOTP) {
+    if (
+      !iOS() &&
+      !window?.GlobalConfig?.SMSOTP &&
+      !window.GlobalConfig?.APP?.FirebaseOTPHidden
+    ) {
       window.recaptchaVerifier = new RecaptchaVerifier(
         "sign-in-button",
         {
@@ -58,7 +62,10 @@ export default class extends React.Component {
       window.recaptchaVerifier.render().then((widgetId) => {
         window.recaptchaWidgetId = widgetId;
       });
-    } else if (!window?.GlobalConfig?.SMSOTP) {
+    } else if (
+      !window?.GlobalConfig?.SMSOTP &&
+      !window.GlobalConfig?.APP?.FirebaseOTPHidden
+    ) {
       this.setState({ Uuid: uuid() });
       this.$f7.dialog.preloader("Đang tải ...");
     }
@@ -186,36 +193,62 @@ export default class extends React.Component {
               <FormForgotSMS f7={this.$f7} f7router={this.$f7router} />
             ) : (
               <>
-                {iOS() && Uuid && (
-                  <IframeResizer
-                    heightCalculationMethod="bodyScroll"
-                    src={`${(window.SERVER || SERVER_APP)}/App2021/forgotUI?uuid=${Uuid}&color=${window?.GlobalConfig?.APP?.Css[
-                      "--ezs-color"
-                    ].replaceAll("#", "")}`}
-                    style={{ border: 0 }}
-                    onLoad={() => this.$f7.dialog.close()}
-                  />
-                )}
-                <div className={`${iOS() && "d-none"}`}>
-                  <div className="page-login__form-item">
-                    <input
-                      type="text"
-                      name="input"
-                      autoComplete="off"
-                      placeholder="Số điện thoại hoặc Email"
-                      onChange={this.handleChangeInput}
+                {!window.GlobalConfig?.APP?.FirebaseOTPHidden &&
+                  iOS() &&
+                  Uuid && (
+                    <IframeResizer
+                      heightCalculationMethod="bodyScroll"
+                      src={`${
+                        window.SERVER || SERVER_APP
+                      }/App2021/forgotUI?uuid=${Uuid}&color=${window?.GlobalConfig?.APP?.Css[
+                        "--ezs-color"
+                      ].replaceAll("#", "")}`}
+                      style={{ border: 0 }}
+                      onLoad={() => this.$f7.dialog.close()}
                     />
+                  )}
+                {(window.GlobalConfig?.APP?.FirebaseOTPHidden || !iOS()) && (
+                  <div>
+                    <div className="page-login__form-item">
+                      <input
+                        type="text"
+                        name="input"
+                        autoComplete="off"
+                        placeholder="Số điện thoại hoặc Email"
+                        onChange={this.handleChangeInput}
+                      />
+                    </div>
+                    <div className="page-login__form-item">
+                      {window.GlobalConfig?.APP?.FirebaseOTPHidden && (
+                        <button
+                          type="submit"
+                          className={`btn-login btn-me ${
+                            loading ? "loading" : ""
+                          }`}
+                          onClick={() => {
+                            f7.dialog.alert(
+                              "Nếu quý khách quên mật khẩu, vui lòng liên hệ với chúng tôi để được hỗ trợ cấp lại mật khẩu mới."
+                            );
+                          }}
+                        >
+                          <span>Nhận mã</span>
+                        </button>
+                      )}
+
+                      {!window.GlobalConfig?.APP?.FirebaseOTPHidden && (
+                        <button
+                          type="submit"
+                          className={`btn-login btn-me ${
+                            loading ? "loading" : ""
+                          }`}
+                          id="sign-in-button"
+                        >
+                          <span>Nhận mã</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div className="page-login__form-item">
-                    <button
-                      type="submit"
-                      className={`btn-login btn-me ${loading ? "loading" : ""}`}
-                      id="sign-in-button"
-                    >
-                      <span>Nhận mã</span>
-                    </button>
-                  </div>
-                </div>
+                )}
               </>
             )}
           </div>

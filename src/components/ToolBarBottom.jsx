@@ -199,7 +199,17 @@ export default class ToolBarCustom extends React.Component {
               roles={"all"}
               href="/employee/statistical/"
             />
-            <PrivateNavReport currenRouter={this.state.currenRouter} />
+            {window?.GlobalConfig?.APP?.fwf_report ? (
+              <PrivateNav
+                className="page-toolbar-bottom__link js-toolbar-link"
+                icon="las la-chart-bar"
+                text="Báo cáo"
+                roles={[]}
+                href="/report-tq/"
+              />
+            ) : (
+              <PrivateNavReport currenRouter={this.state.currenRouter} />
+            )}
             {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
               <Link
                 noLinkClass
@@ -229,16 +239,17 @@ export default class ToolBarCustom extends React.Component {
               roles={[]}
               href="/employee/statistical/"
             />
-            <PrivateNavReport currenRouter={this.state.currenRouter} />
-            {/* <PrivateNav
-              className="page-toolbar-bottom__link js-toolbar-link"
-              icon="las la-chart-bar"
-              text="Báo cáo1"
-              roles={[]}
-              //href="/report/"
-              popoverOpen=".popover-report"
-            /> */}
-
+            {window?.GlobalConfig?.APP?.fwf_report ? (
+              <PrivateNav
+                className="page-toolbar-bottom__link js-toolbar-link"
+                icon="las la-chart-bar"
+                text="Báo cáo"
+                roles={[]}
+                href="/report-tq/"
+              />
+            ) : (
+              <PrivateNavReport currenRouter={this.state.currenRouter} />
+            )}
             {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
               <Link
                 noLinkClass

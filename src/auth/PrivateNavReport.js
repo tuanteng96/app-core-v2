@@ -27,8 +27,8 @@ function PrivateNavReport({
     userRoles.length === 0 &&
     Array.isArray(roles) &&
     roles.length === 0;
-
-  if (hasRole || hasRoleLength || Number(infoUser.acc_group) === 1) {
+    
+  if (hasRole || hasRoleLength || infoUser.acc_group.includes("1")) {
     return (
       <>
         <Link

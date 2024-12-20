@@ -60,6 +60,37 @@ const GroupByCount = (List, Count) => {
   }, []);
 };
 
+const formatTimeOpenClose = ({ Text, InitialTime, Date }) => {
+  let Times = { ...InitialTime };
+
+  let CommonTime = Array.from(Text.matchAll(/\[([^\][]*)]/g), (x) => x[1]);
+
+  if (CommonTime && CommonTime.length > 0) {
+    let CommonTimeJs = CommonTime[0].split(";");
+    Times.TimeOpen = CommonTimeJs[0];
+    Times.TimeClose = CommonTimeJs[1];
+  }
+
+  let PrivateTime = Array.from(Text.matchAll(/{+([^}]+)}+/g), (x) => x[1]);
+  PrivateTime = PrivateTime.filter((x) => x.split(";").length > 2).map((x) => ({
+    DayName: x.split(";")[0],
+    TimeOpen: x.split(";")[1],
+    TimeClose: x.split(";")[2],
+  }));
+  if (Date) {
+    let index = PrivateTime.findIndex(
+      (x) => x.DayName === moment(Date, "DD/MM/YYYY").format("ddd")
+    );
+
+    if (index > -1) {
+      Times.TimeOpen = PrivateTime[index].TimeOpen;
+      Times.TimeClose = PrivateTime[index].TimeClose;
+    }
+  }
+
+  return Times;
+};
+
 export default class ScheduleSpa extends React.Component {
   constructor() {
     super();
@@ -98,6 +129,9 @@ export default class ScheduleSpa extends React.Component {
       } else {
         this.getListChoose(new Date(), this.state.ListDisableChoose);
       }
+    }
+    if (this.props.DateTimeBook?.date !== prevProps.DateTimeBook.date) {
+      this.getListChoose(this.props.DateTimeBook?.date, this.state.ListDisableChoose);
     }
   }
 
@@ -147,7 +181,6 @@ export default class ScheduleSpa extends React.Component {
     const { TimeNext } = window?.GlobalConfig?.APP?.Booking;
     let TimeOpen = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
     let TimeClose = window?.GlobalConfig?.APP?.Booking?.TimeClose;
-
     //
     const { arrStock } = this.state;
     const { DateTimeBook } = this.props;
@@ -155,28 +188,33 @@ export default class ScheduleSpa extends React.Component {
       ? arrStock.findIndex((x) => x.ID === Number(DateTimeBook.stock))
       : -1;
 
-    if(indexCr > -1) {
-      let StockI = arrStock[indexCr].KeySEO
-      if(StockI) {
-        let timeSplit = StockI.split(";")
-        var isValid = (time) => /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(time);
-        if(timeSplit && timeSplit.length >= 1 && isValid(timeSplit[0]) && isValid(timeSplit[1])) {
-          TimeOpen.hour = timeSplit[0].split(":")[0]
-          TimeOpen.minute = timeSplit[0].split(":")[1]
-          TimeClose.hour = timeSplit[1].split(":")[0]
-          TimeClose.minute = timeSplit[1].split(":")[1]
-        }
-        else {
-          TimeOpen = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
-          TimeClose = window?.GlobalConfig?.APP?.Booking?.TimeClose;
-        }
-      }
-      else {
+    if (indexCr > -1) {
+      let StockI = arrStock[indexCr].KeySEO;
+
+      if (StockI) {
+        let TimesObj = formatTimeOpenClose({
+          Text: StockI,
+          InitialTime: {
+            TimeOpen: TimeOpen
+              ? moment().set(TimeOpen).format("HH:mm:ss")
+              : "06:00:00",
+            TimeClose: TimeClose
+              ? moment().set(TimeClose).format("HH:mm:ss")
+              : "18:00:00",
+          },
+          Date: DateTimeBook.date,
+        });
+
+        TimeOpen.hour = TimesObj.TimeOpen.split(":")[0];
+        TimeOpen.minute = TimesObj.TimeOpen.split(":")[1];
+        TimeClose.hour = TimesObj.TimeClose.split(":")[0];
+        TimeClose.minute = TimesObj.TimeClose.split(":")[1];
+      } else {
         TimeOpen = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
         TimeClose = window?.GlobalConfig?.APP?.Booking?.TimeClose;
       }
     }
-    
+
     //
     const indexLock =
       ListLock &&
