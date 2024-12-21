@@ -179,11 +179,15 @@ export default class ScheduleSpa extends React.Component {
 
   getListChoose = (DateChoose, ListLock) => {
     const { TimeNext } = window?.GlobalConfig?.APP?.Booking;
-    let TimeOpen = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
-    let TimeClose = window?.GlobalConfig?.APP?.Booking?.TimeClose;
+    let TimeOpenG = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
+    let TimeCloseG = window?.GlobalConfig?.APP?.Booking?.TimeClose;
+
+    let TimeOpen = TimeOpenG;
+    let TimeClose = TimeCloseG;
     //
     const { arrStock } = this.state;
     const { DateTimeBook } = this.props;
+    
     let indexCr = arrStock
       ? arrStock.findIndex((x) => x.ID === Number(DateTimeBook.stock))
       : -1;
@@ -192,6 +196,7 @@ export default class ScheduleSpa extends React.Component {
       let StockI = arrStock[indexCr].KeySEO;
 
       if (StockI) {
+        
         let TimesObj = formatTimeOpenClose({
           Text: StockI,
           InitialTime: {
@@ -210,11 +215,11 @@ export default class ScheduleSpa extends React.Component {
         TimeClose.hour = TimesObj.TimeClose.split(":")[0];
         TimeClose.minute = TimesObj.TimeClose.split(":")[1];
       } else {
+        
         TimeOpen = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
         TimeClose = window?.GlobalConfig?.APP?.Booking?.TimeClose;
       }
     }
-
     //
     const indexLock =
       ListLock &&
