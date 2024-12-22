@@ -62,7 +62,6 @@ const GroupByCount = (List, Count) => {
 
 const formatTimeOpenClose = ({ Text, InitialTime, Date }) => {
   let Times = { ...InitialTime };
-
   let CommonTime = Array.from(Text.matchAll(/\[([^\][]*)]/g), (x) => x[1]);
 
   if (CommonTime && CommonTime.length > 0) {
@@ -80,14 +79,14 @@ const formatTimeOpenClose = ({ Text, InitialTime, Date }) => {
   if (Date) {
     let index = PrivateTime.findIndex(
       (x) => x.DayName === moment(Date, "DD/MM/YYYY").format("ddd")
-    );
-
+    );  
+    
     if (index > -1) {
       Times.TimeOpen = PrivateTime[index].TimeOpen;
       Times.TimeClose = PrivateTime[index].TimeClose;
     }
+    
   }
-
   return Times;
 };
 
@@ -209,7 +208,6 @@ export default class ScheduleSpa extends React.Component {
           },
           Date: DateTimeBook.date,
         });
-
         TimeOpen.hour = TimesObj.TimeOpen.split(":")[0];
         TimeOpen.minute = TimesObj.TimeOpen.split(":")[1];
         TimeClose.hour = TimesObj.TimeClose.split(":")[0];
@@ -234,7 +232,7 @@ export default class ScheduleSpa extends React.Component {
     for (let index = 0; index < 3; index++) {
       let day = moment().add(index, "days").toDate();
       if (DateChoose && index === 2) {
-        day = DateChoose;
+        day = moment(DateChoose, "DD/MM/YYYY").toDate();
       }
       let startDate = moment(day).set(TimeOpen);
       let closeDate = moment(day).set(TimeClose);
