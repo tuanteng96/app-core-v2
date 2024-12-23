@@ -69,6 +69,13 @@ export default class extends React.Component {
             autoClose: 3000,
           });
           this.getListBooks();
+          window.OnMemberBook &&
+              window.OnMemberBook({
+                Member: item.Member,
+                booking: item,
+                action: "TU_CHOI",
+                from: "APP"
+              });
         })
         .catch((er) => console.log(er));
     });

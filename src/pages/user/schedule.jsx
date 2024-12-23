@@ -317,7 +317,9 @@ export default class extends React.Component {
 
     let newDesc =
       window.GlobalConfig?.APP?.SL_khach && AmountPeople
-        ? `Số lượng khách: ${AmountPeople.value}. \nTags: ${Tags.toString()} \nGhi chú: ${
+        ? `Số lượng khách: ${
+            AmountPeople.value
+          }. \nTags: ${Tags.toString()} \nGhi chú: ${
             (serviceNote ? serviceNote.replaceAll("\n", "</br>") : "") +
             (OldBook
               ? ` (Thay đổi từ ${OldBook?.RootTitles} - ${moment(
@@ -388,6 +390,14 @@ export default class extends React.Component {
               StaffSelected: "",
             });
             this.nextStep();
+            window.OnMemberBook &&
+              window.OnMemberBook({
+                Member: infoUser,
+                booking: { ...dataSubmit.booking[0], Roots: selectedService },
+                action: "ADD_EDIT",
+                from: "APP",
+                delete: dataSubmit?.deletes ? dataSubmit?.deletes : null
+              });
           }, 300);
         }
       })
@@ -510,6 +520,7 @@ export default class extends React.Component {
       StaffSelected,
       AmountPeople,
     } = this.state;
+
     return (
       <Page
         name="schedule"
