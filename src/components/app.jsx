@@ -46,6 +46,8 @@ export default class extends React.Component {
           init: function () {
             window.hasPopup = false;
 
+            window.hasRating = false;
+
             const infoUser = getUser();
             if (infoUser && !window.GlobalConfig.APP.isNotFechToken) {
               UserService.getInfo().then(({ data }) => {

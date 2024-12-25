@@ -99,14 +99,13 @@ export default class ModalReviews extends React.Component {
       .then((response) => {
         const arrReview = response.data.data;
 
-        if (arrReview.length > 0) {
-          setTimeout(() => {
-            this.setState({
-              isReview: true,
-              arrReview: arrReview,
-              memberid: memberid,
-            });
-          }, 200);
+        if (!window.hasRating && arrReview.length > 0) {
+          this.setState({
+            isReview: true,
+            arrReview: arrReview,
+            memberid: memberid,
+          });
+          window.hasRating = true
         }
       })
       .catch((er) => console.log(er));
