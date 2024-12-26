@@ -79,13 +79,12 @@ const formatTimeOpenClose = ({ Text, InitialTime, Date }) => {
   if (Date) {
     let index = PrivateTime.findIndex(
       (x) => x.DayName === moment(Date, "DD/MM/YYYY").format("ddd")
-    );  
-    
+    );
+
     if (index > -1) {
       Times.TimeOpen = PrivateTime[index].TimeOpen;
       Times.TimeClose = PrivateTime[index].TimeClose;
     }
-    
   }
   return Times;
 };
@@ -130,7 +129,10 @@ export default class ScheduleSpa extends React.Component {
       }
     }
     if (this.props.DateTimeBook?.date !== prevProps.DateTimeBook.date) {
-      this.getListChoose(this.props.DateTimeBook?.date, this.state.ListDisableChoose);
+      this.getListChoose(
+        this.props.DateTimeBook?.date,
+        this.state.ListDisableChoose
+      );
     }
   }
 
@@ -186,7 +188,7 @@ export default class ScheduleSpa extends React.Component {
     //
     const { arrStock } = this.state;
     const { DateTimeBook } = this.props;
-    
+
     let indexCr = arrStock
       ? arrStock.findIndex((x) => x.ID === Number(DateTimeBook.stock))
       : -1;
@@ -195,7 +197,6 @@ export default class ScheduleSpa extends React.Component {
       let StockI = arrStock[indexCr].KeySEO;
 
       if (StockI) {
-        
         let TimesObj = formatTimeOpenClose({
           Text: StockI,
           InitialTime: {
@@ -213,7 +214,6 @@ export default class ScheduleSpa extends React.Component {
         TimeClose.hour = TimesObj.TimeClose.split(":")[0];
         TimeClose.minute = TimesObj.TimeClose.split(":")[1];
       } else {
-        
         TimeOpen = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
         TimeClose = window?.GlobalConfig?.APP?.Booking?.TimeClose;
       }
@@ -235,7 +235,12 @@ export default class ScheduleSpa extends React.Component {
         day = moment(DateChoose, "DD/MM/YYYY").toDate();
       }
       let startDate = moment(day).set(TimeOpen);
-      let closeDate = moment(day).set(TimeClose);
+      let closeDate = moment(day)
+        .set(TimeClose)
+        .subtract(
+          window?.top?.GlobalConfig?.APP?.ScheduledMinutes || 0,
+          "minutes"
+        );
       var duration = moment.duration(closeDate.diff(startDate));
       var MinutesTotal = duration.asMinutes();
       let newListTime = [];
