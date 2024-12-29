@@ -40,18 +40,22 @@ const CustomOption = ({ children, data, ...props }) => {
     <components.Option {...props}>
       <div className="d-flex justify-content-between align-items-center">
         {children}
-        <ReactStars
-          count={5}
-          size={20}
-          activeColor="#f3cd00"
-          value={
-            data.source.AverRate > 5
-              ? 5
-              : Math.round(data.source.AverRate * 2) / 2
-          }
-          edit={false}
-          isHalf={true}
-        />
+        {window.GlobalConfig?.Admin?.dat_lich_nhan_vien_sao ? (
+          <ReactStars
+            count={5}
+            size={20}
+            activeColor="#f3cd00"
+            value={
+              data.source.AverRate > 5
+                ? 5
+                : Math.round(data.source.AverRate * 2) / 2
+            }
+            edit={false}
+            isHalf={true}
+          />
+        ) : (
+          <></>
+        )}
       </div>
     </components.Option>
   );
@@ -396,7 +400,7 @@ export default class extends React.Component {
                 booking: { ...dataSubmit.booking[0], Roots: selectedService },
                 action: "ADD_EDIT",
                 from: "APP",
-                delete: dataSubmit?.deletes ? dataSubmit?.deletes : null
+                delete: dataSubmit?.deletes ? dataSubmit?.deletes : null,
               });
           }, 300);
         }

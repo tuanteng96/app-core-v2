@@ -472,10 +472,7 @@ export default class extends React.Component {
                         </div>
                         <div className="note">
                           <div>{this.vietnamesText(item)}</div>
-                          {!item?.ReturnOfID &&
-                          item?.IsOrderRemainPay &&
-                          item?.Type !== "THANH_TOAN_DH" &&
-                          tem?.Type !== "HOAN_TIEN" ? (
+                          {item.canh_bao_thanh_toan ? (
                             <div className="text-danger">
                               ( Chưa thanh toán hết )
                             </div>
