@@ -86,10 +86,9 @@ export default class SelectStock extends React.Component {
     }
   }
 
-  handleChangeStock = (event) => {
-    var target = event.target;
-    var CheckedStock = target.value;
-    var NameStock = target.title;
+  handleChangeStock = (item) => {
+    var CheckedStock = item.ID;
+    var NameStock = item.Title;
     var bodyData = new FormData();
     bodyData.append("stockid", CheckedStock);
 
@@ -179,8 +178,9 @@ export default class SelectStock extends React.Component {
                     (parseInt(StockID) === item.ID ? "currentStock" : "")
                   }
                   key={item.ID}
+                  onClick={(e) => this.handleChangeStock(item)}
                 >
-                  <input
+                  {/* <input
                     name="ValueStock"
                     type="radio"
                     value={item.ID}
@@ -188,8 +188,8 @@ export default class SelectStock extends React.Component {
                     id={"stock" + item.ID}
                     defaultChecked={parseInt(StockID) === item.ID}
                     onChange={(e) => this.handleChangeStock(e)}
-                  />
-                  <label htmlFor={"stock" + item.ID}>
+                  /> */}
+                  <label>
                     {item.Title} <i className="las la-check"></i>
                   </label>
                 </div>
