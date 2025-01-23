@@ -1032,11 +1032,14 @@ export default class employeeStatistical extends React.Component {
                     <div className="tr">
                       <div className="td">Tạm ứng còn lại</div>
                       <div className="td">
-                        {dataSalary &&
+                          {
+                            dataSalary && formatPriceVietnamese(Math.abs(dataSalary.TON_TAM_UNG))
+                          }
+                        {/* {dataSalary &&
                           formatPriceVietnamese(
                             Math.abs(this.numTotal(dataSalary.TAM_UNG)) -
                               Math.abs(this.numTotal(dataSalary.THU_HOAN_UNG))
-                          )}
+                          )} */}
                       </div>
                     </div>
                     <div className="tr">
@@ -1050,11 +1053,8 @@ export default class employeeStatistical extends React.Component {
                                 : Math.ceil(
                                     (this.basicSalary(dataSalary) / 100) *
                                       dataSalary.TY_LE_GIU_LUONG
-                                  )) -
-                              (Math.abs(this.numTotal(dataSalary.TAM_UNG)) -
-                                Math.abs(
-                                  this.numTotal(dataSalary.THU_HOAN_UNG)
-                                ))
+                                  )) +
+                              (dataSalary?.TON_TAM_UNG)
                           )}
                       </div>
                     </div>
