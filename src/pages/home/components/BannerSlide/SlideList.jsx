@@ -136,7 +136,7 @@ export default class SlideList extends React.Component {
                         >
                           <img
                             src={toAbsoluteUrl(
-                              "/Upload/image/" + item.FileName
+                              "/Upload/image/" + (item.FileName2 || item.FileName)
                             )}
                             alt={item.Title}
                           />
