@@ -115,7 +115,7 @@ export default class SlideListCenter extends React.Component {
                       key={index}
                     >
                       <img
-                        src={toAbsoluteUrl("/Upload/image/" + item.FileName)}
+                        src={toAbsoluteUrl("/Upload/image/" + (item.FileName2 || item.FileName))}
                         alt={item.Title}
                       />
                     </Link>
