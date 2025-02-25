@@ -190,7 +190,7 @@ export default class extends React.Component {
     if (!content) return "";
     return content.replace(
       /src=\"\//g,
-      'src="' + (window.SERVER || SERVER_APP)+ "/"
+      'src="' + (window.SERVER || SERVER_APP) + "/"
     );
   };
 
@@ -460,9 +460,18 @@ export default class extends React.Component {
                                     }
                                   >
                                     {item.source.IsDisplayPrice === 0 ? (
-                                      <></>
-                                      // <span className="price-to">Liên hệ</span>
+                                      <>
+                                        {window?.GlobalConfig?.APP
+                                          ?.ContactPrice ? (
+                                          <span className="price-to">
+                                            Liên hệ
+                                          </span>
+                                        ) : (
+                                          <></>
+                                        )}
+                                      </>
                                     ) : (
+                                      // <span className="price-to">Liên hệ</span>
                                       <React.Fragment>
                                         <span className="price-to">
                                           {formatPriceVietnamese(

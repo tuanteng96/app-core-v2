@@ -120,10 +120,14 @@ function ShopListServiceItem({ item, CateId, f7router, lines }) {
                         }
                       >
                         {subitem.IsDisplayPrice === 0 ? (
-                          <></>
-                          // <span className="price-to">Liên hệ</span>
+                          <>
+                            {window?.GlobalConfig?.APP?.ContactPrice ? (
+                              <span className="price-to">Liên hệ</span>
+                            ) : (
+                              <></>
+                            )}
+                          </>
                         ) : (
-                          
                           <React.Fragment>
                             <span className="price-to">
                               {formatPriceVietnamese(subitem.PriceProduct)}
@@ -165,9 +169,15 @@ function ShopListServiceItem({ item, CateId, f7router, lines }) {
                       }
                     >
                       {subitem.IsDisplayPrice === 0 ? (
-                        <></>
-                        // <span className="price-to">Liên hệ</span>
+                        <>
+                          {window?.GlobalConfig?.APP?.ContactPrice ? (
+                            <span className="price-to">Liên hệ</span>
+                          ) : (
+                            <></>
+                          )}
+                        </>
                       ) : (
+                        // <span className="price-to">Liên hệ</span>
                         <React.Fragment>
                           <span className="price-to">
                             {formatPriceVietnamese(subitem.PriceProduct)}
