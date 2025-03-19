@@ -162,14 +162,14 @@ export default class extends React.Component {
               }
             }
           }
-
+          
           if (currentBook) {
             this.setState({
               DateTimeBook: {
                 date: moment(currentBook.BookDate).format("DD/MM/YYYY"),
                 time: moment(currentBook.BookDate).format("HH:mm"),
-                stock: currentBook.Stock.ID,
-                nameStock: currentBook.StockID,
+                stock: currentBook?.Stock?.ID || "",
+                nameStock: currentBook?.Stock?.Title || "",
                 AtHome: currentBook.AtHome,
                 isOther: this.isOther(currentBook.BookDate),
               },
@@ -177,6 +177,15 @@ export default class extends React.Component {
               selectedService: currentBook.Roots,
               AmountPeople,
               OldBook: currentBook,
+              StaffSelected:
+                currentBook?.UserServices &&
+                currentBook?.UserServices.length > 0
+                  ? currentBook?.UserServices.map((x) => ({
+                      ...x,
+                      label: x.FullName,
+                      value: x.ID,
+                    }))
+                  : "",
             });
           }
 
