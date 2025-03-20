@@ -97,6 +97,7 @@ export default class extends React.Component {
         label: "1 khách",
         value: 1,
       },
+      prevBook: null,
     };
   }
 
@@ -162,7 +163,7 @@ export default class extends React.Component {
               }
             }
           }
-          
+
           if (currentBook) {
             this.setState({
               DateTimeBook: {
@@ -186,6 +187,7 @@ export default class extends React.Component {
                       value: x.ID,
                     }))
                   : "",
+              prevBook: currentBook,
             });
           }
 
@@ -281,6 +283,7 @@ export default class extends React.Component {
       StaffSelected,
       AmountPeople,
       OldBook,
+      prevBook
     } = this.state;
 
     const infoUser = getUser();
@@ -363,6 +366,7 @@ export default class extends React.Component {
 
     if (this.$f7route.params.ID && this.state.isParams) {
       dataSubmit.deletes = [{ ID: this.$f7route.params.ID }];
+      dataSubmit.prevDeletes = [prevBook]
     }
 
     this.setState({
