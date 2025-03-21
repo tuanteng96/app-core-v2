@@ -9,8 +9,8 @@ import {
   Subnavbar,
   Tabs,
   Tab,
+  Popover,
 } from "framework7-react";
-import NotificationIcon from "../../components/NotificationIcon";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import BookDataService from "../../service/book.service";
 
@@ -26,7 +26,9 @@ export default class extends React.Component {
       isRefresh: false,
       tabCurrent: "bookcard",
       listBooking: [],
+      listExpected: [],
       loading: false,
+      isBook: true,
     };
   }
 
@@ -39,7 +41,22 @@ export default class extends React.Component {
     BookDataService.getListBook(userInfo.ID)
       .then(({ data }) => {
         this.setState({
-          listBooking: groupbyDDHHMM2(data.data),
+          listBooking: groupbyDDHHMM2(
+            data?.data
+              ? data.data.filter(
+                  (x) =>
+                    !x.Desc ||
+                    (x.Desc && x.Desc.indexOf("Tự động đặt lịch") === -1)
+                )
+              : []
+          ),
+          listExpected: groupbyDDHHMM2(
+            data?.data
+              ? data.data.filter(
+                  (x) => x.Desc && x.Desc.indexOf("Tự động đặt lịch") > -1
+                )
+              : []
+          ),
           loading: false,
         });
       })
@@ -70,12 +87,12 @@ export default class extends React.Component {
           });
           this.getListBooks();
           window.OnMemberBook &&
-              window.OnMemberBook({
-                Member: item.Member,
-                booking: item,
-                action: "TU_CHOI",
-                from: "APP"
-              });
+            window.OnMemberBook({
+              Member: item.Member,
+              booking: item,
+              action: "TU_CHOI",
+              from: "APP",
+            });
         })
         .catch((er) => console.log(er));
     });
@@ -87,7 +104,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const { loading, listBooking } = this.state;
+    const { loading, listBooking, listExpected, isBook } = this.state;
     return (
       <Page
         name="schedule-manage"
@@ -103,17 +120,70 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Quản lý đặt lịch</span>
+              <span className="title">{isBook ? "Quản lý đặt lịch" : "Lịch dự kiến"}</span>
             </div>
             <div className="page-navbar__noti">
-              <NotificationIcon />
+              <Link noLinkClass popoverOpen=".popover-schedules">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  style={{ width: "22px" }}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5"
+                  />
+                </svg>
+              </Link>
+              <Popover className="popover-schedules" style={{ width: "180px" }}>
+                <div
+                  style={{
+                    padding: "6px 0",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "start",
+                  }}
+                >
+                  <Link
+                    style={{
+                      display: "block",
+                      padding: "12px 15px",
+                      color: isBook ? "var(--ezs-color)" : "#000",
+                      borderBottom: "1px solid #e9e9e9",
+                      width: "100%",
+                    }}
+                    popoverClose
+                    onClick={() => this.setState({ isBook: true })}
+                  >
+                    Danh sách đặt lịch
+                  </Link>
+                  <Link
+                    style={{
+                      display: "block",
+                      padding: "12px 15px",
+                      color: !isBook ? "var(--ezs-color)" : "#000",
+                      width: "100%",
+                    }}
+                    popoverClose
+                    onClick={() => this.setState({ isBook: false })}
+                  >
+                    Lịch dự kiến
+                  </Link>
+                </div>
+              </Popover>
             </div>
           </div>
         </Navbar>
         <div className="page-wrapper">
           <div className="chedule-manage">
             <CardSchedulingComponent
+              isBook={isBook}
               listBooking={listBooking}
+              listExpected={listExpected}
               loading={loading}
               onDelete={this.onDelete}
               f7={this.$f7router}
