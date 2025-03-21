@@ -185,7 +185,7 @@ export default class extends React.Component {
                       ...x,
                       label: x.FullName,
                       value: x.ID,
-                    }))
+                    }))[0]
                   : "",
               prevBook: currentBook,
             });
@@ -283,7 +283,7 @@ export default class extends React.Component {
       StaffSelected,
       AmountPeople,
       OldBook,
-      prevBook
+      prevBook,
     } = this.state;
 
     const infoUser = getUser();
@@ -366,9 +366,8 @@ export default class extends React.Component {
 
     if (this.$f7route.params.ID && this.state.isParams) {
       dataSubmit.deletes = [{ ID: this.$f7route.params.ID }];
-      dataSubmit.prevDeletes = [prevBook]
+      dataSubmit.prevDeletes = [prevBook];
     }
-
     this.setState({
       isLoading: true,
     });
