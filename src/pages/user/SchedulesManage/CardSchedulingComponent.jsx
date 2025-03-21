@@ -223,7 +223,7 @@ export default class CardSchedulingComponent extends React.Component {
                                     </Col>
                                   </Row>
                                 </div>
-                                <div
+                                {/* <div
                                   className="stock"
                                   style={{
                                     justifyContent: "space-between",
@@ -253,7 +253,7 @@ export default class CardSchedulingComponent extends React.Component {
                                       Hủy Lịch
                                     </button>
                                   </div>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           ))}

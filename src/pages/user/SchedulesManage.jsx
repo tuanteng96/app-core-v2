@@ -120,7 +120,7 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">{isBook ? "Quản lý đặt lịch" : "Lịch dự kiến"}</span>
+              <span className="title">{isBook ? "Quản lý đặt lịch" : "Dự kiến đặt lịch"}</span>
             </div>
             <div className="page-navbar__noti">
               <Link noLinkClass popoverOpen=".popover-schedules">
@@ -171,7 +171,7 @@ export default class extends React.Component {
                     popoverClose
                     onClick={() => this.setState({ isBook: false })}
                   >
-                    Lịch dự kiến
+                    Dự kiến đặt lịch
                   </Link>
                 </div>
               </Popover>
