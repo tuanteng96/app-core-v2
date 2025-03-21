@@ -414,6 +414,7 @@ export default class extends React.Component {
                 action: "ADD_EDIT",
                 from: "APP",
                 delete: dataSubmit?.deletes ? dataSubmit?.deletes : null,
+                prevDelete : prevBook
               });
           }, 300);
         }
