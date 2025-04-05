@@ -1,6 +1,4 @@
-import {
-  getToken
-} from "../constants/user";
+import { getToken } from "../constants/user";
 import http from "../service/http-common";
 
 class UserService {
@@ -13,7 +11,7 @@ class UserService {
       }`
     );
   }
-  QRCodeLogin(qrcode, deviceid = '') {
+  QRCodeLogin(qrcode, deviceid = "") {
     return http.get(
       `/api/v3/qcode?cmd=login&token=${qrcode}&deviceid=${deviceid}&v=${
         window?.GlobalConfig?.APP?.DeviceCheck ? "2" : ""
@@ -25,10 +23,14 @@ class UserService {
       `/app/index.aspx?Fn=${fullname}&Phone=${phone}&NewPWD=${password}&cmd=reg&ByStock=${stock}&USN=${phone}&Gender=-1`
     );
   }
-  getInfo(Token, deviceid = '') {
-    return http.get(`/app/index.aspx?cmd=authen&token=${Token || getToken()}&deviceid=${deviceid}&v=${
-      window?.GlobalConfig?.APP?.DeviceCheck ? "2" : ""
-    }`);
+  getInfo(Token, deviceid = "") {
+    return http.get(
+      `/app/index.aspx?cmd=authen&token=${
+        Token || getToken()
+      }&deviceid=${deviceid}&v=${
+        window?.GlobalConfig?.APP?.DeviceCheck ? "2" : ""
+      }`
+    );
   }
   getSubscribe(usn, isUser, token) {
     return http.get(
@@ -84,28 +86,63 @@ class UserService {
   getDiary(username, password) {
     return http.post(`/app/index.aspx?cmd=noti&token=${getToken()}`);
   }
-  getReviews(memberid, params = '') {
+  getReviews(memberid, params = "") {
     return http.get(
       `/api/v3/OrderService?cmd=get_service_unrate&mid=${memberid}${params}`
     );
   }
-  getAff(data, token = '') {
+  getAff(data, token = "") {
     return http.post(
-      `/api/v3/member23@MemberByAffMemberID`, JSON.stringify(data), {
+      `/api/v3/member23@MemberByAffMemberID`,
+      JSON.stringify(data),
+      {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
   }
-  getPoints(data, token = '') {
-    return http.post(
-      `/api/v3/MemberPoint27@Get`, JSON.stringify(data), {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+  getPoints(data, token = "") {
+    return http.post(`/api/v3/MemberPoint27@Get`, JSON.stringify(data), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+  getSheduleClassList(data, token = "") {
+    return http.post(`/api/v3/OSC@ClassList`, JSON.stringify(data), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+  getSheduleOsList(data, token = "") {
+    return http.post(`/api/v3/OSC@ClassMemberList`, JSON.stringify(data), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+  addEditSheduleOs(data, token = "") {
+    return http.post(`/api/v3/OSC@ClassMemberEDIT`, JSON.stringify(data), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+  getSheduleOsMin(data, token = "") {
+    return http.post(`/api/v3/OS25@Min`, JSON.stringify(data), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+  addEditSheduleUpdateOs(data, token = "") {
+    return http.post(`/api/v3/OS25@UpdateList`, JSON.stringify(data), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
   postReviews(memberid, data) {
     return http.post(
@@ -122,18 +159,19 @@ class UserService {
     return http.get(
       `/api/v3/noti2?cmd=nextoffset&acctype=${acctype}&accid=${accid}&offset=${offset}&next=${next}${
         refresh ? "&refresh=1" : ""
-      }`, {
+      }`,
+      {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       }
     );
   }
   getNotiDetail(Id) {
     return http.get(`/api/v3/noticlient?cmd=detail&ids=${Id}`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
   }
   confirmBook(data) {
@@ -145,15 +183,15 @@ class UserService {
   deleteNotification(data) {
     return http.post(`/api/v3/noti2/?cmd=clear2`, data, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
   }
   readedNotification(data) {
     return http.post(`/api/v3/noti2/?cmd=readed2`, data, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
   }
   getOrderAll(memberID) {
@@ -176,20 +214,12 @@ class UserService {
   authForgetReset(data) {
     return http.post(`/api/v3/authen?cmd=reset`, data);
   }
-  authSendTokenFirebase({
-    Token,
-    Type,
-    ID
-  }) {
+  authSendTokenFirebase({ Token, Type, ID }) {
     return http.get(
       `/api/v3/apptoken?cmd=call&token=${Token}&accid=${ID}&acctype=${Type}`
     );
   }
-  authRemoveFirebase({
-    Token,
-    Type,
-    ID
-  }) {
+  authRemoveFirebase({ Token, Type, ID }) {
     return http.get(
       `/api/v3/apptoken?cmd=call&token=${Token}&accid=${ID}&acctype=${Type}&logout=1`
     );
@@ -201,19 +231,23 @@ class UserService {
     );
   }
   sendStringee(body) {
-    return http.post('/api/v3/Stringee24@send', JSON.stringify(body))
+    return http.post("/api/v3/Stringee24@send", JSON.stringify(body));
   }
   verifyStringee(body) {
-    return http.post('/api/v3/Stringee24@get', JSON.stringify(body))
+    return http.post("/api/v3/Stringee24@get", JSON.stringify(body));
   }
   existPhone(phone) {
-    return http.get(`/api/gl/select2?cmd=member&q=${phone}&CurrentStockID=&member=`)
+    return http.get(
+      `/api/gl/select2?cmd=member&q=${phone}&CurrentStockID=&member=`
+    );
   }
   checkAuthenVQMM(body) {
-    return http.post(`/api/v3/contact23@checkContact`, JSON.stringify(body))
+    return http.post(`/api/v3/contact23@checkContact`, JSON.stringify(body));
   }
   historyService(memberid) {
-    return http.get(`/services/preview.aspx?a=1&token=${getToken()}&cmd=loadOrderService&MemberID=${memberid}&IsMember=0&fromOrderAdd=0`)
+    return http.get(
+      `/services/preview.aspx?a=1&token=${getToken()}&cmd=loadOrderService&MemberID=${memberid}&IsMember=0&fromOrderAdd=0`
+    );
   }
 }
 

@@ -166,7 +166,7 @@ function StocksProvincesFilter({
               className="las la-times position-absolute text-white"
               style={{
                 fontSize: "35px",
-                bottom: "42%",
+                bottom: "52%",
                 right: "15px",
                 opacity: ".8",
               }}

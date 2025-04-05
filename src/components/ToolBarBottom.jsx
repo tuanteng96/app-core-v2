@@ -1,5 +1,5 @@
 import React from "react";
-import { f7ready, Link, List, ListItem, Popover } from "framework7-react";
+import { f7, f7ready, Link, List, ListItem, Popover } from "framework7-react";
 import { getStockIDStorage, getUser } from "../constants/user";
 import iconBook from "../assets/images/bookicon.png";
 import { checkRole } from "../constants/checkRole";
@@ -10,6 +10,26 @@ import BookDataService from "../service/book.service";
 import { PopupConfirm } from "../pages/home/components/PopupConfirm";
 import { toast } from "react-toastify";
 import PrivateNavReport from "../auth/PrivateNavReport";
+import userService from "../service/user.service";
+
+function stringToSlug(str) {
+  // remove accents
+  var from =
+      "àáãảạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệđùúủũụưừứửữựòóỏõọôồốổỗộơờớởỡợìíỉĩịäëïîöüûñçýỳỹỵỷ",
+    to =
+      "aaaaaaaaaaaaaaaaaeeeeeeeeeeeduuuuuuuuuuuoooooooooooooooooiiiiiaeiiouuncyyyyy";
+  for (var i = 0, l = from.length; i < l; i++) {
+    str = str.replace(RegExp(from[i], "gi"), to[i]);
+  }
+
+  str = str
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\-]/g, "-")
+    .replace(/-+/g, "-");
+
+  return str;
+}
 
 export default class ToolBarCustom extends React.Component {
   constructor() {
@@ -175,6 +195,34 @@ export default class ToolBarCustom extends React.Component {
         })
         .catch((error) => console.log(error));
     }
+  };
+
+  onBookClass = () => {
+    f7.dialog.preloader("Vui lòng đợi ...");
+    const infoUser = getUser();
+    let memberid = infoUser?.ID || 0;
+    userService.getListTagService(memberid, 1).then(({ data }) => {
+      let ServiceName = window.GlobalConfig.Admin?.lop_hoc_pt_dv || "";
+      let Lists =
+        data &&
+        data
+          .filter((x) => x.TabIndex !== 2)
+          .filter((x) => {
+            let ServiceNameArr = ServiceName.split(",").map((o) =>
+              stringToSlug(o)
+            );
+            return ServiceNameArr.some(
+              (o) => stringToSlug(x.OrderItemProdTitle).indexOf(o) > -1
+            );
+          });
+      f7.dialog.close();
+      if (Lists && Lists.length > 0) {
+        f7.views.main.router.navigate("/schedule-os/");
+        //
+      } else {
+        f7.dialog.alert("Bạn chưa có thẻ liệu trình để tham gia lớp.");
+      }
+    });
   };
 
   menuToolbar = () => {
@@ -403,16 +451,70 @@ export default class ToolBarCustom extends React.Component {
               </>
             ) : (
               <>
-                <Link
-                  noLinkClass
-                  href="/schedule/"
-                  className="page-toolbar-bottom__link active"
-                >
-                  <div className="page-toolbar-bottom__link-inner">
-                    <img src={iconBook} alt="Đặt lịch" />
-                    {/* <i className="las la-calendar-plus"></i> */}
-                  </div>
-                </Link>
+                {window?.GlobalConfig?.GlobalConfig?.Admin?.lop_hoc_pt ? (
+                  <Link
+                    noLinkClass
+                    href="/schedule/"
+                    className="page-toolbar-bottom__link active"
+                  >
+                    <div className="page-toolbar-bottom__link-inner">
+                      <img src={iconBook} alt="Đặt lịch" />
+                    </div>
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      popoverOpen=".popover-book"
+                      noLinkClass
+                      className="page-toolbar-bottom__link active"
+                    >
+                      <div className="page-toolbar-bottom__link-inner">
+                        <img src={iconBook} alt="Đặt lịch" />
+                      </div>
+                    </Link>
+                    <Popover
+                      className="popover-book"
+                      style={{
+                        width: "200px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          padding: "5px 0",
+                          textAlign: "center",
+                        }}
+                      >
+                        <Link
+                          noLinkClass
+                          popoverClose
+                          href="/schedule/"
+                          style={{
+                            borderBottom: "1px solid #e8e8e8",
+                            padding: "12px 16px",
+                            color: "#000",
+                            fontSize: "15px",
+                          }}
+                        >
+                          Đặt lịch dịch vụ
+                        </Link>
+                        <Link
+                          onClick={() => this.onBookClass()}
+                          noLinkClass
+                          popoverClose
+                          style={{
+                            padding: "12px 16px",
+                            color: "#000",
+                            fontSize: "15px",
+                          }}
+                        >
+                          Đặt lịch theo lớp
+                        </Link>
+                      </div>
+                    </Popover>
+                  </>
+                )}
               </>
             )}
             {window?.GlobalConfig?.APP?.isSell ? (
@@ -577,15 +679,70 @@ export default class ToolBarCustom extends React.Component {
               </>
             ) : (
               <>
-                <Link
-                  noLinkClass
-                  href="/login/"
-                  className="page-toolbar-bottom__link active"
-                >
-                  <div className="page-toolbar-bottom__link-inner">
-                    <img src={iconBook} alt="Đặt lịch" />
-                  </div>
-                </Link>
+                {window?.GlobalConfig?.GlobalConfig?.Admin?.lop_hoc_pt ? (
+                  <Link
+                    noLinkClass
+                    href="/login/"
+                    className="page-toolbar-bottom__link active"
+                  >
+                    <div className="page-toolbar-bottom__link-inner">
+                      <img src={iconBook} alt="Đặt lịch" />
+                    </div>
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      popoverOpen=".popover-book"
+                      noLinkClass
+                      className="page-toolbar-bottom__link active"
+                    >
+                      <div className="page-toolbar-bottom__link-inner">
+                        <img src={iconBook} alt="Đặt lịch" />
+                      </div>
+                    </Link>
+                    <Popover
+                      className="popover-book"
+                      style={{
+                        width: "200px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          padding: "5px 0",
+                          textAlign: "center",
+                        }}
+                      >
+                        <Link
+                          noLinkClass
+                          popoverClose
+                          href="/login/"
+                          style={{
+                            borderBottom: "1px solid #e8e8e8",
+                            padding: "12px 16px",
+                            color: "#000",
+                            fontSize: "15px",
+                          }}
+                        >
+                          Đặt lịch dịch vụ
+                        </Link>
+                        <Link
+                          noLinkClass
+                          popoverClose
+                          href="/login/"
+                          style={{
+                            padding: "12px 16px",
+                            color: "#000",
+                            fontSize: "15px",
+                          }}
+                        >
+                          Đặt lịch theo lớp
+                        </Link>
+                      </div>
+                    </Popover>
+                  </>
+                )}
               </>
             )}
 

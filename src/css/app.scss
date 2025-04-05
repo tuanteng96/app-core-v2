@@ -703,3 +703,7 @@ figure {
 .bg-color-white > .page-content {
     background: #fff;
 }
+
+.last-mb-0:last-child {
+    margin-bottom: 0 !important;
+}

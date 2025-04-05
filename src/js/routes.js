@@ -74,6 +74,8 @@ import layoutSuccess from "../pages/user/layoutSuccess.jsx";
 import HistoryServicePage from "../pages/user/HistoryService.jsx";
 import AffPage from "../pages/user/Aff.jsx";
 import PointPage from "../pages/user/Point.jsx";
+import ScheduleClassPage from "../pages/ScheduleClass/index.jsx";
+import SheduleClassListPage from "../pages/ScheduleClass/SheduleClassList.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -98,7 +100,8 @@ const checkRouterHome = () => {
     return LoginPage;
   }
   if (ACC_TYPE === "M") {
-    return HomeIndex;
+    return HomeIndex
+    //return ScheduleClassPage; //HomeIndex
   }
 
   if (ACC_TYPE === "U") {
@@ -349,6 +352,23 @@ var routes = [
       transition: "f7-cover",
     },
   },
+  {
+    path: "/schedule-os/", // Thẻ dịch vụ
+    asyncComponent: () => ScheduleClassPage,
+    beforeEnter: checkAuth,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  {
+    path: "/schedule-os-list/", // Thẻ dịch vụ
+    asyncComponent: () => SheduleClassListPage,
+    beforeEnter: checkAuth,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  
   {
     path: "/schedule/", // Thẻ dịch vụ
     asyncComponent: () => SchedulePage,
