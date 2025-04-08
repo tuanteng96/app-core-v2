@@ -76,6 +76,7 @@ const SubmitListener = ({ formik }) => {
             Ps: 100,
           };
           let data = await userService.getSheduleOsList(filter);
+          console.log(formik.values?.ProdIDs)
           let rs = await userService.getSheduleClassList({
             StockID: [formik.values?.StockID?.value],
             ClassIDs: formik.values?.ProdIDs?.ClassList

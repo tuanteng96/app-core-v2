@@ -218,7 +218,6 @@ export default class ToolBarCustom extends React.Component {
       f7.dialog.close();
       if (Lists && Lists.length > 0) {
         f7.views.main.router.navigate("/schedule-os/");
-        //
       } else {
         f7.dialog.alert("Bạn chưa có thẻ liệu trình để tham gia lớp.");
       }

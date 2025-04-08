@@ -36,7 +36,7 @@ export default class extends React.Component {
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
-              <Link>
+              <Link back>
                 <i className="las la-angle-left"></i>
               </Link>
             </div>
