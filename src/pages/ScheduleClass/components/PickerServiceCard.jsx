@@ -6,7 +6,14 @@ import userService from "../../../service/user.service";
 import { getUser } from "../../../constants/user";
 import moment from "moment";
 
-function PickerServiceCard({ isOpen, onClose, onChange, value, Date }) {
+function PickerServiceCard({
+  isOpen,
+  onClose,
+  onChange,
+  value,
+  Date,
+  callback,
+}) {
   let { data } = useQuery({
     queryKey: ["ListOsMember", Date],
     queryFn: async () => {
@@ -25,6 +32,11 @@ function PickerServiceCard({ isOpen, onClose, onChange, value, Date }) {
               label: x.Prod.Title,
             }))
         : [];
+    },
+    onSuccess: (rs) => {
+      if (rs && rs.length === 1) {
+        callback && callback(rs[0]);
+      }
     },
     enabled: Boolean(Date),
   });

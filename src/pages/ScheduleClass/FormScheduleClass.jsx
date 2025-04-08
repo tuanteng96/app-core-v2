@@ -76,7 +76,7 @@ const SubmitListener = ({ formik }) => {
             Ps: 100,
           };
           let data = await userService.getSheduleOsList(filter);
-          console.log(formik.values?.ProdIDs)
+
           let rs = await userService.getSheduleClassList({
             StockID: [formik.values?.StockID?.value],
             ClassIDs: formik.values?.ProdIDs?.ClassList
@@ -212,7 +212,7 @@ const SubmitListener = ({ formik }) => {
                 x?.ClassInfo?.Member?.Lists.some(
                   (x) => x?.Member?.MemberID !== getUser().ID
                 ))
-          );
+          ).filter((x) => x.Class.Title.indexOf("(*)") === -1);
           let newEvents = [];
           for (let book of Events) {
             let index = newEvents.findIndex(
@@ -433,6 +433,18 @@ function FormScheduleClass(props) {
         f7.dialog.close();
       }
     }
+  };
+
+  const isDisabled = (item) => {
+    let TimeStart = moment(item.DateFrom).set({
+      hour: moment(item.TimeFrom, "HH:mm").get("hour"),
+      minute: moment(item.TimeFrom, "HH:mm").get("minute"),
+      second: moment(item.TimeFrom, "HH:mm").get("second"),
+    });
+    return (
+      moment(TimeStart).diff(moment(), "minutes") <
+      (window?.GlobalConfig?.Admin?.lop_hoc_pt_phut || 0)
+    );
   };
 
   return (
@@ -741,6 +753,10 @@ function FormScheduleClass(props) {
                   }}
                   value={values.ProdIDs?.value || ""}
                   Date={values.Date}
+                  callback={(val) => {
+                    setFieldValue("ProdIDs", val);
+                    setFieldValue("Events", null);
+                  }}
                 />
               </div>
 
@@ -807,9 +823,9 @@ function FormScheduleClass(props) {
                                       ? "#fff"
                                       : "#edf2f8",
                                   textAlign: "center",
-                                  height: "38px",
+                                  height: "42px",
                                   display: "flex",
-                                  alignItems: "center",
+                                  // alignItems: "center",
                                   justifyContent: "center",
                                   borderRadius: "3px",
                                   color:
@@ -819,9 +835,30 @@ function FormScheduleClass(props) {
                                       ? "var(--ezs-color)"
                                       : "#718096",
                                   fontSize: "13px",
+                                  flexDirection: "column",
+                                  opacity:
+                                    ((sub?.ClassInfo?.Member?.Lists?.length >
+                                      0 &&
+                                      sub?.ClassInfo?.Member?.Lists?.length ===
+                                        item.Class.MemberTotal) ||
+                                      isDisabled(sub)) &&
+                                    ".6",
                                 }}
                                 key={i}
                                 onClick={() => {
+                                  if (
+                                    sub?.ClassInfo?.Member?.Lists?.length > 0 &&
+                                    sub?.ClassInfo?.Member?.Lists?.length ===
+                                      item.Class.MemberTotal
+                                  )
+                                    return;
+
+                                  if (isDisabled(sub)) {
+                                    toast.error(
+                                      "Đã sát giờ học, vui lòng liên hệ cơ sở để được hỗ trợ."
+                                    );
+                                    return;
+                                  }
                                   if (
                                     values?.Books?.Class?.ID ===
                                       sub?.Class?.ID &&
@@ -833,28 +870,45 @@ function FormScheduleClass(props) {
                                   }
                                 }}
                               >
-                                {moment()
-                                  .set({
-                                    hour: moment(sub.TimeFrom, "HH:mm").get(
-                                      "hour"
-                                    ),
-                                    minute: moment(sub.TimeFrom, "HH:mm").get(
-                                      "minute"
-                                    ),
-                                  })
-                                  .format("HH:mm")}
-                                <span className="px-2px">-</span>
-                                {moment()
-                                  .set({
-                                    hour: moment(sub.TimeFrom, "HH:mm").get(
-                                      "hour"
-                                    ),
-                                    minute: moment(sub.TimeFrom, "HH:mm").get(
-                                      "minute"
-                                    ),
-                                  })
-                                  .add(sub?.Class?.Minutes, "minute")
-                                  .format("HH:mm")}
+                                <div>
+                                  {moment()
+                                    .set({
+                                      hour: moment(sub.TimeFrom, "HH:mm").get(
+                                        "hour"
+                                      ),
+                                      minute: moment(sub.TimeFrom, "HH:mm").get(
+                                        "minute"
+                                      ),
+                                    })
+                                    .format("HH:mm")}
+                                  <span className="px-2px">-</span>
+                                  {moment()
+                                    .set({
+                                      hour: moment(sub.TimeFrom, "HH:mm").get(
+                                        "hour"
+                                      ),
+                                      minute: moment(sub.TimeFrom, "HH:mm").get(
+                                        "minute"
+                                      ),
+                                    })
+                                    .add(sub?.Class?.Minutes, "minute")
+                                    .format("HH:mm")}
+                                </div>
+                                {sub?.ClassInfo?.Member?.Lists?.length > 0 &&
+                                  sub?.ClassInfo?.Member?.Lists?.length ===
+                                    item.Class.MemberTotal && (
+                                    <div
+                                      style={{
+                                        lineHeight: "12px",
+                                      }}
+                                    >
+                                      (
+                                      {sub?.ClassInfo?.Member?.Lists?.length ||
+                                        0}
+                                      <span>/</span>
+                                      {item.Class.MemberTotal})
+                                    </div>
+                                  )}
                               </div>
                             ))}
                           </div>
