@@ -894,9 +894,7 @@ function FormScheduleClass(props) {
                                     .add(sub?.Class?.Minutes, "minute")
                                     .format("HH:mm")}
                                 </div>
-                                {sub?.ClassInfo?.Member?.Lists?.length > 0 &&
-                                  sub?.ClassInfo?.Member?.Lists?.length ===
-                                    item.Class.MemberTotal && (
+                                {sub?.ClassInfo?.Member?.Lists?.length > 0 && (
                                     <div
                                       style={{
                                         lineHeight: "12px",
