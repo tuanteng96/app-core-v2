@@ -204,15 +204,19 @@ const SubmitListener = ({ formik }) => {
             }
           }
 
-          Events = Events.filter(
-            (x) =>
-              !x.ClassInfo ||
-              (x.ClassInfo &&
-                x?.ClassInfo?.Member?.Lists &&
-                x?.ClassInfo?.Member?.Lists.some(
-                  (x) => x?.Member?.MemberID !== getUser().ID
-                ))
-          ).filter((x) => x.Class.Title.indexOf("(*)") === -1);
+          Events = Events.filter((x) => {
+            if (
+              x?.ClassInfo?.Member?.Lists &&
+              x?.ClassInfo?.Member?.Lists.length > 0
+            ) {
+              return (
+                x?.ClassInfo?.Member?.Lists.findIndex(
+                  (x) => x?.Member?.MemberID === getUser().ID
+                ) === -1
+              );
+            }
+            return true;
+          }).filter((x) => x.Class.Title.indexOf("(*)") === -1);
           let newEvents = [];
           for (let book of Events) {
             let index = newEvents.findIndex(
@@ -895,18 +899,17 @@ function FormScheduleClass(props) {
                                     .format("HH:mm")}
                                 </div>
                                 {sub?.ClassInfo?.Member?.Lists?.length > 0 && (
-                                    <div
-                                      style={{
-                                        lineHeight: "12px",
-                                      }}
-                                    >
-                                      (
-                                      {sub?.ClassInfo?.Member?.Lists?.length ||
-                                        0}
-                                      <span>/</span>
-                                      {item.Class.MemberTotal})
-                                    </div>
-                                  )}
+                                  <div
+                                    style={{
+                                      lineHeight: "12px",
+                                    }}
+                                  >
+                                    (
+                                    {sub?.ClassInfo?.Member?.Lists?.length || 0}
+                                    <span>/</span>
+                                    {item.Class.MemberTotal})
+                                  </div>
+                                )}
                               </div>
                             ))}
                           </div>
