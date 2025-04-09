@@ -161,6 +161,7 @@ export default class extends React.Component {
                 BookDate: null,
                 Status: "",
                 UserID: "",
+                Desc: ""
               };
 
               await userService.addEditSheduleOs(
@@ -251,6 +252,7 @@ export default class extends React.Component {
                 BookDate: null,
                 Status: "",
                 UserID: "",
+                Desc: ""
               };
 
               await userService.addEditSheduleOs(
