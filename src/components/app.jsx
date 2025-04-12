@@ -23,7 +23,13 @@ import { database } from "../firebase/firebase";
 import { QueryClient, QueryClientProvider } from "react-query";
 import DeviceHelpers from "../constants/DeviceHelpers";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  }
+});
 
 window.timeOutForce = null;
 

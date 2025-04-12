@@ -13,15 +13,16 @@ function PickerServiceCard({
   value,
   Date,
   callback,
+  v,
 }) {
   let { data } = useQuery({
-    queryKey: ["ListOsMember", Date],
+    queryKey: ["ListOsMember", { isOpen}],
     queryFn: async () => {
       const member = getUser();
       let { data } = await userService.getSheduleOsMin({
         MemberIDs: [member?.ID],
         ProdIDs: [],
-        Date: moment(Date).format("YYYY-MM-DD"),
+        Date: null,
       });
       return data.lst
         ? data.lst
@@ -38,9 +39,9 @@ function PickerServiceCard({
         callback && callback(rs[0]);
       }
     },
-    enabled: Boolean(Date),
+    enabled: v ? true : isOpen,
   });
-
+  
   return createPortal(
     <AnimatePresence exitBeforeEnter>
       {isOpen && (
