@@ -201,27 +201,45 @@ export default class ToolBarCustom extends React.Component {
     f7.dialog.preloader("Vui lòng đợi ...");
     const infoUser = getUser();
     let memberid = infoUser?.ID || 0;
-    userService.getListTagService(memberid, 1).then(({ data }) => {
-      let ServiceName = window.GlobalConfig.Admin?.lop_hoc_pt_dv || "";
-      let Lists =
-        data &&
-        data
-          .filter((x) => x.TabIndex !== 2)
-          .filter((x) => {
-            let ServiceNameArr = ServiceName.split(",").map((o) =>
-              stringToSlug(o)
-            );
-            return ServiceNameArr.some(
-              (o) => stringToSlug(x.OrderItemProdTitle).indexOf(o) > -1
-            );
-          });
-      f7.dialog.close();
-      if (Lists && Lists.length > 0) {
-        f7.views.main.router.navigate("/schedule-os/");
-      } else {
-        f7.dialog.alert("Bạn chưa có thẻ liệu trình để tham gia lớp.");
-      }
-    });
+    userService
+      .getSheduleOsMin({
+        MemberIDs: [memberid],
+        ProdIDs: [],
+        Date: null,
+      })
+      .then(({ data }) => {
+        f7.dialog.close();
+        let Os = data?.lst
+          ? data.lst.filter((x) => x.ClassList && x.ClassList.length > 0)
+          : [];
+        if(Os && Os.length > 0) {
+          f7.views.main.router.navigate("/schedule-os/");
+        }
+        else {
+          f7.dialog.alert("Bạn chưa có thẻ liệu trình để tham gia lớp.");
+        }
+      });
+    // userService.getListTagService(memberid, 1).then(({ data }) => {
+    //   let ServiceName = window.GlobalConfig.Admin?.lop_hoc_pt_dv || "";
+    //   let Lists =
+    //     data &&
+    //     data
+    //       .filter((x) => x.TabIndex !== 2)
+    //       .filter((x) => {
+    //         let ServiceNameArr = ServiceName.split(",").map((o) =>
+    //           stringToSlug(o)
+    //         );
+    //         return ServiceNameArr.some(
+    //           (o) => stringToSlug(x.OrderItemProdTitle).indexOf(o) > -1
+    //         );
+    //       });
+    //   f7.dialog.close();
+    //   if (Lists && Lists.length > 0) {
+    //     f7.views.main.router.navigate("/schedule-os/");
+    //   } else {
+    //     f7.dialog.alert("Bạn chưa có thẻ liệu trình để tham gia lớp.");
+    //   }
+    // });
   };
 
   menuToolbar = () => {

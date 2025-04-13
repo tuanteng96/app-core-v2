@@ -110,6 +110,7 @@ const SubmitListener = ({ formik }) => {
 
           let Events = [];
           for (let clss of ListClass) {
+
             if (clss.TimeSlot && clss.TimeSlot.length > 0) {
               for (let day of clss.TimeSlot) {
                 if (day.Items && day.Items.length > 0) {
@@ -128,6 +129,7 @@ const SubmitListener = ({ formik }) => {
                   if (
                     Date === moment(formik.values?.Date).format("YYYY-MM-DD")
                   ) {
+                    
                     for (let item of day.Items) {
                       let newObj = {
                         Class: clss,
@@ -346,9 +348,50 @@ function FormScheduleClass(props) {
       toast.error("Vui lòng chọn lớp học");
     } else {
       f7.dialog.preloader("Đang đặt lịch ...");
-      let { Books, ProdIDs, StockID } = values;
+      
+      let { Books, ProdIDs, StockID, Date } = values;
 
-      if (!values.ClassInfo) {
+      let rs = await userService.getSheduleOsList({
+        StockID: [StockID?.value],
+        ClassIDs: [Books?.Class?.ID],
+        ProdIDs: [ProdIDs?.ProdID],
+        TeachIDs: [],
+        MemberIDs: [],
+        From: null,
+        To: null,
+        Pi: 1,
+        Ps: 1000,
+        BeginFrom: moment(Date)
+          .set({
+            hour: "00",
+            minute: "00",
+            second: "00",
+          })
+          .format("YYYY-MM-DD HH:mm:ss"),
+        BeginTo: moment(Date)
+          .set({
+            hour: "23",
+            minute: "59",
+            second: "59",
+          })
+          .format("YYYY-MM-DD HH:mm:ss"),
+      });
+
+      let index = rs?.data?.Items.findIndex((x) => {
+        return (
+          Books?.Class?.ID === x?.Class?.ID &&
+          moment(Date)
+            .set({
+              hour: moment(Books.TimeFrom, "HH:mm").get("hour"),
+              minute: moment(Books.TimeFrom, "HH:mm").get("minute"),
+              second: moment(Books.TimeFrom, "HH:mm").get("second"),
+            })
+            .format("DD-MM-YYYY HH:mm") ===
+            moment(x.TimeBegin).format("DD-MM-YYYY HH:mm")
+        );
+      });
+
+      if (index === -1) {
         let newValues = {
           ID: 0,
           StockID: StockID?.value,
@@ -483,8 +526,21 @@ function FormScheduleClass(props) {
           f7.dialog.close();
         }
       } else {
-        let { ClassInfo } = values;
-        let newLists = [...ClassInfo.Member.Lists];
+        let ClassInfo = rs?.data?.Items[index];
+        let newLists = [...(ClassInfo.Member.Lists || [])];
+        if (
+          newLists.length > 0 &&
+          newLists.length >= ClassInfo.Class.MemberTotal
+        ) {
+          toast.error(
+            `Lớp ${ClassInfo?.Class?.Title} lúc ${moment(
+              ClassInfo.TimeBegin
+            ).format(
+              "HH:mm DD-MM-YYYY"
+            )} đã đầy học viên. Vui lòng chọn khoảng thời gian khác.`
+          );
+          return;
+        }
         newLists.push({
           Member: {
             MemberID: member?.ID,
@@ -500,6 +556,7 @@ function FormScheduleClass(props) {
           Status: "",
         });
         let newValues = {
+          CreateDate: moment(ClassInfo?.CreateDate).format("YYYY-MM-DD HH:mm"),
           ID: ClassInfo?.ID,
           StockID: ClassInfo?.StockID,
           TimeBegin: moment(ClassInfo?.TimeBegin).format("YYYY-MM-DD HH:mm:ss"),
@@ -516,7 +573,7 @@ function FormScheduleClass(props) {
           { arr: [newValues] },
           member?.token
         );
-        if (data.Inserted && data.Inserted.length > 0) {
+        if (data.Updated && data.Updated.length > 0) {
           await userService.addEditSheduleUpdateOs(
             {
               arr: [
