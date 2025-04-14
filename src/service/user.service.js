@@ -249,6 +249,9 @@ class UserService {
       `/services/preview.aspx?a=1&token=${getToken()}&cmd=loadOrderService&MemberID=${memberid}&IsMember=0&fromOrderAdd=0`
     );
   }
+  getCoach(body) {
+    return http.post(`/api/v3/User24@Get`, JSON.stringify(body));
+  }
 }
 
 export default new UserService();

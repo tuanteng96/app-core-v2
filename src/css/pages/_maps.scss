@@ -313,15 +313,42 @@
         border: 1px solid #EBEDF3;
         border-radius: 5px;
     }
-    .las {
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 30px;
+    .down-icon {
         display: flex;
-        align-items: center;
+        top: 0;
+        right: 0;
+        position: absolute;
+        height: 100%;
+        > div {
+            width: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            i {
+                font-size: 16px;
+            }
+        }
+        .down-icon-clear {
+            position: relative;
+            &:after {
+                position: absolute;
+                content: "";
+                width: 1px;
+                height: 25px;
+                background: #dfdfdf;
+                right: 0;
+            }
+        }
     }
+    // .las {
+    //     position: absolute;
+    //     right: 0;
+    //     top: 50%;
+    //     transform: translateY(-50%);
+    //     width: 30px;
+    //     display: flex;
+    //     align-items: center;
+    // }
     
 }
 .map-total {

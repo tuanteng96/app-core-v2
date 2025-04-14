@@ -13,16 +13,17 @@ function SelectPicker({
   errorMessageForce,
   isRequired = true,
   disabled = false,
+  isClearable = false,
 }) {
   const [visible, setVisible] = useState(false);
   let open = () => {
-    if(!disabled) setVisible(true);
+    if (!disabled) setVisible(true);
   };
 
   let close = () => {
     setVisible(false);
   };
-
+  
   return (
     <AnimatePresence initial={false}>
       <>
@@ -35,8 +36,43 @@ function SelectPicker({
             placeholder={placeholder}
             value={value?.label ? value?.label : ""}
             readOnly
+            style={{
+              padding: value && isClearable ? "12px 90px 12px 12px" : "12px 40px 12px 12px",
+            }}
           ></input>
-          <i className="las la-angle-down"></i>
+          <div className="down-icon">
+            {value && isClearable && (
+              <div
+                className="down-icon-clear"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(null);
+                }}
+              >
+                <svg
+                  style={{
+                    width: "18px",
+                  }}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18 18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+            )}
+
+            <div className="down-icon-drop">
+              <i className="las la-angle-down"></i>
+            </div>
+          </div>
         </div>
         {errorMessage && errorMessageForce && (
           <div className="mt-1.5 text-xs text-danger font-light">
@@ -63,10 +99,7 @@ function SelectPicker({
               >
                 <div className="_header">
                   {label}
-                  <div
-                    className="_close"
-                    onClick={close}
-                  >
+                  <div className="_close" onClick={close}>
                     <i className="las la-times"></i>
                   </div>
                 </div>

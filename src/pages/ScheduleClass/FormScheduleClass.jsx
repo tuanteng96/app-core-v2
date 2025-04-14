@@ -12,7 +12,7 @@ import { getUser } from "../../constants/user";
 import { f7 } from "framework7-react";
 import { toast } from "react-toastify";
 import { createPortal } from "react-dom";
-import { values } from "lodash";
+import SelectPicker from "../../components/Selects/SelectPicker";
 
 const dateConfig = {
   // hour: {
@@ -110,7 +110,6 @@ const SubmitListener = ({ formik }) => {
 
           let Events = [];
           for (let clss of ListClass) {
-
             if (clss.TimeSlot && clss.TimeSlot.length > 0) {
               for (let day of clss.TimeSlot) {
                 if (day.Items && day.Items.length > 0) {
@@ -129,7 +128,6 @@ const SubmitListener = ({ formik }) => {
                   if (
                     Date === moment(formik.values?.Date).format("YYYY-MM-DD")
                   ) {
-                    
                     for (let item of day.Items) {
                       let newObj = {
                         Class: clss,
@@ -281,6 +279,41 @@ const SubmitListener = ({ formik }) => {
   return null;
 };
 
+const CoachSelect = ({ StockID, onChange, value }) => {
+  let { data } = useQuery({
+    queryKey: ["CoachList"],
+    queryFn: async () => {
+      let { data } = await userService.getCoach({
+        Key: "",
+        GroupIDs: [],
+        Status: [0, 1],
+        Levels: [],
+        StockIDs: StockID ? [StockID] : [],
+        GroupTitle: window.GlobalConfig.Admin.ten_nhom_hlv,
+        Pi: 1,
+        Ps: 1000,
+      });
+      return data?.Items && data?.Items.length > 0
+        ? data?.Items.map((x) => ({
+            label: x.FullName,
+            value: x.ID,
+          }))
+        : [];
+    },
+  });
+
+  return (
+    <SelectPicker
+      placeholder="Chọn huấn luyện viên"
+      value={value}
+      options={data || []}
+      label="Huấn luyện viên"
+      onChange={onChange}
+      isClearable
+    />
+  );
+};
+
 function FormScheduleClass(props) {
   let [visible, setVisible] = useState(false);
   let [visibleCard, setVisibleCard] = useState(false);
@@ -300,6 +333,7 @@ function FormScheduleClass(props) {
     Events: [],
     EventsList: [],
     Key: null,
+    UserRequest: null,
     _v: 1,
   });
 
@@ -348,8 +382,69 @@ function FormScheduleClass(props) {
       toast.error("Vui lòng chọn lớp học");
     } else {
       f7.dialog.preloader("Đang đặt lịch ...");
-      
-      let { Books, ProdIDs, StockID, Date } = values;
+
+      let { Books, ProdIDs, StockID, Date, UserRequest } = values;
+
+      if (UserRequest && Books.Class.MemberTotal === 1) {
+        let rsCoachs = await userService.getSheduleOsList({
+          StockID: [StockID?.value],
+          ClassIDs: [],
+          ProdIDs: [],
+          TeachIDs: [],
+          MemberIDs: [],
+          From: null,
+          To: null,
+          Pi: 1,
+          Ps: 1000,
+          BeginFrom: moment(Date)
+            .set({
+              hour: "00",
+              minute: "00",
+              second: "00",
+            })
+            .format("YYYY-MM-DD HH:mm:ss"),
+          BeginTo: moment(Date)
+            .set({
+              hour: "23",
+              minute: "59",
+              second: "59",
+            })
+            .format("YYYY-MM-DD HH:mm:ss"),
+        });
+        if (rsCoachs.data.Items && rsCoachs.data.Items.length > 0) {
+          let index = rsCoachs.data.Items.findIndex(
+            (x) =>
+              moment(x.TimeBegin, "YYYY-MM-DD HH:mm").format(
+                "DD-MM-YYYY HH:mm"
+              ) ===
+                moment(Books?.DateFrom)
+                  .set({
+                    hour: moment(Books?.TimeFrom, "HH:mm").get("hour"),
+                    minute: moment(Books?.TimeFrom, "HH:mm").get("minute"),
+                    second: moment(Books?.TimeFrom, "HH:mm").get("second"),
+                  })
+                  .format("DD-MM-YYYY HH:mm") &&
+              x.TeacherID === UserRequest?.value
+          );
+          if (index > -1) {
+            f7.dialog.close()
+            f7.dialog.alert(
+              `Bạn không thể chọn huấn luyện viên ${
+                UserRequest?.label
+              } lúc ${moment(Books?.DateFrom)
+                .set({
+                  hour: moment(Books?.TimeFrom, "HH:mm").get("hour"),
+                  minute: moment(Books?.TimeFrom, "HH:mm").get("minute"),
+                  second: moment(Books?.TimeFrom, "HH:mm").get("second"),
+                })
+                .format(
+                  "HH:mm DD-MM-YYYY"
+                )} vì lý do huấn luyện viên không trống lịch khung giờ này. Vui lòng thay đổi khung giờ hoặc huấn luyện viên.`
+            );
+            return;
+          }
+        }
+      }
 
       let rs = await userService.getSheduleOsList({
         StockID: [StockID?.value],
@@ -429,6 +524,13 @@ function FormScheduleClass(props) {
           Desc: "",
         };
 
+        if (values.UserRequest) {
+          newValues.Member["UserRequest"] = {
+            ID: values.UserRequest?.value,
+            FullName: values.UserRequest?.label,
+          };
+        }
+
         let { data } = await userService.addEditSheduleOs(
           { arr: [newValues] },
           member?.token
@@ -454,7 +556,7 @@ function FormScheduleClass(props) {
               Email: "",
               Content: `${member.FullName} / ${
                 member.MobilePhone
-              }  đăng ký học lớp ${Books.Class.Title} tại cơ sở ${
+              }  đăng ký học lớp${Books.Class.Title} ${UserRequest ? ` với huấn luyện viên ${UserRequest?.label}` : ""} tại cơ sở ${
                 StockID.label
               } ngày ${moment(Books.DateFrom).format("DD-MM-YYYY")} lúc ${
                 Books.TimeFrom
@@ -486,7 +588,7 @@ function FormScheduleClass(props) {
                 })
                 .format(
                   "HH:mm DD-MM-YYYY"
-                )} thành công. Bạn có muốn đặt lịch tiếp không ?`,
+                )}${UserRequest ? ` với huấn luyện viên ${UserRequest?.label}` : ""} thành công. Bạn có muốn đặt lịch tiếp không ?`,
               buttons: [
                 {
                   text: "Không",
@@ -504,6 +606,7 @@ function FormScheduleClass(props) {
                     setFieldValue("Events", []);
                     setFieldValue("EventsList", []);
                     setFieldValue("Books", null);
+                    setFieldValue("UserRequest", null)
 
                     if (index > -1) {
                       setFieldValue("ProdIDs", {
@@ -894,6 +997,7 @@ function FormScheduleClass(props) {
                           setFieldValue("Events", null);
                           setFieldValue("EventsList", null);
                           setFieldValue("Key", "");
+                          setFieldValue("UserRequest", null);
                         }}
                       >
                         Hôm nay {moment().format("DD-MM")}
@@ -937,6 +1041,7 @@ function FormScheduleClass(props) {
                           setFieldValue("Events", null);
                           setFieldValue("EventsList", null);
                           setFieldValue("Key", null);
+                          setFieldValue("UserRequest", null);
                         }}
                       >
                         Ngày mai {moment().add(1, "days").format("DD-MM")}
@@ -1004,6 +1109,7 @@ function FormScheduleClass(props) {
                         setFieldValue("EventsList", null);
                         setFieldValue("Key", null);
                         setIsOpen(false);
+                        setFieldValue("UserRequest", null);
                       }}
                       onCancel={() => setIsOpen(false)}
                       min={moment().subtract(1, "days").toDate()}
@@ -1115,6 +1221,7 @@ function FormScheduleClass(props) {
                             key={index}
                             onClick={() => {
                               setFieldValue("Class", item);
+                              //setFieldValue("UserRequest", null);
                             }}
                           >
                             <div
@@ -1283,6 +1390,20 @@ function FormScheduleClass(props) {
                                 ))}
                               </div>
                             )}
+
+                            {values?.Class?.Class?.ID === item.Class?.ID &&
+                              item.Class?.MemberTotal === 1 && (
+                                <div className="px-12px pb-12px">
+                                  <div className="mb-5px">Huấn luyện viên</div>
+                                  <CoachSelect
+                                    StockID={values?.StockID?.value || ""}
+                                    onChange={(val) => {
+                                      setFieldValue("UserRequest", val);
+                                    }}
+                                    value={values.UserRequest}
+                                  />
+                                </div>
+                              )}
                           </div>
                         ))}
                       </>
