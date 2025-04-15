@@ -206,16 +206,16 @@ export default class ToolBarCustom extends React.Component {
         MemberIDs: [memberid],
         ProdIDs: [],
         Date: null,
+        SkipStatus: 1,
       })
       .then(({ data }) => {
         f7.dialog.close();
         let Os = data?.lst
           ? data.lst.filter((x) => x.ClassList && x.ClassList.length > 0)
           : [];
-        if(Os && Os.length > 0) {
+        if (Os && Os.length > 0) {
           f7.views.main.router.navigate("/schedule-os/");
-        }
-        else {
+        } else {
           f7.dialog.alert("Bạn chưa có thẻ liệu trình để tham gia lớp.");
         }
       });

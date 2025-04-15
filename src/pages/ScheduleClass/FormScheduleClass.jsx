@@ -427,7 +427,7 @@ function FormScheduleClass(props) {
               x.TeacherID === UserRequest?.value
           );
           if (index > -1) {
-            f7.dialog.close()
+            f7.dialog.close();
             f7.dialog.alert(
               `Bạn không thể chọn huấn luyện viên ${
                 UserRequest?.label
@@ -556,11 +556,11 @@ function FormScheduleClass(props) {
               Email: "",
               Content: `${member.FullName} / ${
                 member.MobilePhone
-              }  đăng ký học lớp${Books.Class.Title} ${UserRequest ? ` với huấn luyện viên ${UserRequest?.label}` : ""} tại cơ sở ${
-                StockID.label
-              } ngày ${moment(Books.DateFrom).format("DD-MM-YYYY")} lúc ${
-                Books.TimeFrom
-              } - Dịch vụ thẻ ${ProdIDs?.OS?.Title}`,
+              }  đăng ký học lớp${Books.Class.Title} ${
+                UserRequest ? ` với huấn luyện viên ${UserRequest?.label}` : ""
+              } tại cơ sở ${StockID.label} ngày ${moment(Books.DateFrom).format(
+                "DD-MM-YYYY"
+              )} lúc ${Books.TimeFrom} - Dịch vụ thẻ ${ProdIDs?.OS?.Title}`,
             },
           });
           let { data: dataOs } = await userService.getSheduleOsMin({
@@ -586,9 +586,11 @@ function FormScheduleClass(props) {
                   minute: moment(Books?.TimeFrom, "HH:mm").get("minute"),
                   second: moment(Books?.TimeFrom, "HH:mm").get("second"),
                 })
-                .format(
-                  "HH:mm DD-MM-YYYY"
-                )}${UserRequest ? ` với huấn luyện viên ${UserRequest?.label}` : ""} thành công. Bạn có muốn đặt lịch tiếp không ?`,
+                .format("HH:mm DD-MM-YYYY")} thành công.${
+                UserRequest
+                  ? ` Yêu cầu chọn HLV ${UserRequest?.label} của bạn chúng tôi sẽ xác nhận trong 24h. `
+                  : ""
+              } Bạn có muốn đặt lịch tiếp không ?`,
               buttons: [
                 {
                   text: "Không",
@@ -606,7 +608,7 @@ function FormScheduleClass(props) {
                     setFieldValue("Events", []);
                     setFieldValue("EventsList", []);
                     setFieldValue("Books", null);
-                    setFieldValue("UserRequest", null)
+                    setFieldValue("UserRequest", null);
 
                     if (index > -1) {
                       setFieldValue("ProdIDs", {
@@ -773,6 +775,7 @@ function FormScheduleClass(props) {
   };
 
   const isDisabled = (item) => {
+    if (!sub?.ClassInfo) return;
     let TimeStart = moment(item.DateFrom).set({
       hour: moment(item.TimeFrom, "HH:mm").get("hour"),
       minute: moment(item.TimeFrom, "HH:mm").get("minute"),
