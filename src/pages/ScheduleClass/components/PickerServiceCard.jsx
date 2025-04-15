@@ -16,7 +16,7 @@ function PickerServiceCard({
   v,
 }) {
   let { data } = useQuery({
-    queryKey: ["ListOsMember", { isOpen}],
+    queryKey: ["ListOsMember", { isOpen }],
     queryFn: async () => {
       const member = getUser();
       let { data } = await userService.getSheduleOsMin({
@@ -41,7 +41,7 @@ function PickerServiceCard({
     },
     enabled: v ? true : isOpen,
   });
-  
+
   return createPortal(
     <AnimatePresence exitBeforeEnter>
       {isOpen && (
@@ -147,6 +147,9 @@ function PickerServiceCard({
                       )}
                     </div>
                   ))}
+                {(!data || data.length === 0) && (
+                  <div className="p-15px">Bạn chưa có thẻ liệu trình ?</div>
+                )}
               </div>
             </div>
           </motion.div>

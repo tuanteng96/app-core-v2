@@ -775,16 +775,26 @@ function FormScheduleClass(props) {
   };
 
   const isDisabled = (item) => {
-    if (!sub?.ClassInfo) return;
-    let TimeStart = moment(item.DateFrom).set({
-      hour: moment(item.TimeFrom, "HH:mm").get("hour"),
-      minute: moment(item.TimeFrom, "HH:mm").get("minute"),
-      second: moment(item.TimeFrom, "HH:mm").get("second"),
-    });
-    return (
-      moment(TimeStart).diff(moment(), "minutes") <
-      (window?.GlobalConfig?.Admin?.lop_hoc_pt_phut || 0)
-    );
+    // if (
+    //   !item?.ClassInfo ||
+    //   (item?.ClassInfo && item?.ClassInfo?.Member?.Lists?.length === 0)
+    // )
+    //   return;
+    if (
+      !item?.ClassInfo ||
+      (item?.ClassInfo && item?.ClassInfo?.Member?.Lists?.length === 0)
+    ) {
+      let TimeStart = moment(item.DateFrom).set({
+        hour: moment(item.TimeFrom, "HH:mm").get("hour"),
+        minute: moment(item.TimeFrom, "HH:mm").get("minute"),
+        second: moment(item.TimeFrom, "HH:mm").get("second"),
+      });
+      return (
+        moment(TimeStart).diff(moment(), "minutes") <
+        (window?.GlobalConfig?.Admin?.lop_hoc_pt_phut || 0)
+      );
+    }
+    return false;
   };
 
   return (
@@ -1332,7 +1342,7 @@ function FormScheduleClass(props) {
 
                                       if (isDisabled(sub)) {
                                         toast.error(
-                                          "Đã sát giờ học, vui lòng liên hệ cơ sở để được hỗ trợ."
+                                          "Đã sát giờ học hoặc quá giờ học, vui lòng liên hệ cơ sở để được hỗ trợ."
                                         );
                                         return;
                                       }

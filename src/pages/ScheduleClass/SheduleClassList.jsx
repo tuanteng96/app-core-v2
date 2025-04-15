@@ -161,7 +161,7 @@ export default class extends React.Component {
                 BookDate: null,
                 Status: "",
                 UserID: "",
-                Desc: ""
+                Desc: "",
               };
 
               await userService.addEditSheduleOs(
@@ -252,7 +252,7 @@ export default class extends React.Component {
                 BookDate: null,
                 Status: "",
                 UserID: "",
-                Desc: ""
+                Desc: "",
               };
 
               await userService.addEditSheduleOs(
@@ -368,6 +368,21 @@ export default class extends React.Component {
                           {moment(item.TimeBegin)
                             .add(item?.Class?.Minutes, "minute")
                             .format("HH:mm")}
+                        </div>
+                      </div>
+                      <div
+                        className="d-flex justify-content-between px-15px py-12px"
+                        style={{
+                          borderBottom: "1px dashed #f0f0f0",
+                        }}
+                      >
+                        <div className="text-muted">HLV</div>
+                        <div className="fw-500">
+                          {item?.Member?.UserRequest && !item?.Teacher ? (
+                            "Chờ xác nhận"
+                          ) : (
+                            <>{item?.Teacher?.FullName || "Chưa có"}</>
+                          )}
                         </div>
                       </div>
                       <div
