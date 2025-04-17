@@ -241,7 +241,35 @@ const SubmitListener = ({ formik }) => {
               (x) => x.Class.ID === book.Class.ID
             );
             if (index > -1) {
-              newEvents[index].Items = [...newEvents[index].Items, book];
+              newEvents[index].Items = [...newEvents[index].Items, book].sort(
+                (left, right) => {
+                  return moment
+                    .utc(
+                      moment(left.DateFrom)
+                        .set({
+                          hour: moment(left.TimeFrom, "HH:mm").get("hour"),
+                          minute: moment(left.TimeFrom, "HH:mm").get("minute"),
+                          second: moment(left.TimeFrom, "HH:mm").get("second"),
+                        })
+                        .toDate()
+                    )
+                    .diff(
+                      moment.utc(
+                        moment(right.DateFrom)
+                          .set({
+                            hour: moment(right.TimeFrom, "HH:mm").get("hour"),
+                            minute: moment(right.TimeFrom, "HH:mm").get(
+                              "minute"
+                            ),
+                            second: moment(right.TimeFrom, "HH:mm").get(
+                              "second"
+                            ),
+                          })
+                          .toDate()
+                      )
+                    );
+                }
+              );
             } else {
               newEvents.push({
                 Class: book.Class,
