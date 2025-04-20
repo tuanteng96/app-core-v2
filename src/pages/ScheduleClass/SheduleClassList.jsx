@@ -189,6 +189,14 @@ export default class extends React.Component {
                   )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
                 },
               });
+
+              if (newLists?.length === 0) {
+                await userService.deleteSheduleClass(
+                  { delete: [item?.ID] },
+                  member?.token
+                );
+              }
+
               this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
                 f7.dialog.close();
                 toast.success("Huỷ lịch thành công.");
@@ -259,10 +267,12 @@ export default class extends React.Component {
                 { arr: [newValues] },
                 member?.token
               );
+
               await userService.addEditSheduleUpdateOs(
                 { arr: [newObj] },
                 member?.token
               );
+
               await BookDataService.bookContact({
                 contact: {
                   Fullname: member.FullName,
@@ -280,6 +290,14 @@ export default class extends React.Component {
                   )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
                 },
               });
+
+              if (newLists?.length === 0) {
+                await userService.deleteSheduleClass(
+                  { delete: [item?.ID] },
+                  member?.token
+                );
+              }
+
               this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
                 f7.dialog.close();
                 toast.success("Huỷ lịch thành công.");
@@ -395,7 +413,7 @@ export default class extends React.Component {
                       </div>
                     </div>
                     {moment(item.TimeBegin).diff(moment(), "minutes") >
-                      (window?.GlobalConfig?.Admin?.lop_hoc_pt_phut || 0) && (
+                      (window?.GlobalConfig?.Admin?.pt_huy_lich_phut || 0) && (
                       <div
                         className="px-15px py-12px d-flex"
                         style={{
