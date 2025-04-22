@@ -48,7 +48,10 @@ export default class ToolBarCustom extends React.Component {
     if (TYPE && TYPE === "ADMIN") {
       $$(".js-toolbar-bottom").find("a").eq(1).addClass("js-active");
     }
-    if (window?.GlobalConfig?.APP?.UIBase) {
+    if (
+      window?.GlobalConfig?.APP?.UIBase ||
+      window?.GlobalConfig?.APP?.UIBasenail
+    ) {
       this.getMenuShop();
     }
 
@@ -161,6 +164,7 @@ export default class ToolBarCustom extends React.Component {
       initialValues: null,
     });
   };
+
   onSubmit = (values) => {
     let StockID = getStockIDStorage();
     if (!StockID) {
@@ -390,7 +394,8 @@ export default class ToolBarCustom extends React.Component {
               </>
             ) : (
               <>
-                {window?.GlobalConfig?.APP?.UIBase && (
+                {window?.GlobalConfig?.APP?.UIBase ||
+                window?.GlobalConfig?.APP?.UIBasenail ? (
                   <>
                     <Link
                       noLinkClass
@@ -442,8 +447,7 @@ export default class ToolBarCustom extends React.Component {
                       btnLoading={btnLoading}
                     />
                   </>
-                )}
-                {!window?.GlobalConfig?.APP?.UIBase && (
+                ) : (
                   <Link
                     noLinkClass
                     href="/shop/"
@@ -468,7 +472,7 @@ export default class ToolBarCustom extends React.Component {
               </>
             ) : (
               <>
-                {window?.GlobalConfig?.GlobalConfig?.Admin?.lop_hoc_pt ? (
+                {!window?.GlobalConfig?.Admin?.lop_hoc_pt ? (
                   <Link
                     noLinkClass
                     href="/schedule/"
@@ -617,7 +621,8 @@ export default class ToolBarCustom extends React.Component {
             ) : (
               <>
                 <>
-                  {window?.GlobalConfig?.APP?.UIBase && (
+                  {window?.GlobalConfig?.APP?.UIBase ||
+                  window?.GlobalConfig?.APP?.UIBasenail ? (
                     <>
                       <Link
                         noLinkClass
@@ -669,8 +674,7 @@ export default class ToolBarCustom extends React.Component {
                         btnLoading={btnLoading}
                       />
                     </>
-                  )}
-                  {!window?.GlobalConfig?.APP?.UIBase && (
+                  ) : (
                     <Link
                       noLinkClass
                       href="/shop/"
@@ -696,7 +700,7 @@ export default class ToolBarCustom extends React.Component {
               </>
             ) : (
               <>
-                {window?.GlobalConfig?.GlobalConfig?.Admin?.lop_hoc_pt ? (
+                {!window?.GlobalConfig?.Admin?.lop_hoc_pt ? (
                   <Link
                     noLinkClass
                     href="/login/"

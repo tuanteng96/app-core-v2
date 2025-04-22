@@ -136,3 +136,8 @@
         }
     }
 }
+
+.toolbar-hidden .page-toolbar-bottom__link.active {
+    transform: translateY(100%);
+    transition: all 250ms;
+}

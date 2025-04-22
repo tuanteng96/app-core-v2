@@ -44,6 +44,7 @@ import ServiceHot from "./components/ServiceHot/ServiceHot";
 import Reviews from "./components/Reviews/Reviews";
 import PopupImages from "./components/PopupImages";
 import ServiceHot3 from "./components/ServiceHot/ServiceHot3";
+import CardImageGallery from "./components/BannerSlide/CardImageGallery";
 
 export default class extends React.Component {
   constructor() {
@@ -292,25 +293,33 @@ export default class extends React.Component {
                 f7router={this.$f7router}
                 f7={this.$f7}
               />
-              {window.GlobalConfig.APP.Home?.SliderFull ? (
-                <SlideList
-                  className="banner-main bg-white"
-                  BannerName="APP.MAINSALE"
-                  autoplaySpeed={4500}
-                  OpenStock={this.handleStock}
-                  f7router={this.$f7router}
-                  f7={this.$f7}
-                />
+              
+              {window.GlobalConfig.APP?.Home?.Slidernail ? (
+                <CardImageGallery />
               ) : (
-                <SlideListCenter
-                  className="mb-8px px-15px pb-15px pt-12px"
-                  BannerName="APP.MAINSALE"
-                  autoplaySpeed={4500}
-                  OpenStock={this.handleStock}
-                  f7router={this.$f7router}
-                  f7={this.$f7}
-                />
+                <>
+                  {window.GlobalConfig.APP.Home?.SliderFull ? (
+                    <SlideList
+                      className="banner-main bg-white"
+                      BannerName="APP.MAINSALE"
+                      autoplaySpeed={4500}
+                      OpenStock={this.handleStock}
+                      f7router={this.$f7router}
+                      f7={this.$f7}
+                    />
+                  ) : (
+                    <SlideListCenter
+                      className="mb-8px px-15px pb-15px pt-12px"
+                      BannerName="APP.MAINSALE"
+                      autoplaySpeed={4500}
+                      OpenStock={this.handleStock}
+                      f7router={this.$f7router}
+                      f7={this.$f7}
+                    />
+                  )}
+                </>
               )}
+
               {/* <SlideList
                 containerClass="pl-15px pr-15px slider-hot"
                 BannerName="APP.SALE"

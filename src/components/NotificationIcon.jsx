@@ -22,7 +22,7 @@ export default class NotificationIcon extends React.Component {
     }
     UserService.getNotification(infoUser.acc_type, infoUser.acc_id, 0, 200)
       .then((response) => {
-        const data = response.data.data;
+        const data = response?.data?.data || [];
           const dataNew = data.filter((item) => item.IsReaded === false);
           this.setState({
             countCart: dataNew.length,
