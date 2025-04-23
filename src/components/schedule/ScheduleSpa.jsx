@@ -8,6 +8,7 @@ import {
   ActionsGroup,
   Actions,
   ActionsButton,
+  f7,
 } from "framework7-react";
 import UserService from "../../service/user.service";
 import IconLocation from "../../assets/images/location1.svg";
@@ -17,12 +18,15 @@ import DatePicker from "react-mobile-datepicker";
 import _ from "lodash";
 import { clsx } from "clsx";
 import ConfigServiceAPI from "../../service/config.service";
+import BookDataService from "../../service/book.service";
 import Select from "react-select";
 import "moment/locale/vi";
 import StocksProvincesFilter from "../StocksProvincesFilter";
 
 import moment from "moment";
 moment.locale("vi");
+
+window.moment = moment;
 
 const dateConfig = {
   // hour: {
@@ -113,7 +117,7 @@ export default class ScheduleSpa extends React.Component {
     this.setState({
       width: window.innerWidth,
     });
-    this.getListChoose();
+    //this.getListChoose();
     this.getDisableTime();
   }
 
@@ -178,13 +182,151 @@ export default class ScheduleSpa extends React.Component {
     });
   };
 
-  getListChoose = (DateChoose, ListLock) => {
+  checkScheduled = (data) => {
+    if (!data || !data?.Configs || data?.Configs.length === 0) return false;
+    let { Configs, Books, Date, Staffs } = data;
+
+    let newConfigs = Configs.filter(
+      (x) =>
+        moment(
+          moment(Date).format("YYYY-MM-DD HH:mm"),
+          "YYYY-MM-DD HH:mm"
+        ).isBetween(
+          moment(x.Config.from, "YYYY-MM-DD HH:mm"),
+          moment(x.Config.to, "YYYY-MM-DD HH:mm"),
+          undefined,
+          "[)"
+        )
+      // moment(
+      //   moment(Date).add(60, "minutes").format("YYYY-MM-DD HH:mm"),
+      //   "YYYY-MM-DD HH:mm"
+      // ).isBetween(
+      //   moment(x.Config.from, "YYYY-MM-DD HH:mm"),
+      //   moment(x.Config.to, "YYYY-MM-DD HH:mm"),
+      //   undefined,
+      //   "[]"
+      // )
+    );
+
+    if (newConfigs && newConfigs.length > 0) {
+      let ArrMaxBook = Math.max(...newConfigs.map((x) => x.Config.MaxBook));
+      //console.log(Date)
+      let crList = Books.filter(
+        (x) =>
+          moment(
+            moment(x.BookDate).format("YYYY-MM-DD HH:mm"),
+            "YYYY-MM-DD HH:mm"
+          ).isBetween(
+            moment(moment(Date).format("YYYY-MM-DD HH:mm"), "YYYY-MM-DD HH:mm"),
+            moment(
+              moment(Date)
+                .add(60, "minutes")
+                .subtract(
+                  window?.GlobalConfig?.Admin?.SettingBookOnlineMinutes || 0,
+                  "minutes"
+                )
+                .format("YYYY-MM-DD HH:mm"),
+              "YYYY-MM-DD HH:mm"
+            ),
+            null,
+            "[)"
+          ) ||
+          moment(
+            moment(x.BookDate)
+              .add(x.RootMinutes || 60, "minute")
+              .format("YYYY-MM-DD HH:mm"),
+            "YYYY-MM-DD HH:mm"
+          ).isBetween(
+            moment(moment(Date).format("YYYY-MM-DD HH:mm"), "YYYY-MM-DD HH:mm"),
+            moment(
+              moment(Date)
+                .add(
+                  window?.GlobalConfig?.Admin
+                    ?.SettingBookOnlineExpectedMinutes || 60,
+                  "minutes"
+                )
+                .subtract(
+                  window?.GlobalConfig?.Admin?.SettingBookOnlineMinutes || 0,
+                  "minutes"
+                )
+                .format("YYYY-MM-DD HH:mm"),
+              "YYYY-MM-DD HH:mm"
+            ),
+            null,
+            "()"
+          )
+      );
+      //console.log(crList)
+
+      return crList.length >= ArrMaxBook;
+    } else {
+      return true;
+    }
+  };
+
+  getListChoose = async (DateChoose, ListLock) => {
     const { TimeNext } = window?.GlobalConfig?.APP?.Booking;
     let TimeOpenG = window?.GlobalConfig?.APP?.Booking?.TimeOpen;
     let TimeCloseG = window?.GlobalConfig?.APP?.Booking?.TimeClose;
 
     let TimeOpen = TimeOpenG;
     let TimeClose = TimeCloseG;
+    //
+
+    let dataCheck = null;
+
+    if (window?.GlobalConfig?.Admin?.SettingBookOnline) {
+      f7.dialog.preloader("Đang tải ...");
+      let { DateTimeBook } = this.props;
+
+      let { data: dataConfig } = await BookDataService.getListBookConfig({
+        StockID: DateTimeBook?.stock,
+        From: moment(DateTimeBook.date, "DD/MM/YYYY").format("YYYY-MM-DD"),
+        To: moment(DateTimeBook.date, "DD/MM/YYYY").format("YYYY-MM-DD"),
+        pi: 1,
+        ps: 1000,
+      });
+
+      let { data: Books } = await BookDataService.getBooking({
+        From: moment(DateTimeBook.date, "DD/MM/YYYY").format("YYYY-MM-DD"),
+        To: moment(DateTimeBook.date, "DD/MM/YYYY").format("YYYY-MM-DD"),
+        MemberID: "",
+        StockID: DateTimeBook?.stock,
+        Status: "XAC_NHAN,DANG_THUC_HIEN,THUC_HIEN_XONG,CHUA_XAC_NHAN",
+        UserServiceIDs: "",
+        StatusMember: "",
+        StatusBook: "",
+        StatusAtHome: "",
+        Tags: "",
+      });
+
+      let { data: Stafss } = await BookDataService.getListStaff(
+        DateTimeBook?.stock
+      );
+
+      let { books, osList } = Books;
+
+      let newBooks = [
+        ...(books || []),
+        ...(osList || []).map((x) => ({
+          ...x,
+          BookDate: x.os.BookDate,
+          RootTitles: x.os.ProdService2 || x.os.ProdService,
+          RootMinutes: x.os.RootMinutes,
+          Member: x.member,
+          Status: x.os.Status,
+        })),
+      ];
+
+      dataCheck = {
+        Configs: dataConfig?.list || [],
+        Books: newBooks,
+        Staffs: Stafss?.data || [],
+      };
+
+      f7.dialog.close();
+    }
+
     //
     const { arrStock } = this.state;
     const { DateTimeBook } = this.props;
@@ -234,6 +376,7 @@ export default class ScheduleSpa extends React.Component {
       if (DateChoose && index === 2) {
         day = moment(DateChoose, "DD/MM/YYYY").toDate();
       }
+
       let startDate = moment(day).set(TimeOpen);
       let closeDate = moment(day)
         .set(TimeClose)
@@ -286,12 +429,24 @@ export default class ScheduleSpa extends React.Component {
             }
           }
         }
+
         newListTime.push({
           Time: datetime,
           Disable:
             moment()
               .add(window?.GlobalConfig?.APP?.ScheduledMinutes || 0, "minutes")
-              .diff(datetime, "minutes") > 0 || isDayOff,
+              .diff(datetime, "minutes") > 0 ||
+            isDayOff ||
+            this.checkScheduled({
+              ...dataCheck,
+              Date: moment(day)
+                .set({
+                  hour: moment(datetime).get("hour"),
+                  minute: moment(datetime).get("minute"),
+                  second: moment(datetime).get("second"),
+                })
+                .toDate(),
+            }),
         });
       }
 

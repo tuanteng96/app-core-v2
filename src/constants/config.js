@@ -1,6 +1,6 @@
 export const SERVER_APP =
   window.location.origin === "http://localhost:8080"
-    ? window?.SERVER || "https://gobeauty.ezs.vn"
+    ? window?.SERVER || "https://cserbeauty.com"
     : window?.SERVER || window.location.origin;
 // export const SERVER_APP =
 //   window.location.origin === "http://localhost:8080"
