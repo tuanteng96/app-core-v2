@@ -156,6 +156,7 @@ export default class extends React.Component {
                 MemberID: "",
                 Desc: "",
               };
+
               let newObj = {
                 ID: CrMember?.Os?.ID,
                 BookDate: null,
@@ -164,58 +165,78 @@ export default class extends React.Component {
                 Desc: "",
               };
 
-              await userService.addEditSheduleOs(
+              let rs = await userService.addEditSheduleOs(
                 { arr: [newValues] },
                 member?.token
               );
-              await userService.addEditSheduleUpdateOs(
-                { arr: [newObj] },
-                member?.token
-              );
-              await BookDataService.bookContact({
-                contact: {
-                  StockID: item.Stock?.ID,
-                  Fullname: member.FullName,
-                  Phone1: member.MobilePhone,
-                  Address: "",
-                  Email: "",
-                  Content: `${member.FullName} / ${
-                    member.MobilePhone
-                  }  huỷ lịch theo lớp ${item.Class.Title} tại cơ sở ${
-                    item.Stock.Title
-                  } ngày ${moment(item.TimeBegin).format(
-                    "DD-MM-YYYY"
-                  )} lúc ${moment(item.TimeBegin).format(
-                    "HH:mm"
-                  )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
-                },
-              });
-
-              if (newLists?.length === 0) {
-                await userService.deleteSheduleClass(
-                  { delete: [item?.ID] },
-                  member?.token
+              if (rs?.data?.Updated && rs?.data?.Updated.length > 0) {
+                let { Updated } = rs?.data;
+                let index = Updated[0].Member?.Lists?.findIndex(
+                  (x) => x?.Member?.ID === Number(member.ID)
                 );
-              }
+                if (index === -1) {
+                  await userService.addEditSheduleUpdateOs(
+                    { arr: [newObj] },
+                    member?.token
+                  );
+                  await BookDataService.bookContact({
+                    contact: {
+                      StockID: item.Stock?.ID,
+                      Fullname: member.FullName,
+                      Phone1: member.MobilePhone,
+                      Address: "",
+                      Email: "",
+                      Content: `${member.FullName} / ${
+                        member.MobilePhone
+                      }  huỷ lịch theo lớp ${item.Class.Title} tại cơ sở ${
+                        item.Stock.Title
+                      } ngày ${moment(item.TimeBegin).format(
+                        "DD-MM-YYYY"
+                      )} lúc ${moment(item.TimeBegin).format(
+                        "HH:mm"
+                      )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
+                    },
+                  });
 
-              this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
-                if (newLists?.length === 0) {
-                  window.noti27?.LOP_HOC &&
-                    window.noti27?.LOP_HOC({
-                      type: "Đặt lịch xóa lớp",
-                      Class: {
-                        ...item?.Class,
-                        TimeBegin: item.TimeBegin,
-                      },
-                      Stock: item.Stock,
-                      Members: item?.Member?.Lists ? item?.Member?.Lists.map(x => x.Member) : [],
-                      RefUserIds: item.TeacherID ? [item.Teacher] : [],
-                    });
+                  if (newLists?.length === 0) {
+                    await userService.deleteSheduleClass(
+                      { delete: [item?.ID] },
+                      member?.token
+                    );
+                  }
+
+                  this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
+                    if (newLists?.length === 0) {
+                      window.noti27?.LOP_HOC &&
+                        window.noti27?.LOP_HOC({
+                          type: "Đặt lịch xóa lớp",
+                          Class: {
+                            ...item?.Class,
+                            TimeBegin: item.TimeBegin,
+                          },
+                          Stock: item.Stock,
+                          Members: item?.Member?.Lists
+                            ? item?.Member?.Lists.map((x) => x.Member)
+                            : [],
+                          RefUserIds: item.TeacherID ? [item.Teacher] : [],
+                        });
+                    }
+
+                    f7.dialog.close();
+                    toast.success("Huỷ lịch thành công.");
+                  });
+                } else {
+                  this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
+                    f7.dialog.close();
+                    toast.success("Xảy ra lỗi. Vui lòng thử lại");
+                  });
                 }
-
-                f7.dialog.close();
-                toast.success("Huỷ lịch thành công.");
-              });
+              } else {
+                this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
+                  f7.dialog.close();
+                  toast.success("Xảy ra lỗi. Vui lòng thử lại");
+                });
+              }
             },
           },
         ],
@@ -278,62 +299,81 @@ export default class extends React.Component {
                 Desc: "",
               };
 
-              await userService.addEditSheduleOs(
+              let rs = await userService.addEditSheduleOs(
                 { arr: [newValues] },
                 member?.token
               );
 
-              await userService.addEditSheduleUpdateOs(
-                { arr: [newObj] },
-                member?.token
-              );
-
-              await BookDataService.bookContact({
-                contact: {
-                  StockID: item.Stock?.ID,
-                  Fullname: member.FullName,
-                  Phone1: member.MobilePhone,
-                  Address: "",
-                  Email: "",
-                  Content: `${member.FullName} / ${
-                    member.MobilePhone
-                  }  huỷ lịch theo lớp ${item.Class.Title} tại cơ sở ${
-                    item.Stock.Title
-                  } ngày ${moment(item.TimeBegin).format(
-                    "DD-MM-YYYY"
-                  )} lúc ${moment(item.TimeBegin).format(
-                    "HH:mm"
-                  )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
-                },
-              });
-
-              if (newLists?.length === 0) {
-                await userService.deleteSheduleClass(
-                  { delete: [item?.ID] },
-                  member?.token
+              if (rs?.data?.Updated && rs?.data?.Updated.length > 0) {
+                let { Updated } = rs?.data;
+                let index = Updated[0].Member?.Lists?.findIndex(
+                  (x) => x?.Member?.ID === Number(member.ID)
                 );
-              }
+                if (index === -1) {
+                  await userService.addEditSheduleUpdateOs(
+                    { arr: [newObj] },
+                    member?.token
+                  );
 
-              this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
-                f7.dialog.close();
+                  await BookDataService.bookContact({
+                    contact: {
+                      StockID: item.Stock?.ID,
+                      Fullname: member.FullName,
+                      Phone1: member.MobilePhone,
+                      Address: "",
+                      Email: "",
+                      Content: `${member.FullName} / ${
+                        member.MobilePhone
+                      }  huỷ lịch theo lớp ${item.Class.Title} tại cơ sở ${
+                        item.Stock.Title
+                      } ngày ${moment(item.TimeBegin).format(
+                        "DD-MM-YYYY"
+                      )} lúc ${moment(item.TimeBegin).format(
+                        "HH:mm"
+                      )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
+                    },
+                  });
 
-                if (newLists?.length === 0) {
-                  window.noti27?.LOP_HOC &&
-                    window.noti27?.LOP_HOC({
-                      type: "Đặt lịch xóa lớp",
-                      Class: {
-                        ...item?.Class,
-                        TimeBegin: item.TimeBegin,
-                      },
-                      Stock: item.Stock,
-                      Members: item?.Member?.Lists ? item?.Member?.Lists.map(x => x.Member) : [],
-                      RefUserIds: item.TeacherID ? [item.Teacher] : [],
-                    });
+                  if (newLists?.length === 0) {
+                    await userService.deleteSheduleClass(
+                      { delete: [item?.ID] },
+                      member?.token
+                    );
+                  }
+
+                  this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
+                    f7.dialog.close();
+
+                    if (newLists?.length === 0) {
+                      window.noti27?.LOP_HOC &&
+                        window.noti27?.LOP_HOC({
+                          type: "Đặt lịch xóa lớp",
+                          Class: {
+                            ...item?.Class,
+                            TimeBegin: item.TimeBegin,
+                          },
+                          Stock: item.Stock,
+                          Members: item?.Member?.Lists
+                            ? item?.Member?.Lists.map((x) => x.Member)
+                            : [],
+                          RefUserIds: item.TeacherID ? [item.Teacher] : [],
+                        });
+                    }
+
+                    toast.success("Huỷ lịch thành công.");
+                  });
+                } else {
+                  this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
+                    f7.dialog.close();
+                    toast.success("Xảy ra lỗi. Vui lòng thử lại");
+                  });
                 }
-
-                toast.success("Huỷ lịch thành công.");
-                f7.views.main.router.navigate("/schedule-os/");
-              });
+              } else {
+                this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
+                  f7.dialog.close();
+                  toast.success("Xảy ra lỗi. Vui lòng thử lại");
+                });
+              }
             },
           },
         ],
