@@ -578,6 +578,7 @@ function FormScheduleClass(props) {
           );
           await BookDataService.bookContact({
             contact: {
+              StockID: StockID?.value,
               Fullname: member.FullName,
               Phone1: member.MobilePhone,
               Address: "",
@@ -600,6 +601,41 @@ function FormScheduleClass(props) {
           let index = dataOs?.lst?.findIndex(
             (x) => x.ProdID === ProdIDs.ProdID
           );
+
+          window.noti27?.LOP_HOC &&
+            window.noti27?.LOP_HOC({
+              type: "Đặt lịch mở lớp",
+              Class: {
+                ...Books?.Class,
+                TimeBegin: moment(Books?.DateFrom)
+                  .set({
+                    hour: moment(Books?.TimeFrom, "HH:mm").get("hour"),
+                    minute: moment(Books?.TimeFrom, "HH:mm").get("minute"),
+                    second: moment(Books?.TimeFrom, "HH:mm").get("second"),
+                  })
+                  .format("YYYY-MM-DD HH:mm:ss"),
+              },
+              Stock: {
+                ID: StockID?.value,
+                Title: StockID?.label,
+              },
+              Members: [
+                {
+                  MemberID: member?.ID,
+                  FullName: member?.FullName,
+                  ID: member?.ID,
+                  Phone: member?.MobilePhone,
+                },
+              ],
+              RefUserIds: values.UserRequest
+                ? [
+                    {
+                      ID: values.UserRequest?.value,
+                      FullName: values.UserRequest?.label,
+                    },
+                  ]
+                : [],
+            });
 
           f7.dialog.close();
 
@@ -721,6 +757,7 @@ function FormScheduleClass(props) {
           );
           await BookDataService.bookContact({
             contact: {
+              StockID: StockID?.value,
               Fullname: member.FullName,
               Phone1: member.MobilePhone,
               Address: "",

@@ -93,6 +93,12 @@ const formatTimeOpenClose = ({ Text, InitialTime, Date }) => {
   return Times;
 };
 
+function missingItems(arr, n) {
+  let missingItems = [];
+  for (let i = 1; i <= n; i++) if (!arr.includes(i)) missingItems.push(i);
+  return missingItems;
+}
+
 export default class ScheduleSpa extends React.Component {
   constructor() {
     super();
@@ -184,10 +190,30 @@ export default class ScheduleSpa extends React.Component {
 
   checkScheduled = (data) => {
     if (!data || !data?.Configs || data?.Configs.length === 0) return false;
-    let { Configs, Books, Date, Staffs } = data;
+    let { Configs, Books, Date, Staffs, DateBook } = data;
 
-    let newConfigs = Configs.filter(
-      (x) =>
+    if (moment(Date).format("DD/MM/YYYY") !== DateBook) return false;
+
+    let newBooks = [...Books]
+      .map((x) => ({
+        BookDate: x.BookDate,
+        RootMinutes: x.RootMinutes,
+        Status: x.Status || "",
+        addToday: x.addToday || false,
+      }))
+      .sort((left, right) =>
+        moment.utc(left.BookDate).diff(moment.utc(right.BookDate))
+      );
+
+    newBooks.push({
+      BookDate: moment(Date).format("YYYY-MM-DD HH:mm"),
+      RootMinutes:
+        window?.GlobalConfig?.Admin?.SettingBookOnlineExpectedMinutes || 60,
+      addToday: true,
+    });
+
+    if (Configs && Configs.length > 0) {
+      let newConfigs = Configs.filter((x) =>
         moment(
           moment(Date).format("YYYY-MM-DD HH:mm"),
           "YYYY-MM-DD HH:mm"
@@ -197,70 +223,112 @@ export default class ScheduleSpa extends React.Component {
           undefined,
           "[)"
         )
-      // moment(
-      //   moment(Date).add(60, "minutes").format("YYYY-MM-DD HH:mm"),
-      //   "YYYY-MM-DD HH:mm"
-      // ).isBetween(
-      //   moment(x.Config.from, "YYYY-MM-DD HH:mm"),
-      //   moment(x.Config.to, "YYYY-MM-DD HH:mm"),
-      //   undefined,
-      //   "[]"
-      // )
-    );
-
-    if (newConfigs && newConfigs.length > 0) {
-      let ArrMaxBook = Math.max(...newConfigs.map((x) => x.Config.MaxBook));
-      //console.log(Date)
-      let crList = Books.filter(
-        (x) =>
-          moment(
-            moment(x.BookDate).format("YYYY-MM-DD HH:mm"),
-            "YYYY-MM-DD HH:mm"
-          ).isBetween(
-            moment(moment(Date).format("YYYY-MM-DD HH:mm"), "YYYY-MM-DD HH:mm"),
-            moment(
-              moment(Date)
-                .add(60, "minutes")
-                .subtract(
-                  window?.GlobalConfig?.Admin?.SettingBookOnlineMinutes || 0,
-                  "minutes"
-                )
-                .format("YYYY-MM-DD HH:mm"),
-              "YYYY-MM-DD HH:mm"
-            ),
-            null,
-            "[)"
-          ) ||
-          moment(
-            moment(x.BookDate)
-              .add(x.RootMinutes || 60, "minute")
-              .format("YYYY-MM-DD HH:mm"),
-            "YYYY-MM-DD HH:mm"
-          ).isBetween(
-            moment(moment(Date).format("YYYY-MM-DD HH:mm"), "YYYY-MM-DD HH:mm"),
-            moment(
-              moment(Date)
-                .add(
-                  window?.GlobalConfig?.Admin
-                    ?.SettingBookOnlineExpectedMinutes || 60,
-                  "minutes"
-                )
-                .subtract(
-                  window?.GlobalConfig?.Admin?.SettingBookOnlineMinutes || 0,
-                  "minutes"
-                )
-                .format("YYYY-MM-DD HH:mm"),
-              "YYYY-MM-DD HH:mm"
-            ),
-            null,
-            "()"
-          )
       );
-      //console.log(crList)
+      if (newConfigs.length === 0) return true;
 
-      return crList.length >= ArrMaxBook;
+      let MaxBook = Math.max(...newConfigs.map((x) => x.Config.MaxBook));
+      let Resources = Array.from({ length: MaxBook }, (_, i) => ({
+        id: i + 1,
+        title: i + 1,
+      }));
+      let Lists = [];
+
+      for (let book of newBooks) {
+        let crList = Lists.filter(
+          (x) =>
+            moment(x.start, "YYYY-MM-DD HH:mm").isBetween(
+              moment(book.BookDate, "YYYY-MM-DD HH:mm"),
+              moment(
+                moment(book.BookDate, "YYYY-MM-DD HH:mm")
+                  .add(book.RootMinutes || 60, "minutes")
+                  .subtract(
+                    window?.GlobalConfig?.Admin?.SettingBookOnlineMinutes || 0,
+                    "minutes"
+                  )
+                  .format("YYYY-MM-DD HH:mm"),
+                "YYYY-MM-DD HH:mm"
+              ),
+              null,
+              "[)"
+            ) ||
+            moment(book.BookDate, "YYYY-MM-DD HH:mm").isBetween(
+              moment(x.start, "YYYY-MM-DD HH:mm"),
+              moment(
+                moment(x.end, "YYYY-MM-DD HH:mm")
+                  .subtract(
+                    window?.GlobalConfig?.Admin?.SettingBookOnlineMinutes || 0,
+                    "minutes"
+                  )
+                  .format("YYYY-MM-DD HH:mm"),
+                "YYYY-MM-DD HH:mm"
+              ),
+              null,
+              "[)"
+            )
+        );
+
+        if (crList && crList.length > 0) {
+          let ArrMaxBook = Math.max(...crList.map((x) => x.resourceIds[0]));
+
+          let missNumber = missingItems(
+            crList.map((x) => x.resourceIds[0]),
+            Resources.length
+          );
+
+          let resourceId = ArrMaxBook + 1;
+
+          if (missNumber && missNumber.length > 0) {
+            resourceId = missNumber[0];
+          }
+
+          let newObj;
+          if (
+            ArrMaxBook < Resources.length &&
+            missNumber &&
+            missNumber.length > 0
+          ) {
+            newObj = {
+              start: moment(book.BookDate, "YYYY-MM-DD HH:mm").toDate(),
+              end: moment(book.BookDate, "YYYY-MM-DD HH:mm")
+                .add(book.RootMinutes || 60, "minutes")
+                .toDate(),
+              resourceIds: [resourceId],
+              addToday: book?.addToday || false,
+            };
+          } else {
+            //add thêm resources nếu quá chiều dài max
+            Resources.push({
+              id: resourceId,
+              title: resourceId,
+            });
+            newObj = {
+              start: moment(book.BookDate, "YYYY-MM-DD HH:mm").toDate(),
+              end: moment(book.BookDate, "YYYY-MM-DD HH:mm")
+                .add(book.RootMinutes || 60, "minutes")
+                .toDate(),
+              resourceIds: [resourceId],
+              addToday: book?.addToday || false,
+            };
+          }
+          Lists.push(newObj);
+        } else {
+          let newObj = {
+            start: moment(book.BookDate, "YYYY-MM-DD HH:mm").toDate(),
+            end: moment(book.BookDate, "YYYY-MM-DD HH:mm")
+              .add(book.RootMinutes || 60, "minutes")
+              .toDate(),
+            resourceIds: [1],
+            addToday: book?.addToday || false,
+          };
+          Lists.push(newObj);
+        }
+      }
+
+      let ToDate = Lists.findIndex((x) => x.addToday);
+
+      return Lists[ToDate].resourceIds[0] > MaxBook;
     } else {
-      return true;
+      return false;
     }
   };
 
@@ -439,6 +507,7 @@ export default class ScheduleSpa extends React.Component {
             isDayOff ||
             this.checkScheduled({
               ...dataCheck,
+              DateBook: DateTimeBook.date,
               Date: moment(day)
                 .set({
                   hour: moment(datetime).get("hour"),
@@ -493,7 +562,7 @@ export default class ScheduleSpa extends React.Component {
       time: "",
       toDate: datetime,
     });
-    this.getListChoose(datetime, this.state.ListDisableChoose);
+    //this.getListChoose(datetime, this.state.ListDisableChoose);
     this.setState({
       isOpen: false,
       isActive: 2,

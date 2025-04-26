@@ -174,6 +174,7 @@ export default class extends React.Component {
               );
               await BookDataService.bookContact({
                 contact: {
+                  StockID: item.Stock?.ID,
                   Fullname: member.FullName,
                   Phone1: member.MobilePhone,
                   Address: "",
@@ -198,6 +199,20 @@ export default class extends React.Component {
               }
 
               this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
+                if (newLists?.length === 0) {
+                  window.noti27?.LOP_HOC &&
+                    window.noti27?.LOP_HOC({
+                      type: "Đặt lịch xóa lớp",
+                      Class: {
+                        ...item?.Class,
+                        TimeBegin: item.TimeBegin,
+                      },
+                      Stock: item.Stock,
+                      Members: item?.Member?.Lists ? item?.Member?.Lists.map(x => x.Member) : [],
+                      RefUserIds: item.TeacherID ? [item.Teacher] : [],
+                    });
+                }
+
                 f7.dialog.close();
                 toast.success("Huỷ lịch thành công.");
               });
@@ -275,6 +290,7 @@ export default class extends React.Component {
 
               await BookDataService.bookContact({
                 contact: {
+                  StockID: item.Stock?.ID,
                   Fullname: member.FullName,
                   Phone1: member.MobilePhone,
                   Address: "",
@@ -300,6 +316,21 @@ export default class extends React.Component {
 
               this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
                 f7.dialog.close();
+
+                if (newLists?.length === 0) {
+                  window.noti27?.LOP_HOC &&
+                    window.noti27?.LOP_HOC({
+                      type: "Đặt lịch xóa lớp",
+                      Class: {
+                        ...item?.Class,
+                        TimeBegin: item.TimeBegin,
+                      },
+                      Stock: item.Stock,
+                      Members: item?.Member?.Lists ? item?.Member?.Lists.map(x => x.Member) : [],
+                      RefUserIds: item.TeacherID ? [item.Teacher] : [],
+                    });
+                }
+
                 toast.success("Huỷ lịch thành công.");
                 f7.views.main.router.navigate("/schedule-os/");
               });

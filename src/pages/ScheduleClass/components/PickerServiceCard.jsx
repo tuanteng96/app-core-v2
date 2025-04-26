@@ -15,7 +15,7 @@ function PickerServiceCard({
   callback,
   v,
 }) {
-  let { data } = useQuery({
+  let { data, isLoading } = useQuery({
     queryKey: ["ListOsMember", { isOpen }],
     queryFn: async () => {
       const member = getUser();
@@ -102,53 +102,58 @@ function PickerServiceCard({
                   overflow: "auto",
                 }}
               >
-                {data &&
-                  data.map((item, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        padding: "12px 15px",
-                        borderBottom: "1px dashed #f1f1f1",
-                        color: item.value === value && "var(--ezs-color)",
-                        position: "relative",
-                      }}
-                      onClick={() => {
-                        onChange(item);
-                        onClose();
-                      }}
-                    >
-                      <div>
-                        <div className="fw-500 mb-2px">{item.label}</div>
-                        <div className="fw-300 text-muted">
-                          {item.ClassList.map((x) => x.Title).join(", ")}
-                        </div>
-                      </div>
-                      {item.value === value && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
+                {isLoading && <div className="p-15px">Đang tải ...</div>}
+                {!isLoading && (
+                  <>
+                    {data &&
+                      data.map((item, index) => (
+                        <div
+                          key={index}
                           style={{
-                            position: "absolute",
-                            width: "24px",
-                            right: "15px",
-                            top: "50%",
-                            transform: "translateY(-50%)",
+                            padding: "12px 15px",
+                            borderBottom: "1px dashed #f1f1f1",
+                            color: item.value === value && "var(--ezs-color)",
+                            position: "relative",
+                          }}
+                          onClick={() => {
+                            onChange(item);
+                            onClose();
                           }}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m4.5 12.75 6 6 9-13.5"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                  ))}
-                {(!data || data.length === 0) && (
-                  <div className="p-15px">Bạn chưa có thẻ liệu trình ?</div>
+                          <div>
+                            <div className="fw-500 mb-2px">{item.label}</div>
+                            <div className="fw-300 text-muted">
+                              {item.ClassList.map((x) => x.Title).join(", ")}
+                            </div>
+                          </div>
+                          {item.value === value && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              style={{
+                                position: "absolute",
+                                width: "24px",
+                                right: "15px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                              }}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m4.5 12.75 6 6 9-13.5"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                      ))}
+                    {(!data || data.length === 0) && (
+                      <div className="p-15px">Bạn chưa có thẻ liệu trình ?</div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
