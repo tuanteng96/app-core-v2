@@ -131,100 +131,136 @@ export default class extends React.Component {
             close: true,
             onClick: async () => {
               f7.dialog.preloader("Đang thực hiện ...");
-              let newLists = [...(item?.Member?.Lists || [])];
-              let CrMemberIndex = newLists.findIndex(
-                (x) => Number(x.Member.MemberID) === Number(member.ID)
-              );
-              let CrMember =
-                CrMemberIndex > -1 ? newLists[CrMemberIndex] : null;
-              newLists = newLists.filter(
-                (x) => Number(x.Member.MemberID) !== Number(member.ID)
-              );
-              let newValues = {
-                ID: item?.ID,
-                CreateDate: moment(item.CreateDate, "YYYY-MM-DD HH:mm").format(
-                  "YYYY-MM-DD HH:mm"
-                ),
-                StockID: item?.StockID,
-                TimeBegin: moment(item.TimeBegin).format("YYYY-MM-DD HH:mm:ss"),
-                OrderServiceClassID: item?.OrderServiceClassID,
-                TeacherID: item.TeacherID,
-                Member: {
-                  ...item?.Member,
-                  Lists: newLists,
-                },
-                MemberID: "",
-                Desc: "",
-              };
 
-              let newObj = {
-                ID: CrMember?.Os?.ID,
-                BookDate: null,
-                Status: "",
-                UserID: "",
-                Desc: "",
-              };
+              let rsClass = await userService.getSheduleOsList({
+                StockID: [],
+                From: null,
+                To: null,
+                ClassIDs: [item.Class.ID],
+                TeachIDs: [],
+                MemberIDs: [member.ID],
+                BeginFrom: moment(item.TimeBegin).format("YYYY-MM-DD HH:mm"),
+                BeginTo: moment(item.TimeBegin).format("YYYY-MM-DD HH:mm"),
+                Pi: 1,
+                Ps: 20,
+              });
 
-              let rs = await userService.addEditSheduleOs(
-                { arr: [newValues] },
-                member?.token
+              let index = rsClass?.data?.Items?.findIndex(
+                (x) => x.ID === item.ID
               );
-              if (rs?.data?.Updated && rs?.data?.Updated.length > 0) {
-                let { Updated } = rs?.data;
-                let index = Updated[0].Member?.Lists?.findIndex(
-                  (x) => x?.Member?.ID === Number(member.ID)
+
+              if (index > -1) {
+                let iClass = rsClass?.data?.Items[index];
+
+                let newLists = [...(iClass?.Member?.Lists || [])];
+                let CrMemberIndex = newLists.findIndex(
+                  (x) => Number(x.Member.MemberID) === Number(member.ID)
                 );
-                if (index === -1) {
-                  await userService.addEditSheduleUpdateOs(
-                    { arr: [newObj] },
-                    member?.token
-                  );
-                  await BookDataService.bookContact({
-                    contact: {
-                      StockID: item.Stock?.ID,
-                      Fullname: member.FullName,
-                      Phone1: member.MobilePhone,
-                      Address: "",
-                      Email: "",
-                      Content: `${member.FullName} / ${
-                        member.MobilePhone
-                      }  huỷ lịch theo lớp ${item.Class.Title} tại cơ sở ${
-                        item.Stock.Title
-                      } ngày ${moment(item.TimeBegin).format(
-                        "DD-MM-YYYY"
-                      )} lúc ${moment(item.TimeBegin).format(
-                        "HH:mm"
-                      )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
-                    },
-                  });
+                let CrMember =
+                  CrMemberIndex > -1 ? newLists[CrMemberIndex] : null;
+                newLists = newLists.filter(
+                  (x) => Number(x.Member.MemberID) !== Number(member.ID)
+                );
+                let newValues = {
+                  ID: item?.ID,
+                  CreateDate: moment(
+                    item.CreateDate,
+                    "YYYY-MM-DD HH:mm"
+                  ).format("YYYY-MM-DD HH:mm"),
+                  StockID: item?.StockID,
+                  TimeBegin: moment(item.TimeBegin).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                  OrderServiceClassID: item?.OrderServiceClassID,
+                  TeacherID: iClass.TeacherID,
+                  Member: {
+                    ...iClass?.Member,
+                    Lists: newLists,
+                  },
+                  MemberID: "",
+                  Desc: "",
+                };
 
-                  if (newLists?.length === 0) {
-                    await userService.deleteSheduleClass(
-                      { delete: [item?.ID] },
+                let newObj = {
+                  ID: CrMember?.Os?.ID,
+                  BookDate: null,
+                  Status: "",
+                  UserID: "",
+                  Desc: "",
+                };
+
+                let rs = await userService.addEditSheduleOs(
+                  { arr: [newValues] },
+                  member?.token
+                );
+                if (rs?.data?.Updated && rs?.data?.Updated.length > 0) {
+                  let { Updated } = rs?.data;
+                  let index = Updated[0].Member?.Lists?.findIndex(
+                    (x) => x?.Member?.ID === Number(member.ID)
+                  );
+                  if (index === -1) {
+                    await userService.addEditSheduleUpdateOs(
+                      { arr: [newObj] },
                       member?.token
                     );
-                  }
+                    await BookDataService.bookContact({
+                      contact: {
+                        StockID: item.Stock?.ID,
+                        Fullname: member.FullName,
+                        Phone1: member.MobilePhone,
+                        Address: "",
+                        Email: "",
+                        Content: `${member.FullName} / ${
+                          member.MobilePhone
+                        }  huỷ lịch theo lớp ${item.Class.Title} tại cơ sở ${
+                          item.Stock.Title
+                        } ngày ${moment(item.TimeBegin).format(
+                          "DD-MM-YYYY"
+                        )} lúc ${moment(item.TimeBegin).format(
+                          "HH:mm"
+                        )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
+                      },
+                    });
 
-                  this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
                     if (newLists?.length === 0) {
-                      window.noti27?.LOP_HOC &&
-                        window.noti27?.LOP_HOC({
-                          type: "Đặt lịch xóa lớp",
-                          Class: {
-                            ...item?.Class,
-                            TimeBegin: item.TimeBegin,
-                          },
-                          Stock: item.Stock,
-                          Members: item?.Member?.Lists
-                            ? item?.Member?.Lists.map((x) => x.Member)
-                            : [],
-                          RefUserIds: item.TeacherID ? [item.Teacher] : [],
-                        });
+                      await userService.deleteSheduleClass(
+                        { delete: [item?.ID] },
+                        member?.token
+                      );
                     }
 
-                    f7.dialog.close();
-                    toast.success("Huỷ lịch thành công.");
-                  });
+                    this.getSheduleList(
+                      { ...this.state.filters, Pi: 1 },
+                      () => {
+                        if (newLists?.length === 0) {
+                          window.noti27?.LOP_HOC &&
+                            window.noti27?.LOP_HOC({
+                              type: "Đặt lịch xóa lớp",
+                              Class: {
+                                ...item?.Class,
+                                TimeBegin: item.TimeBegin,
+                              },
+                              Stock: item.Stock,
+                              Members: item?.Member?.Lists
+                                ? item?.Member?.Lists.map((x) => x.Member)
+                                : [],
+                              RefUserIds: item.TeacherID ? [item.Teacher] : [],
+                            });
+                        }
+
+                        f7.dialog.close();
+                        toast.success("Huỷ lịch thành công.");
+                      }
+                    );
+                  } else {
+                    this.getSheduleList(
+                      { ...this.state.filters, Pi: 1 },
+                      () => {
+                        f7.dialog.close();
+                        toast.success("Xảy ra lỗi. Vui lòng thử lại");
+                      }
+                    );
+                  }
                 } else {
                   this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
                     f7.dialog.close();
@@ -234,7 +270,7 @@ export default class extends React.Component {
               } else {
                 this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
                   f7.dialog.close();
-                  toast.success("Xảy ra lỗi. Vui lòng thử lại");
+                  toast.success("Lịch đã bị huỷ hoặc lớp đã bị xoá.");
                 });
               }
             },
@@ -266,102 +302,139 @@ export default class extends React.Component {
             close: true,
             onClick: async () => {
               f7.dialog.preloader("Đang thực hiện ...");
-              let newLists = [...(item?.Member?.Lists || [])];
-              let CrMemberIndex = newLists.findIndex(
-                (x) => Number(x.Member.MemberID) === Number(member.ID)
-              );
-              let CrMember =
-                CrMemberIndex > -1 ? newLists[CrMemberIndex] : null;
-              newLists = newLists.filter(
-                (x) => Number(x.Member.MemberID) !== Number(member.ID)
-              );
-              let newValues = {
-                ID: item?.ID,
-                CreateDate: moment(item.CreateDate, "YYYY-MM-DD HH:mm").format(
-                  "YYYY-MM-DD HH:mm"
-                ),
-                StockID: item?.StockID,
-                TimeBegin: moment(item.TimeBegin).format("YYYY-MM-DD HH:mm:ss"),
-                OrderServiceClassID: item?.OrderServiceClassID,
-                TeacherID: item.TeacherID,
-                Member: {
-                  ...item?.Member,
-                  Lists: newLists,
-                },
-                MemberID: "",
-                Desc: "",
-              };
-              let newObj = {
-                ID: CrMember?.Os?.ID,
-                BookDate: null,
-                Status: "",
-                UserID: "",
-                Desc: "",
-              };
 
-              let rs = await userService.addEditSheduleOs(
-                { arr: [newValues] },
-                member?.token
+              let rsClass = await userService.getSheduleOsList({
+                StockID: [],
+                From: null,
+                To: null,
+                ClassIDs: [item.Class.ID],
+                TeachIDs: [],
+                MemberIDs: [member.ID],
+                BeginFrom: moment(item.TimeBegin).format("YYYY-MM-DD HH:mm"),
+                BeginTo: moment(item.TimeBegin).format("YYYY-MM-DD HH:mm"),
+                Pi: 1,
+                Ps: 20,
+              });
+
+              let index = rsClass?.data?.Items?.findIndex(
+                (x) => x.ID === item.ID
               );
 
-              if (rs?.data?.Updated && rs?.data?.Updated.length > 0) {
-                let { Updated } = rs?.data;
-                let index = Updated[0].Member?.Lists?.findIndex(
-                  (x) => x?.Member?.ID === Number(member.ID)
+              if (index > -1) {
+                let iClass = rsClass?.data?.Items[index];
+
+                let newLists = [...(iClass?.Member?.Lists || [])];
+                let CrMemberIndex = newLists.findIndex(
+                  (x) => Number(x.Member.MemberID) === Number(member.ID)
                 );
-                if (index === -1) {
-                  await userService.addEditSheduleUpdateOs(
-                    { arr: [newObj] },
-                    member?.token
+                let CrMember =
+                  CrMemberIndex > -1 ? newLists[CrMemberIndex] : null;
+                newLists = newLists.filter(
+                  (x) => Number(x.Member.MemberID) !== Number(member.ID)
+                );
+
+                let newValues = {
+                  ID: item?.ID,
+                  CreateDate: moment(
+                    item.CreateDate,
+                    "YYYY-MM-DD HH:mm"
+                  ).format("YYYY-MM-DD HH:mm"),
+                  StockID: item?.StockID,
+                  TimeBegin: moment(item.TimeBegin).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                  OrderServiceClassID: item?.OrderServiceClassID,
+                  TeacherID: iClass.TeacherID,
+                  Member: {
+                    ...iClass?.Member,
+                    Lists: newLists,
+                  },
+                  MemberID: "",
+                  Desc: "",
+                };
+                let newObj = {
+                  ID: CrMember?.Os?.ID,
+                  BookDate: null,
+                  Status: "",
+                  UserID: "",
+                  Desc: "",
+                };
+
+                let rs = await userService.addEditSheduleOs(
+                  { arr: [newValues] },
+                  member?.token
+                );
+
+                if (rs?.data?.Updated && rs?.data?.Updated.length > 0) {
+                  let { Updated } = rs?.data;
+                  let index = Updated[0].Member?.Lists?.findIndex(
+                    (x) => x?.Member?.ID === Number(member.ID)
                   );
-
-                  await BookDataService.bookContact({
-                    contact: {
-                      StockID: item.Stock?.ID,
-                      Fullname: member.FullName,
-                      Phone1: member.MobilePhone,
-                      Address: "",
-                      Email: "",
-                      Content: `${member.FullName} / ${
-                        member.MobilePhone
-                      }  huỷ lịch theo lớp ${item.Class.Title} tại cơ sở ${
-                        item.Stock.Title
-                      } ngày ${moment(item.TimeBegin).format(
-                        "DD-MM-YYYY"
-                      )} lúc ${moment(item.TimeBegin).format(
-                        "HH:mm"
-                      )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
-                    },
-                  });
-
-                  if (newLists?.length === 0) {
-                    await userService.deleteSheduleClass(
-                      { delete: [item?.ID] },
+                  if (index === -1) {
+                    await userService.addEditSheduleUpdateOs(
+                      { arr: [newObj] },
                       member?.token
                     );
-                  }
 
-                  this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
-                    f7.dialog.close();
+                    await BookDataService.bookContact({
+                      contact: {
+                        StockID: item.Stock?.ID,
+                        Fullname: member.FullName,
+                        Phone1: member.MobilePhone,
+                        Address: "",
+                        Email: "",
+                        Content: `${member.FullName} / ${
+                          member.MobilePhone
+                        }  huỷ lịch theo lớp ${item.Class.Title} tại cơ sở ${
+                          item.Stock.Title
+                        } ngày ${moment(item.TimeBegin).format(
+                          "DD-MM-YYYY"
+                        )} lúc ${moment(item.TimeBegin).format(
+                          "HH:mm"
+                        )} - Dịch vụ thẻ ${CrMember?.Os?.Title}`,
+                      },
+                    });
 
                     if (newLists?.length === 0) {
-                      window.noti27?.LOP_HOC &&
-                        window.noti27?.LOP_HOC({
-                          type: "Đặt lịch xóa lớp",
-                          Class: {
-                            ...item?.Class,
-                            TimeBegin: item.TimeBegin,
-                          },
-                          Stock: item.Stock,
-                          Members: item?.Member?.Lists
-                            ? item?.Member?.Lists.map((x) => x.Member)
-                            : [],
-                          RefUserIds: item.TeacherID ? [item.Teacher] : [],
-                        });
+                      await userService.deleteSheduleClass(
+                        { delete: [item?.ID] },
+                        member?.token
+                      );
                     }
 
-                    toast.success("Huỷ lịch thành công.");
-                  });
+                    this.getSheduleList(
+                      { ...this.state.filters, Pi: 1 },
+                      () => {
+                        f7.dialog.close();
+
+                        if (newLists?.length === 0) {
+                          window.noti27?.LOP_HOC &&
+                            window.noti27?.LOP_HOC({
+                              type: "Đặt lịch xóa lớp",
+                              Class: {
+                                ...item?.Class,
+                                TimeBegin: item.TimeBegin,
+                              },
+                              Stock: item.Stock,
+                              Members: item?.Member?.Lists
+                                ? item?.Member?.Lists.map((x) => x.Member)
+                                : [],
+                              RefUserIds: item.TeacherID ? [item.Teacher] : [],
+                            });
+                        }
+
+                        toast.success("Huỷ lịch thành công.");
+                      }
+                    );
+                  } else {
+                    this.getSheduleList(
+                      { ...this.state.filters, Pi: 1 },
+                      () => {
+                        f7.dialog.close();
+                        toast.success("Xảy ra lỗi. Vui lòng thử lại");
+                      }
+                    );
+                  }
                 } else {
                   this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
                     f7.dialog.close();
@@ -371,7 +444,7 @@ export default class extends React.Component {
               } else {
                 this.getSheduleList({ ...this.state.filters, Pi: 1 }, () => {
                   f7.dialog.close();
-                  toast.success("Xảy ra lỗi. Vui lòng thử lại");
+                  toast.success("Lịch đã bị huỷ hoặc lớp đã bị xoá.");
                 });
               }
             },
@@ -457,6 +530,19 @@ export default class extends React.Component {
                           {moment(item.TimeBegin)
                             .add(item?.Class?.Minutes, "minute")
                             .format("HH:mm")}
+                        </div>
+                      </div>
+                      <div
+                        className="d-flex justify-content-between px-15px py-12px"
+                        style={{
+                          borderBottom: "1px dashed #f0f0f0",
+                        }}
+                      >
+                        <div className="text-muted">Học viên</div>
+                        <div className="fw-500">
+                          {item?.Member?.Lists?.length || 0}
+                          <span className="px-2px">/</span>
+                          {item?.Class?.MemberTotal}
                         </div>
                       </div>
                       <div
