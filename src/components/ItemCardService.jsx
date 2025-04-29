@@ -61,7 +61,12 @@ export default class ItemCardService extends React.Component {
         </div>
         <div className="cardservice-item__service-list">
           {item.Services.map((sub, i) => (
-            <div className="item" key={i}>
+            <Link
+              noLinkClass
+              className="item"
+              key={i}
+              popoverOpen={".popover-menu-" + sub.ID}
+            >
               <div className={"item-box " + this.checkStatus(sub.Status)}>
                 <span className="count">{i + 1}</span>
                 <span className="hours">
@@ -81,24 +86,29 @@ export default class ItemCardService extends React.Component {
                 <span className="date">{formatDateNotYYYY(sub.BookDate)}</span>
                 {sub.Staffs &&
                   sub.Staffs.map((user, x) => (
-                    <Link
-                      noLinkClass
-                      className="link-avatar"
-                      popoverOpen={".popover-menu-" + user.ID}
-                      key={x}
-                    >
+                    <Link noLinkClass className="link-avatar">
                       <span key={x} className="avatar">
                         <img src={checkAvt2(user.Avatar)} alt={user.FullName} />
-                        <Popover className={"popover-menu-" + user.ID}>
-                          <div className="popover-name-nav">
-                            Thực hiện : <span>{user.FullName}</span>
-                          </div>
-                        </Popover>
                       </span>
                     </Link>
                   ))}
               </div>
-            </div>
+
+              <Popover className={"popover-menu-" + sub.ID}>
+                <div className="p-15px">
+                  {item.Root2Title && <div className="fw-500 text-primary mb-8px">a</div>}
+                  {sub.Staffs &&
+                    sub.Staffs.map((user, x) => (
+                      <div key={x}>
+                        Thực hiện : <span>{user.FullName}</span>
+                      </div>
+                    ))}
+                    {
+                      (!sub.Staffs || sub.Staffs.length === 0) && (<div>Chưa có nhân viên thực hiện</div>)
+                    }
+                </div>
+              </Popover>
+            </Link>
           ))}
         </div>
       </div>

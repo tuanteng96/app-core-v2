@@ -67,7 +67,10 @@ export default class Reviews extends React.Component {
                     style={this.handStyle()}
                     key={index}
                   >
-                    <div className="p-15px">
+                    <div className="p-15px" style={{
+                      height: "150px",
+                      overflow: "auto"
+                    }}>
                       <div className="reviews-info">
                         <div className="reviews-info__img">
                           <img
