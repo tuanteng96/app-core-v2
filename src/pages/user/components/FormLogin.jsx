@@ -195,7 +195,7 @@ function FormLogin({ f7, f7router }) {
                         set(
                           ref(
                             database,
-                            `/qrcode/${qrcodeStock}/${qrcodeLogin}`
+                            `/qrcode/${QRStocks}/${QRToken}`
                           ),
                           null
                         ).then(() => {

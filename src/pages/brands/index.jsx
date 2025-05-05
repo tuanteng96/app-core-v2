@@ -332,7 +332,7 @@ export default class Report extends React.Component {
                           set(
                             ref(
                               database,
-                              `/qrcode/${qrcodeStock}/${qrcodeLogin}`
+                              `/qrcode/${QRStocks}/${QRToken}`
                             ),
                             null
                           ).then(() => {

@@ -16,6 +16,7 @@ export default class ItemCardService extends React.Component {
   };
   render() {
     const { item } = this.props;
+    
     return (
       <div className="cardservice-item__service">
         <div className="cardservice-item__service-img">
@@ -96,7 +97,7 @@ export default class ItemCardService extends React.Component {
 
               <Popover className={"popover-menu-" + sub.ID}>
                 <div className="p-15px">
-                  {item.Root2Title && <div className="fw-500 text-primary mb-8px">a</div>}
+                  {sub.Root2Title && <div className="fw-500 text-primary mb-8px">{sub.Root2Title}</div>}
                   {sub.Staffs &&
                     sub.Staffs.map((user, x) => (
                       <div key={x}>
