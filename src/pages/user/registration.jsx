@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, Link, Toolbar } from "framework7-react";
+import { Page, Link, Toolbar, f7 } from "framework7-react";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
 import {
@@ -124,13 +124,21 @@ export default class extends React.Component {
                   }, 300);
                 } else {
                   setSubscribe(userData, () => {
-                    setTimeout(() => {
-                      self.$f7.preloader.hide();
-                      this.$f7router.navigate("/", {
-                        animate: true,
-                        transition: "f7-flip",
+                    userService
+                      .authSendTokenFirebase({
+                        Token: f7?.device?.os || "BROWSER_NOT_SPECIFIED",
+                        ID: userData.ID,
+                        Type: userData.acc_type,
+                      })
+                      .then(() => {
+                        setTimeout(() => {
+                          self.$f7.preloader.hide();
+                          this.$f7router.navigate("/", {
+                            animate: true,
+                            transition: "f7-flip",
+                          });
+                        }, 300);
                       });
-                    }, 300);
                   });
                 }
                 userData?.ByStockID && setStockIDStorage(userData.ByStockID);

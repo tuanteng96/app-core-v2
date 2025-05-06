@@ -206,11 +206,22 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
                     );
                   } else {
                     setSubscribe(data, () => {
-                      f7.preloader.hide();
-                      f7router.navigate("/", {
-                        animate: true,
-                        transition: "f7-flip",
-                      });
+                      firebaseMutation.mutate(
+                        {
+                          Token: f7?.device?.os || "BROWSER_NOT_SPECIFIED",
+                          ID: data.ID,
+                          Type: data.acc_type,
+                        },
+                        {
+                          onSettled: () => {
+                            f7.preloader.hide();
+                            f7router.navigate("/", {
+                              animate: true,
+                              transition: "f7-flip",
+                            });
+                          },
+                        }
+                      );
                     });
                   }
                 });

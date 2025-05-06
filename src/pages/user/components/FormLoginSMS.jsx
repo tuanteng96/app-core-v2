@@ -135,11 +135,22 @@ function FormLoginSMS({ f7, f7router }) {
                                             );
                                           } else {
                                             setSubscribe(login, () => {
-                                              f7.preloader.hide();
-                                              f7router.navigate("/", {
-                                                animate: true,
-                                                transition: "f7-flip",
-                                              });
+                                              firebaseMutation.mutate(
+                                                {
+                                                  Token: f7?.device?.os || "BROWSER_NOT_SPECIFIED",
+                                                  ID: login?.ID,
+                                                  Type: login?.acc_type,
+                                                },
+                                                {
+                                                  onSettled: () => {
+                                                    f7.preloader.hide();
+                                                    f7router.navigate("/", {
+                                                      animate: true,
+                                                      transition: "f7-flip",
+                                                    });
+                                                  },
+                                                }
+                                              );
                                             });
                                           }
                                         }
@@ -223,7 +234,7 @@ function FormLoginSMS({ f7, f7router }) {
                     }
                   });
                   localStorage.setItem("_Subscribe", true);
-                  window.Subscribe && window.Subscribe()
+                  window.Subscribe && window.Subscribe();
                 }
               },
             }
@@ -302,10 +313,7 @@ function FormLoginSMS({ f7, f7router }) {
                     } else {
                       setSubscribe(data, () => {
                         set(
-                          ref(
-                            database,
-                            `/qrcode/${QRStocks}/${QRToken}`
-                          ),
+                          ref(database, `/qrcode/${QRStocks}/${QRToken}`),
                           null
                         ).then(() => {
                           f7.dialog.close();
@@ -318,7 +326,7 @@ function FormLoginSMS({ f7, f7router }) {
                     }
                   });
                   localStorage.setItem("_Subscribe", true);
-                  window.Subscribe && window.Subscribe()
+                  window.Subscribe && window.Subscribe();
                 }
               },
             }

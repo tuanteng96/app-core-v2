@@ -73,7 +73,11 @@ function FormLogin({ f7, f7router }) {
                   f7.preloader.hide();
                 }
               } else {
-                if (data.ID !== 1 && window?.GlobalConfig?.APP?.OutUser && data?.acc_type === "U") {
+                if (
+                  data.ID !== 1 &&
+                  window?.GlobalConfig?.APP?.OutUser &&
+                  data?.acc_type === "U"
+                ) {
                   setErrors({
                     username: "Đăng nhập lỗi.",
                   });
@@ -105,16 +109,27 @@ function FormLogin({ f7, f7router }) {
                       );
                     } else {
                       setSubscribe(data, () => {
-                        f7.preloader.hide();
-                        f7router.navigate("/", {
-                          animate: true,
-                          transition: "f7-flip",
-                        });
+                        firebaseMutation.mutate(
+                          {
+                            Token: f7?.device?.os || "BROWSER_NOT_SPECIFIED",
+                            ID: data.ID,
+                            Type: data.acc_type,
+                          },
+                          {
+                            onSettled: () => {
+                              f7.preloader.hide();
+                              f7router.navigate("/", {
+                                animate: true,
+                                transition: "f7-flip",
+                              });
+                            },
+                          }
+                        );
                       });
                     }
                   });
                   localStorage.setItem("_Subscribe", true);
-                  window.Subscribe && window.Subscribe()
+                  window.Subscribe && window.Subscribe();
                 }
               }
             },
@@ -193,10 +208,7 @@ function FormLogin({ f7, f7router }) {
                     } else {
                       setSubscribe(data, () => {
                         set(
-                          ref(
-                            database,
-                            `/qrcode/${QRStocks}/${QRToken}`
-                          ),
+                          ref(database, `/qrcode/${QRStocks}/${QRToken}`),
                           null
                         ).then(() => {
                           f7.dialog.close();
@@ -209,7 +221,7 @@ function FormLogin({ f7, f7router }) {
                     }
                   });
                   localStorage.setItem("_Subscribe", true);
-                  window.Subscribe && window.Subscribe()
+                  window.Subscribe && window.Subscribe();
                 }
               },
             }

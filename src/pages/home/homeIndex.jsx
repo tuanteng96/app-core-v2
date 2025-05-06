@@ -70,6 +70,7 @@ export default class extends React.Component {
     this.setState({
       stockName: stockName,
     });
+    
   }
   onPageBeforeIn = () => {
     const getStock = getStockIDStorage();

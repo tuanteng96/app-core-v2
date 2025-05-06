@@ -329,20 +329,25 @@ export default class Report extends React.Component {
                           });
                       } else {
                         setSubscribe(data, () => {
-                          set(
-                            ref(
-                              database,
-                              `/qrcode/${QRStocks}/${QRToken}`
-                            ),
-                            null
-                          ).then(() => {
-                            this.setGlobal({ data: datars, QRDomain });
-                            f7.dialog.close();
-                            f7.views.main.router.navigate("/", {
-                              animate: true,
-                              transition: "f7-flip",
+                          userService
+                            .authSendTokenFirebase({
+                              Token: f7?.device?.os || "BROWSER_NOT_SPECIFIED",
+                              ID: data.ID,
+                              Type: data.acc_type,
+                            })
+                            .then(() => {
+                              set(
+                                ref(database, `/qrcode/${QRStocks}/${QRToken}`),
+                                null
+                              ).then(() => {
+                                this.setGlobal({ data: datars, QRDomain });
+                                f7.dialog.close();
+                                f7.views.main.router.navigate("/", {
+                                  animate: true,
+                                  transition: "f7-flip",
+                                });
+                              });
                             });
-                          });
                         });
                       }
                     });
