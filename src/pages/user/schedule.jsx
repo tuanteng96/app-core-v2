@@ -131,13 +131,14 @@ export default class extends React.Component {
       });
     }
     //
+      
     if (this.$f7route.params.ID && this.state.isParams) {
       self.$f7.dialog.preloader("Đang tải ...");
       const { ID } = this.$f7route.params;
       BookDataService.getBookId(ID)
         .then(({ data }) => {
           const currentBook = data.data;
-
+          
           let serviceNotes = "";
           let AmountPeople = {
             label: "1 khách",
@@ -285,7 +286,7 @@ export default class extends React.Component {
       OldBook,
       prevBook,
     } = this.state;
-
+    
     const infoUser = getUser();
     const self = this;
     if (!infoUser) {
@@ -364,9 +365,9 @@ export default class extends React.Component {
       ],
     };
 
-    if (this.$f7route.params.ID && this.state.isParams) {
+    if (this.$f7route.params.ID && Number(this.$f7route.params.ID) > 0 && this.state.isParams) {
       dataSubmit.deletes = [{ ID: this.$f7route.params.ID }];
-      dataSubmit.prevDeletes = [prevBook];
+      dataSubmit.prevDeletes = prevBook && [prevBook];
     }
     this.setState({
       isLoading: true,
