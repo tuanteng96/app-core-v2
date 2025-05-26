@@ -541,7 +541,7 @@ function FormScheduleClass(props) {
                 Os: {
                   OsID: ProdIDs?.OS?.ID,
                   ID: ProdIDs?.OS?.ID,
-                  Title: ProdIDs?.OS?.Title,
+                  Title: ProdIDs?.OS?.OrderTitle,
                 },
                 Status: "",
               },
@@ -589,7 +589,7 @@ function FormScheduleClass(props) {
                 UserRequest ? ` với huấn luyện viên ${UserRequest?.label}` : ""
               } tại cơ sở ${StockID.label} ngày ${moment(Books.DateFrom).format(
                 "DD-MM-YYYY"
-              )} lúc ${Books.TimeFrom} - Dịch vụ thẻ ${ProdIDs?.OS?.Title}`,
+              )} lúc ${Books.TimeFrom} - Dịch vụ thẻ ${ProdIDs?.OS?.OrderTitle}`,
             },
           });
           let { data: dataOs } = await userService.getSheduleOsMin({
@@ -720,7 +720,7 @@ function FormScheduleClass(props) {
           Os: {
             OsID: ProdIDs?.OS?.ID,
             ID: ProdIDs?.OS?.ID,
-            Title: ProdIDs?.OS?.Title,
+            Title: ProdIDs?.OS?.OrderTitle,
           },
           Status: "",
         });
@@ -768,7 +768,7 @@ function FormScheduleClass(props) {
                 StockID.label
               } ngày ${moment(Books.DateFrom).format("DD-MM-YYYY")} lúc ${
                 Books.TimeFrom
-              } - Dịch vụ thẻ ${ProdIDs?.OS?.Title}`,
+              } - Dịch vụ thẻ ${ProdIDs?.OS?.OrderTitle}`,
             },
           });
           let { data: dataOs } = await userService.getSheduleOsMin({
