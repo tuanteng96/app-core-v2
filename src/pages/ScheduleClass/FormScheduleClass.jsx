@@ -589,7 +589,9 @@ function FormScheduleClass(props) {
                 UserRequest ? ` với huấn luyện viên ${UserRequest?.label}` : ""
               } tại cơ sở ${StockID.label} ngày ${moment(Books.DateFrom).format(
                 "DD-MM-YYYY"
-              )} lúc ${Books.TimeFrom} - Dịch vụ thẻ ${ProdIDs?.OS?.OrderTitle}`,
+              )} lúc ${Books.TimeFrom} - Dịch vụ thẻ ${
+                ProdIDs?.OS?.OrderTitle
+              }`,
             },
           });
           let { data: dataOs } = await userService.getSheduleOsMin({
@@ -840,11 +842,6 @@ function FormScheduleClass(props) {
   };
 
   const isDisabled = (item) => {
-    // if (
-    //   !item?.ClassInfo ||
-    //   (item?.ClassInfo && item?.ClassInfo?.Member?.Lists?.length === 0)
-    // )
-    //   return;
     if (
       !item?.ClassInfo ||
       (item?.ClassInfo && item?.ClassInfo?.Member?.Lists?.length === 0)
@@ -858,6 +855,18 @@ function FormScheduleClass(props) {
         moment(TimeStart).diff(moment(), "minutes") <
         (window?.GlobalConfig?.Admin?.lop_hoc_pt_phut || 0)
       );
+    }
+    
+    if (item?.ClassInfo && item?.ClassInfo?.Member?.Lists?.length > 0) {
+      let TimeEnd = moment(item.DateFrom)
+        .set({
+          hour: moment(item.TimeFrom, "HH:mm").get("hour"),
+          minute: moment(item.TimeFrom, "HH:mm").get("minute"),
+          second: moment(item.TimeFrom, "HH:mm").get("second"),
+        })
+        .add(item?.ClassInfo?.Class?.Minutes, "minute");
+        
+        return moment(TimeEnd).diff(moment(), "minutes") < 0
     }
     return false;
   };
