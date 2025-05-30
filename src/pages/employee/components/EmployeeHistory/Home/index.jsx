@@ -63,7 +63,7 @@ const History = forwardRef(({ MemberID }, ref) => {
                         </div>
                         <div className="service-name fw-500">
                           <i className="las la-heart pr-5px"></i>
-                          {sub.ProdTitle} ({sub.Title})
+                          {sub.ProdTitle} ({sub?.ProdService2 || sub.Title})
                         </div>
                         <div className="staff fw-500">
                           <i className="las la-user-circle pr-5px"></i>
