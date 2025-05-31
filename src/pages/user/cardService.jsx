@@ -16,6 +16,7 @@ import NotificationIcon from "../../components/NotificationIcon";
 import SelectStock from "../../components/SelectStock";
 import PageNoData from "../../components/PageNoData";
 import SkeletonCardService from "./CardService/SkeletonCardService";
+import { arrSortDateTime } from "../../constants/format";
 
 export default class extends React.Component {
   constructor() {
@@ -46,7 +47,7 @@ export default class extends React.Component {
     });
     UserService.getListTagService(memberid, 1)
       .then(({ data }) => {
-        if(!data?.error) {
+        if (!data?.error) {
           this.setState({
             countSv: data.length || 0,
             cardSv: data ? data.filter((item) => item.TabIndex === 0) : [],
@@ -54,8 +55,7 @@ export default class extends React.Component {
             excessiveSv: data ? data.filter((item) => item.TabIndex === 2) : [],
             loading: false,
           });
-        }
-        else {
+        } else {
           this.setState({
             countSv: 0,
             cardSv: [],
@@ -87,6 +87,26 @@ export default class extends React.Component {
       done();
     }, 600);
   }
+
+  formatCard = (arr) => {
+    let newArr = arr.map((x) => {
+      let obj = {
+        ...x,
+        ServicesNew: x.Services.filter((x) => x.Status === "done").sort(
+          (a, b) => new Date(b.BookDate) - new Date(a.BookDate)
+        ),
+      };
+      return {
+        ...obj,
+        BookDate:
+          obj.ServicesNew && obj.ServicesNew.length > 0
+            ? obj.ServicesNew[0].BookDate
+            : null,
+      };
+    });
+    newArr = newArr.sort((a, b) => new Date(b.BookDate) - new Date(a.BookDate));
+    return newArr;
+  };
 
   render() {
     const { isOpenStock, countSv, cardSv, insuranceSV, excessiveSv, loading } =
@@ -157,7 +177,7 @@ export default class extends React.Component {
                 {!loading && (
                   <React.Fragment>
                     {insuranceSV && insuranceSV.length > 0 ? (
-                      insuranceSV.map((item, index) => (
+                      this.formatCard(insuranceSV).map((item, index) => (
                         <ItemCardService key={index} item={item} />
                       ))
                     ) : (
@@ -176,7 +196,7 @@ export default class extends React.Component {
                 {!loading && (
                   <React.Fragment>
                     {excessiveSv && excessiveSv.length > 0 ? (
-                      excessiveSv.map((item, index) => (
+                      this.formatCard(excessiveSv).map((item, index) => (
                         <ItemCardService key={index} item={item} />
                       ))
                     ) : (
