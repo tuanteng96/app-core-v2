@@ -76,6 +76,7 @@ import AffPage from "../pages/user/Aff.jsx";
 import PointPage from "../pages/user/Point.jsx";
 import ScheduleClassPage from "../pages/ScheduleClass/index.jsx";
 import SheduleClassListPage from "../pages/ScheduleClass/SheduleClassList.jsx";
+import AdminOtpPage from "../pages/admin/AdminOtp.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -254,6 +255,13 @@ var routes = [
   {
     path: "/shop/detail/:cateId",
     asyncComponent: () => ShopDetailPage,
+  },
+  {
+    path: "/admin/send-otp",
+    asyncComponent: () => AdminOtpPage,
+    options: {
+      transition: "f7-cover",
+    },
   },
   {
     path: "/maps/",

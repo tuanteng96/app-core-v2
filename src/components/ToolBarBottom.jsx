@@ -125,11 +125,57 @@ export default class ToolBarCustom extends React.Component {
       });
   };
 
+  getHasTool = () => {
+    const infoUser = getUser();
+    let hasRightTool = false;
+    if (infoUser?.Info?.rightTree?.groups) {
+      infoUser?.Info?.rightTree?.groups.every((rt) => {
+        if (rt.rights && rt.rights.findIndex((x) => x.name === "adminTools")) {
+          let index = rt.rights.findIndex((x) => x.name === "adminTools");
+          if (index > -1) {
+            let adminTools_byStockIndex =
+              rt.rights[index].subs &&
+              rt.rights[index].subs.findIndex(
+                (o) => o.name_and_group === "adminTools_byStock_adminTools"
+              );
+            if (adminTools_byStockIndex > -1) {
+              let { IsAllStock, stocksList, hasRight } =
+                rt.rights[index].subs[adminTools_byStockIndex];
+              if (hasRight) {
+                hasRightTool = hasRight;
+              }
+              if (!IsAllStock) {
+                let idx = stocksList.findIndex(
+                  (k) => k.ID === Number(localStorage.getItem("CurrentStockID"))
+                );
+
+                if (idx > -1) {
+                  hasRightTool = true;
+                } else {
+                  hasRightTool = false;
+                }
+              }
+              return;
+            }
+          }
+        }
+        return true;
+      });
+    }
+    return hasRightTool;
+  };
+
   checkTotal = () => {
     const TYPE = checkRole();
 
+    let add = 0;
+
+    if (this.getHasTool() && window?.GlobalConfig?.Admin?.otp_kh) {
+      add = add + 1;
+    }
+
     if (TYPE === "ADMIN") {
-      return 3;
+      return 3 + add;
     }
     if (TYPE === "STAFF") {
       const arrType = [
@@ -138,9 +184,12 @@ export default class ToolBarCustom extends React.Component {
         CheckPrivateNav(["director"]),
         [1],
       ];
-      return arrType.filter((item) => item).length;
+      // if(window?.GlobalConfig?.APP?.fwf_report) {
+      //   arrType.push([1])
+      // }
+      return arrType.filter((item) => item).length + add;
     }
-    return 5;
+    return 5 + add;
   };
 
   handleUrl = (item) => {
@@ -268,6 +317,16 @@ export default class ToolBarCustom extends React.Component {
               roles={"all"}
               href="/employee/statistical/"
             />
+            {this.getHasTool() && window?.GlobalConfig?.Admin?.otp_kh && (
+              <PrivateNav
+                className="page-toolbar-bottom__link js-toolbar-link"
+                icon="las la-comment-dots"
+                text="Send OTP"
+                roles={"all"}
+                href="/admin/send-otp/"
+              />
+            )}
+
             {window?.GlobalConfig?.APP?.fwf_report ? (
               <PrivateNav
                 className="page-toolbar-bottom__link js-toolbar-link"
@@ -308,6 +367,15 @@ export default class ToolBarCustom extends React.Component {
               roles={[]}
               href="/employee/statistical/"
             />
+            {this.getHasTool() && window?.GlobalConfig?.Admin?.otp_kh && (
+              <PrivateNav
+                className="page-toolbar-bottom__link js-toolbar-link"
+                icon="las la-comment-dots"
+                text="Send OTP"
+                roles={"all"}
+                href="/admin/send-otp/"
+              />
+            )}
             {window?.GlobalConfig?.APP?.fwf_report ? (
               <PrivateNav
                 className="page-toolbar-bottom__link js-toolbar-link"
