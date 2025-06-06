@@ -84,7 +84,7 @@ export default class extends React.Component {
         arrProduct: resultRes.product,
         arrRelProds: resultRes.product.RelProds,
         photos: ptotosNew,
-        arrOptions: resultRes.options,
+        arrOptions: resultRes?.options2 || [],
         arrCombos: resultRes.combos,
         statusLoading: false,
         aff: {
