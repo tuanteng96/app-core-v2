@@ -145,7 +145,7 @@ export default class ToolBarCustom extends React.Component {
                 hasRightTool = hasRight;
               }
               if (!IsAllStock) {
-                let idx = stocksList.findIndex(
+                let idx = stocksList && stocksList.findIndex(
                   (k) => k.ID === Number(localStorage.getItem("CurrentStockID"))
                 );
 
