@@ -22,7 +22,7 @@ function PickerServiceCard({
       let { data } = await userService.getSheduleOsMin({
         MemberIDs: [member?.ID],
         ProdIDs: [],
-        Date: null,
+        Date: moment().format("YYYY-MM-DD"),
       });
       return data.lst
         ? data.lst

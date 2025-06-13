@@ -856,7 +856,7 @@ function FormScheduleClass(props) {
         (window?.GlobalConfig?.Admin?.lop_hoc_pt_phut || 0)
       );
     }
-    
+
     if (item?.ClassInfo && item?.ClassInfo?.Member?.Lists?.length > 0) {
       let TimeEnd = moment(item.DateFrom)
         .set({
@@ -865,8 +865,8 @@ function FormScheduleClass(props) {
           second: moment(item.TimeFrom, "HH:mm").get("second"),
         })
         .add(item?.ClassInfo?.Class?.Minutes, "minute");
-        
-        return moment(TimeEnd).diff(moment(), "minutes") < 0
+
+      return moment(TimeEnd).diff(moment(), "minutes") < 0;
     }
     return false;
   };
@@ -1013,7 +1013,7 @@ function FormScheduleClass(props) {
                     }}
                     value={values.ProdIDs?.value || ""}
                     v={values._v}
-                    //Date={values.Date}
+                    Date={values.Date}
                     callback={(val) => {
                       if (values._v) {
                         setFieldValue("ProdIDs", val);
@@ -1118,6 +1118,32 @@ function FormScheduleClass(props) {
                               ? "var(--ezs-color)"
                               : "#718096",
                           fontSize: "13px",
+                          opacity:
+                            values?.ProdIDs?.OS?.EndDate &&
+                            moment(
+                              moment(values?.ProdIDs?.OS?.EndDate, "YYYY-MM-DD")
+                            ).diff(
+                              moment(
+                                moment().add(1, "days").format("DD-MM-YYYY"),
+                                "DD-MM-YYYY"
+                              ),
+                              "days"
+                            ) < 0
+                              ? ".4"
+                              : "1",
+                          pointerEvents:
+                            values?.ProdIDs?.OS?.EndDate &&
+                            moment(
+                              moment(values?.ProdIDs?.OS?.EndDate, "YYYY-MM-DD")
+                            ).diff(
+                              moment(
+                                moment().add(1, "days").format("DD-MM-YYYY"),
+                                "DD-MM-YYYY"
+                              ),
+                              "days"
+                            ) < 0
+                              ? "none"
+                              : "auto",
                         }}
                         onClick={() => {
                           setFieldValue(
@@ -1180,6 +1206,7 @@ function FormScheduleClass(props) {
                           : "Ngày khác"}
                       </div>
                     </div>
+
                     <DatePicker
                       theme="ios"
                       cancelText="Đóng"
@@ -1200,6 +1227,13 @@ function FormScheduleClass(props) {
                       }}
                       onCancel={() => setIsOpen(false)}
                       min={moment().subtract(1, "days").toDate()}
+                      max={
+                        values?.ProdIDs?.OS?.EndDate
+                          ? moment(values?.ProdIDs?.OS?.EndDate).toDate()
+                          : moment(values?.ProdIDs?.OS?.EndDate)
+                              .add(360, "years")
+                              .toDate()
+                      }
                     />
                   </div>
                 </div>
