@@ -575,7 +575,7 @@ export default class ModalReviews extends React.Component {
                   </div>
                 </div>
               </div>
-              {window.GlobalConfig?.APP?.isRateNotetickchon &&
+              {!window.GlobalConfig?.IPAD?.an_danh_gia_check &&
                 Feedbacks &&
                 Feedbacks.length > 0 && (
                   <div className="bg-white mt-3px p-15px">
