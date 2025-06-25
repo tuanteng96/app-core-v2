@@ -28,6 +28,7 @@ export default class extends React.Component {
               IsZALOZNS: false,
               IsSMS: false,
             },
+            viewCode: true
           };
           staffService.sendOTPAdmin(obj).then((rs) => {
             if (rs?.data?.error) {
