@@ -12,7 +12,7 @@ import {
   Tab,
   f7,
 } from "framework7-react";
-import { IoCalendarOutline } from "react-icons/io5";
+import { IoCalendarOutline, IoReload, IoReloadCircle } from "react-icons/io5";
 import FormScheduleClass from "./FormScheduleClass";
 import moment from "moment";
 import userService from "../../service/user.service";
@@ -478,11 +478,22 @@ export default class extends React.Component {
             <div className="page-navbar__title">
               <span className="title">Quản lý lịch học</span>
             </div>
-            {/* <div className="page-navbar__noti">
-              <Link noLinkClass href="/schedule-os-list/">
-                <IoCalendarOutline />
+            <div className="page-navbar__noti">
+              <Link
+                noLinkClass
+                onClick={() => {
+                  f7.dialog.preloader("Đang tải ...")
+                  this.getSheduleList(
+                    { ...this.state.filters, Pi: 1 },
+                    () => {
+                      f7.dialog.close()
+                    }
+                  );
+                }}
+              >
+                <IoReload />
               </Link>
-            </div> */}
+            </div>
           </div>
         </Navbar>
         <div className="p-15px">
