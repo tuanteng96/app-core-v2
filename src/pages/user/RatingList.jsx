@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, Link, Toolbar, Navbar } from "framework7-react";
+import { Page, Link, Toolbar, Navbar, f7 } from "framework7-react";
 import PageNoData from "../../components/PageNoData";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import StarComponent from "../../components/StarComponent";
@@ -10,9 +10,10 @@ import { getDateFacebook, checkAvt2 } from "../../constants/format";
 import { getUser } from "../../constants/user";
 import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
-import moment from 'moment';
-import 'moment/locale/vi';
-moment.locale('vi');
+import moment from "moment";
+import "moment/locale/vi";
+import PickerModalReviews from "../../components/PickerModalReviews";
+moment.locale("vi");
 
 export default class extends React.Component {
   constructor() {
@@ -29,7 +30,7 @@ export default class extends React.Component {
     this.getReviews();
   }
 
-  getReviews = () => {
+  getReviews = (callback) => {
     const member = getUser();
     if (!member) return false;
     const memberid = member.ID;
@@ -41,6 +42,7 @@ export default class extends React.Component {
           memberid: memberid,
           isLoading: false,
         });
+        callback && callback()
       })
       .catch((er) => console.log(er));
   };
@@ -148,7 +150,7 @@ export default class extends React.Component {
             <div className="page-navbar__title">
               <span className="title">Đánh giá dịch vụ</span>
             </div>
-            {arrReview && arrReview.length > 0 ? (
+            {/* {arrReview && arrReview.length > 0 ? (
               <div className="page-navbar__noti">
                 <Link onClick={() => this.submitReviews()}>
                   <i className="las la-check"></i>
@@ -156,48 +158,55 @@ export default class extends React.Component {
               </div>
             ) : (
               ""
-            )}
+            )} */}
           </div>
         </Navbar>
         <div className="page-rating">
           <div className="page-rating__list">
             {arrReview && arrReview.length > 0 ? (
               arrReview.map((item, index) => (
-                <div className="page-rating__list-item" key={index}>
-                  <div className="rating-header">
-                    <div className="rating-header__title">
-                      {index + 1}. {item.prod.Title}
-                    </div>
-                    <div className="rating-header__user">
-                      <AvatarGroup max={2}>
-                        {item.staff.map((user, i) => (
-                          <Avatar
-                            className="avatar-img"
-                            key={i}
-                            alt={user.FullName}
-                            src={checkAvt2(user.Avatar)}
+                <PickerModalReviews key={index} item={item} refetch={this.getReviews} f7={f7}>
+                  {({ open }) => (
+                    <div className="page-rating__list-item" onClick={open}>
+                      <div className="rating-header">
+                        <div className="rating-header__title">
+                          {index + 1}. {item.prod.Title}
+                        </div>
+                        <div className="rating-header__user">
+                          <AvatarGroup max={2}>
+                            {item.staff.map((user, i) => (
+                              <Avatar
+                                className="avatar-img"
+                                key={i}
+                                alt={user.FullName}
+                                src={checkAvt2(user.Avatar)}
+                              />
+                            ))}
+                          </AvatarGroup>
+                        </div>
+                      </div>
+                      <div className="rating-content">
+                        <div className="name">
+                          {item.staff.map((user, i) => (
+                            <span key={i}>{user.FullName}</span>
+                          ))}
+                        </div>
+                        <div className="time">
+                          Hoàn thành lúc{" "}
+                          {moment(item.os.BookDate).format("HH:mm DD/MM/YYYY")}
+                        </div>
+                        <div className="rating">
+                          <StarComponent
+                            ID={item.os.ID}
+                            // onClickStar={(star, id) =>
+                            //   this.onClickStar(star, id)
+                            // }
                           />
-                        ))}
-                      </AvatarGroup>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="rating-content">
-                    <div className="name">
-                      {item.staff.map((user, i) => (
-                        <span key={i}>{user.FullName}</span>
-                      ))}
-                    </div>
-                    <div className="time">
-                      Hoàn thành lúc {moment(item.os.BookDate).format("HH:mm DD/MM/YYYY")}
-                    </div>
-                    <div className="rating">
-                      <StarComponent
-                        ID={item.os.ID}
-                        onClickStar={(star, id) => this.onClickStar(star, id)}
-                      />
-                    </div>
-                  </div>
-                </div>
+                  )}
+                </PickerModalReviews>
               ))
             ) : isLoading ? (
               <>

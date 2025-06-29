@@ -151,10 +151,10 @@ const StarComponent = ({
                     return (
                         <i
                             key={index}
-                            onClick={() => {
-                                onClickStar(star, ID);
-                                setSelected(star)
-                            }}
+                            // onClick={() => {
+                            //     onClickStar(star, ID);
+                            //     setSelected(star)
+                            // }}
                             onMouseOver={() => setStarHovered(star)}
                             onMouseOut={() => setStarHovered(0)}
                             className={applyClasses(star)}>
