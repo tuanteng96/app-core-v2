@@ -190,7 +190,7 @@ function PickerModalReviews({ children, item, refetch, f7 }) {
                 onClick={close}
               ></motion.div>
               <motion.div
-                className="position-fixed bottom-0 bg-white sheet-reviews-service"
+                className="position-fixed bg-white sheet-reviews-service"
                 initial={{ y: "100%", opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: "100%" }}
