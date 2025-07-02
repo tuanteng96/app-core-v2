@@ -263,4 +263,24 @@
             }
         }
     }
+
+    &.page-login-v2 {
+        .page-login__back {
+            a {
+                i {
+                    color: #000;
+                }
+            }
+        }
+        .page-login__content {
+            &::before {
+                background: #fff;
+            }
+            .page-login__form {
+                form {
+                    border: 1px solid #eaeaea;
+                }
+            }
+        }
+    }
 }

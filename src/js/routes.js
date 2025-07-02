@@ -20,6 +20,7 @@ import MapsPage from "../pages/maps/maps";
 import MapsPage2 from "../pages/maps/maps2";
 
 import LoginPage from "../pages/user/login";
+import LoginV2Page from "../pages/user/loginV2";
 import LoginOTPPage from "../pages/user/loginOTP";
 import RegistrationPage from "../pages/user/registration";
 import ForgotPage from "../pages/user/forgot";
@@ -98,7 +99,7 @@ const checkRouterHome = () => {
   }
 
   if (window?.GlobalConfig?.APP?.OnlyStaff && !infoUser) {
-    return LoginPage;
+    return window?.GlobalConfig?.APP?.v2Login ? LoginV2Page : LoginPage;
   }
   if (ACC_TYPE === "M") {
     return HomeIndex
@@ -288,7 +289,7 @@ var routes = [
   },
   {
     path: "/login/",
-    asyncComponent: () => LoginPage,
+    asyncComponent: () => window?.GlobalConfig?.APP?.v2Login ? LoginV2Page : LoginPage,
     options: {
       transition: "f7-cover",
     },
