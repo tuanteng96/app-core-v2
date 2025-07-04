@@ -16,7 +16,7 @@ export default class ItemCardService extends React.Component {
   };
   render() {
     const { item } = this.props;
-    
+
     return (
       <div className="cardservice-item__service">
         <div className="cardservice-item__service-img">
@@ -53,10 +53,17 @@ export default class ItemCardService extends React.Component {
                 <span>Ngày mua thẻ : </span>
                 <span>{formatDateSv(item?.OrderItem?.CreateDate)}</span>
               </li>
-              <li>
-                <span>Hạn sử dụng : </span>
-                <span>{formatDateSv(item.EndDate)}</span>
-              </li>
+              {item.Services &&
+                item.Services.some((x) =>
+                  window?.GlobalConfig?.APP?.Services?.isEndDate
+                    ? x.Status
+                    : true
+                ) && (
+                  <li>
+                    <span>Hạn sử dụng : </span>
+                    <span>{formatDateSv(item.EndDate)}</span>
+                  </li>
+                )}
             </ul>
           </div>
         </div>
@@ -97,16 +104,20 @@ export default class ItemCardService extends React.Component {
 
               <Popover className={"popover-menu-" + sub.ID}>
                 <div className="p-15px">
-                  {sub.Root2Title && <div className="fw-500 text-primary mb-8px">{sub.Root2Title}</div>}
+                  {sub.Root2Title && (
+                    <div className="fw-500 text-primary mb-8px">
+                      {sub.Root2Title}
+                    </div>
+                  )}
                   {sub.Staffs &&
                     sub.Staffs.map((user, x) => (
                       <div key={x}>
                         Thực hiện : <span>{user.FullName}</span>
                       </div>
                     ))}
-                    {
-                      (!sub.Staffs || sub.Staffs.length === 0) && (<div>Chưa có nhân viên thực hiện</div>)
-                    }
+                  {(!sub.Staffs || sub.Staffs.length === 0) && (
+                    <div>Chưa có nhân viên thực hiện</div>
+                  )}
                 </div>
               </Popover>
             </Link>
