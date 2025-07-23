@@ -141,22 +141,25 @@ export default class CardSchedulingComponent extends React.Component {
                                   >
                                     {this.getStatus(subitem?.Status).Text}
                                   </div>
-                                  <div>
-                                    <button
-                                      onClick={() =>
-                                        f7.navigate(`/schedule/${subitem.ID}`)
-                                      }
-                                      className="btn-close btn-edit"
-                                    >
-                                      Thay đổi lịch
-                                    </button>
-                                    <button
-                                      onClick={() => onDelete(subitem)}
-                                      className="btn-close"
-                                    >
-                                      Hủy Lịch
-                                    </button>
-                                  </div>
+                                  {(subitem?.Status === "XAC_NHAN" ||
+                                    subitem?.Status === "CHUA_XAC_NHAN") && (
+                                    <div>
+                                      <button
+                                        onClick={() =>
+                                          f7.navigate(`/schedule/${subitem.ID}`)
+                                        }
+                                        className="btn-close btn-edit"
+                                      >
+                                        Thay đổi lịch
+                                      </button>
+                                      <button
+                                        onClick={() => onDelete(subitem)}
+                                        className="btn-close"
+                                      >
+                                        Hủy Lịch
+                                      </button>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
