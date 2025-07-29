@@ -134,14 +134,31 @@ export default class extends React.Component {
                         transform: (node) => {
                           if (
                             node.type === "tag" &&
-                            node.attribs.class === "external"
+                            node.name === "a" &&
+                            node.attribs.href &&
+                            node.attribs.href.indexOf("http") > -1
                           ) {
+                            let text = "";
+                            if (node.children && node.children.length > 0) {
+                              if (node.children[0].data) {
+                                text = node.children[0].data;
+                              } else {
+                                if (
+                                  node.children[0].children &&
+                                  node.children[0].children.length > 0
+                                ) {
+                                  text = node.children[0].children[0]?.data;
+                                }
+                              }
+                            }
                             return (
                               <Link
                                 class="external"
-                                onClick={() => OPEN_LINK(node.attribs.href)}
+                                onClick={() => {
+                                  OPEN_LINK(node.attribs.href)
+                                }}
                               >
-                                {node.children[0].data}
+                                {text}
                               </Link>
                             );
                           }

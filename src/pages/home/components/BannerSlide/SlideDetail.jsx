@@ -68,6 +68,7 @@ export default class SlideList extends React.Component {
                   <div className="page-news__detail-shadow">
                     {ReactHtmlParser(this.fixedContentDomain(arrayItem.Desc), {
                       transform: (node) => {
+                        
                         if (
                           node.type === "tag" &&
                           node.attribs.class === "external"
