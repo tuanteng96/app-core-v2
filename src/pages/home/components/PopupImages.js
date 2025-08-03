@@ -4,6 +4,7 @@ import NewsDataService from "../../../service/news.service";
 import { getUser } from "../../../constants/user";
 import userService from "../../../service/user.service";
 import { toAbsoluteUrl } from "../../../constants/assetPath";
+import httpCommon from "../../../service/http-common";
 
 window.PopUpVQMM = localStorage.getItem("_vqmm") || true;
 
@@ -12,10 +13,13 @@ function PopupImages({ f7 }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    NewsDataService.getBannerName("APP.POPUP").then(({ data }) => {
+    NewsDataService.getBannerName("APP.POPUP").then(async({ data }) => {
+      
       if (window?.GlobalConfig?.vong_quay_may_man) {
+        let PrizeJson = await httpCommon.get(`/minigame/assets/json/prize.json`)
+
         if (data && data.data && data.data.length > 0) {
-          if (getUser() && window.PopUpVQMM) {
+          if (getUser() && window.PopUpVQMM && !PrizeJson?.data?.unlimitedTurns) {
             let { ID } = getUser();
             let res = data.data[0];
             userService
