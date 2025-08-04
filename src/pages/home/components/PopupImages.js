@@ -13,13 +13,21 @@ function PopupImages({ f7 }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    NewsDataService.getBannerName("APP.POPUP").then(async({ data }) => {
+    NewsDataService.getBannerName("APP.POPUP").then(async ({ data }) => {
       
       if (window?.GlobalConfig?.vong_quay_may_man) {
-        let PrizeJson = await httpCommon.get(`/minigame/assets/json/prize.json`)
+        let PrizeJson = await httpCommon.get(
+          `/brand/minigame/assets/json/prize.json?` + new Date().getTime()
+        );
 
         if (data && data.data && data.data.length > 0) {
-          if (getUser() && window.PopUpVQMM && !PrizeJson?.data?.unlimitedTurns) {
+          if (
+            getUser() &&
+            (PrizeJson?.data?.unlimitedTurns
+              ? !PrizeJson?.data?.unlimitedTurns
+              : window.PopUpVQMM)
+          ) {
+            
             let { ID } = getUser();
             let res = data.data[0];
             userService
