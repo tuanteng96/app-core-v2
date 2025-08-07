@@ -10,6 +10,14 @@
     }
 }
 
+select.input-customs {
+    height: 46px;
+    width: 100%;
+    border-radius: 0.125rem;
+    padding: 12px;
+    font-size: var(--font-size-medium, 15px);
+}
+
 .form-group {
     label {
         font-size: 13px;

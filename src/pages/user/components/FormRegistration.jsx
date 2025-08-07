@@ -30,6 +30,16 @@ const regSchema = Yup.object().shape({
   phone: Yup.string()
     .required("Vui lòng nhập số điện thoại.")
     .matches(phoneRegExp, "Số điện thoại không hợp lệ."),
+  gender: Yup.string().test(
+    "custom-condition",
+    "Vui lòng chọn giới tính.",
+    function (value) {
+      const { gender } = this.parent;
+      // Có thể dùng biến ngoài scope tại đây nếu cần
+      if (window.GlobalConfig.APP?.isGenderRequired && !value) return false;
+      return true;
+    }
+  ),
 });
 
 function FormRegistration({ f7, f7router, openSelectStock }) {
@@ -37,6 +47,7 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
     fullname: "",
     password: "",
     phone: "",
+    gender: "",
   });
 
   const loginMutation = useMutation({
@@ -65,7 +76,8 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
         body.fullname,
         body.password,
         body.phone,
-        body.stockid
+        body.stockid,
+        body.gender || -1
       ),
   });
 
@@ -309,6 +321,39 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
                     </div>
                   )}
                 </div>
+                {window.GlobalConfig?.APP?.isGender ? (
+                  <div className="page-login__form-item">
+                    <div>
+                      <select
+                        className={clsx(
+                          "input-customs",
+                          errors.gender &&
+                            touched.gender &&
+                            "is-invalid solid-invalid"
+                        )}
+                        name="gender"
+                        value={values.gender}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        placeholder="Giới tính"
+                      >
+                        <option value="" disabled selected>
+                          Chọn giới tính
+                        </option>
+                        <option value="0">Nữ ♀</option>
+                        <option value="1">Nam ♂</option>
+                      </select>
+                    </div>
+                    {errors.gender && touched.gender && (
+                      <div className="text-danger font-size-min mt-3px">
+                        {errors.gender}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <></>
+                )}
+
                 <div className="page-login__form-item">
                   <div>
                     <input

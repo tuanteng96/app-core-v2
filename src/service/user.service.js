@@ -18,9 +18,9 @@ class UserService {
       }`
     );
   }
-  register(fullname, password, phone, stock) {
+  register(fullname, password, phone, stock, gender = -1) {
     return http.get(
-      `/app/index.aspx?Fn=${fullname}&Phone=${phone}&NewPWD=${password}&cmd=reg&ByStock=${stock}&USN=${phone}&Gender=-1`
+      `/app/index.aspx?Fn=${fullname}&Phone=${phone}&NewPWD=${password}&cmd=reg&ByStock=${stock}&USN=${phone}&Gender=${gender}`
     );
   }
   getInfo(Token, deviceid = "") {
