@@ -24,6 +24,8 @@ import NoProduct from "../../assets/images/no-product.png";
 import { checkSLDisabled } from "../../constants/helpers";
 import { OPEN_LINK } from "../../constants/prom21";
 import { toAbsoluteUrl } from "../../constants/assetPath";
+import { Swiper, SwiperSlide } from "framework7-react";
+import Slider from "react-slick";
 
 export default class extends React.Component {
   constructor() {
@@ -47,6 +49,7 @@ export default class extends React.Component {
       isOpenStock: false,
       copied: false,
       showPreloader: false,
+      indexSlide: 0,
     };
   }
 
@@ -447,7 +450,25 @@ export default class extends React.Component {
       aff,
       copied,
       OriginalCurrent,
+      indexSlide,
     } = this.state;
+
+    const settings = {
+      dots: false,
+
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: false,
+      autoplaySpeed: 5000,
+      beforeChange: (current, next) => {
+        this.setState({
+          indexSlide: next,
+        });
+      },
+
+    };
     return (
       <Page
         onPageBeforeOut={this.onPageBeforeOut}
@@ -490,7 +511,22 @@ export default class extends React.Component {
               {statusLoading && <SkeletonThumbnail />}
               {!statusLoading && (
                 <div className="page-shop__detail-img">
-                  <img
+                  <Slider {...settings}>
+                    {photos.map((photo, index) => (
+                      <div key={index}>
+                        <img
+                          className="w-100"
+                          src={photo.url}
+                          alt={photo.caption}
+                          onError={(e) => {
+                            e.target.src = NoProduct;
+                          }}
+                          onClick={() => this.standaloneDark.open(index)}
+                        />
+                      </div>
+                    ))}
+                  </Slider>
+                  {/* <img
                     onClick={() => this.standaloneDark.open(0)}
                     src={toAbsoluteUrl(
                       "/Upload/image/" + arrProductCurrent.Thumbnail
@@ -499,8 +535,15 @@ export default class extends React.Component {
                     onError={(e) => {
                       e.target.src = NoProduct;
                     }}
-                  />
-                  <div className="count">1/{photos && photos.length}</div>
+                  /> */}
+                  <div
+                    className="count"
+                    style={{
+                      zIndex: "20",
+                    }}
+                  >
+                    {indexSlide + 1}/{photos && photos.length}
+                  </div>
                 </div>
               )}
 
@@ -985,24 +1028,25 @@ export default class extends React.Component {
                 >
                   <span>Đặt lịch ngay</span>
                 </button>
-                {(!window?.GlobalConfig?.APP?.Services?.HideButtonOrder && arrProductCurrent.IsDisplayPrice !== 0) && (
-                  <button
-                    className={`page-btn-order btn-submit-order ${
-                      statusLoading ? "loading" : ""
-                    } ${
-                      arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"
-                    }`}
-                    onClick={() => this.openSheet()}
-                  >
-                    <span>Đặt hàng</span>
-                    <div className="loading-icon">
-                      <div className="loading-icon__item item-1"></div>
-                      <div className="loading-icon__item item-2"></div>
-                      <div className="loading-icon__item item-3"></div>
-                      <div className="loading-icon__item item-4"></div>
-                    </div>
-                  </button>
-                )}
+                {!window?.GlobalConfig?.APP?.Services?.HideButtonOrder &&
+                  arrProductCurrent.IsDisplayPrice !== 0 && (
+                    <button
+                      className={`page-btn-order btn-submit-order ${
+                        statusLoading ? "loading" : ""
+                      } ${
+                        arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"
+                      }`}
+                      onClick={() => this.openSheet()}
+                    >
+                      <span>Đặt hàng</span>
+                      <div className="loading-icon">
+                        <div className="loading-icon__item item-1"></div>
+                        <div className="loading-icon__item item-2"></div>
+                        <div className="loading-icon__item item-3"></div>
+                        <div className="loading-icon__item item-4"></div>
+                      </div>
+                    </button>
+                  )}
               </div>
             ) : (
               <div className="page-toolbar__order">
