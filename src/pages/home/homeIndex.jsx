@@ -104,8 +104,9 @@ export default class extends React.Component {
         setTimeout(() => {
           if (indexCurrentStock <= 0 && indexStock <= 0 && countStock > 2) {
             removeStockNameStorage();
+            
             this.setState({
-              isOpenStock: true,
+              isOpenStock: false, // Tự động mở chọn cơ sở nếu không có cơ sở nào được chọn
               stockName: null,
             });
           }
