@@ -5,6 +5,7 @@ import BookDataService from "../../../../service/book.service";
 import { getStockIDStorage, getUser } from "../../../../constants/user";
 import { toast } from "react-toastify";
 import { toAbsoluteUrl } from "../../../../constants/assetPath";
+import { Animated } from "react-animated-css";
 
 export default class CardServiceItem extends React.Component {
   constructor() {
@@ -80,7 +81,11 @@ export default class CardServiceItem extends React.Component {
           <img
             src={toAbsoluteUrl(`/Upload/image/${item.FileName}`)}
             alt={item.Title}
+            style={{
+              animation: item.Title.toUpperCase().indexOf("ĐÁNH GIÁ") > -1 ? "tada 2s linear infinite" : "none"
+            }}
           />
+
           <div className="text">{item.Title}</div>
         </Link>
         <PopupConfirm

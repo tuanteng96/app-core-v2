@@ -348,7 +348,7 @@ export default class extends React.Component {
           nameStock={(name) => this.nameStock(name)}
           isReload={isReload}
         />
-        <ModalReviews />
+        {/* <ModalReviews /> */}
         <QuickAction />
       </Page>
     );

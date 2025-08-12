@@ -274,7 +274,7 @@ export default class extends React.Component {
           <ToolBarBottom />
         </Toolbar>
         <SelectStock isOpenStock={isOpenStock} />
-        <ModalReviews />
+        {/* <ModalReviews /> */}
         <CartComponent />
       </Page>
     );
