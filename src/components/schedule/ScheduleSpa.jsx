@@ -367,7 +367,7 @@ export default class ScheduleSpa extends React.Component {
         StatusAtHome: "",
         Tags: "",
       });
-      
+
       let { data: Stafss } = await BookDataService.getListStaff(
         DateTimeBook?.stock
       );
@@ -638,7 +638,7 @@ export default class ScheduleSpa extends React.Component {
                           <div>
                             Bạn đang đặt lịch tại
                             <span className="pl-6px text-app2 fw-600">
-                              {DateTimeBook.nameStock}
+                              {DateTimeBook.nameStock || ""}
                             </span>
                           </div>
                         ) : (

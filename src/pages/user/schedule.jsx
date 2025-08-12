@@ -61,6 +61,13 @@ const CustomOption = ({ children, data, ...props }) => {
   );
 };
 
+let getNameStock = () => {
+  return window?.GlobalConfig?.StocksNotBook &&
+    window?.GlobalConfig?.StocksNotBook.includes(getStockIDStorage())
+    ? ""
+    : getStockNameStorage();
+};
+
 export default class extends React.Component {
   constructor() {
     super();
@@ -81,12 +88,8 @@ export default class extends React.Component {
           window?.GlobalConfig?.StocksNotBook &&
           window?.GlobalConfig?.StocksNotBook?.includes(getStockIDStorage())
             ? ""
-            : getStockIDStorage(),
-        nameStock:
-          window?.GlobalConfig?.StocksNotBook &&
-          window?.GlobalConfig?.StocksNotBook.includes(getStockIDStorage())
-            ? ""
-            : getStockNameStorage(),
+            : getNameStock() && getStockIDStorage() || '',
+        nameStock: getNameStock(),
         AtHome: false,
         time: "",
       },
