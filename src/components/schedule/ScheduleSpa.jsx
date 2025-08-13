@@ -128,6 +128,7 @@ export default class ScheduleSpa extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+    
     if (this.props.DateTimeBook.stock !== prevProps.DateTimeBook.stock) {
       if (prevProps.DateTimeBook.toDate) {
         this.getListChoose(
@@ -142,6 +143,12 @@ export default class ScheduleSpa extends React.Component {
       this.getListChoose(
         this.props.DateTimeBook?.date,
         this.state.ListDisableChoose
+      );
+    }
+    if (prevProps.tabCurrent === 2 && this.props.tabCurrent === 0) {
+      this.getListChoose(
+        this.props.DateTimeBook?.date,
+        this.props.ListDisableChoose
       );
     }
   }
@@ -541,6 +548,7 @@ export default class ScheduleSpa extends React.Component {
       ...this.props.DateTimeBook,
       stock: item.ID,
       nameStock: item.Title,
+      time: ""
     });
     this.setState({
       visible: false,

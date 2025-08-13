@@ -274,6 +274,7 @@ export default class extends React.Component {
       this.nextStep();
     }, 300);
   };
+
   nextSuccessService = () => {
     this.setState({
       sheetOpened: true,
@@ -633,6 +634,7 @@ export default class extends React.Component {
                 isVisible={true}
               >
                 <ScheduleSpa
+                  tabCurrent={tabCurrent}
                   handleTime={(item) => this.handleTime(item)}
                   DateTimeBook={DateTimeBook}
                 />
