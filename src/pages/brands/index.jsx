@@ -24,6 +24,8 @@ import {
 } from "../../constants/user";
 import userService from "../../service/user.service";
 
+let configs = window?.GlobalConfig?.APP?.isMultiConfig || null;
+
 const brandSchema = Yup.object().shape({
   Domain: Yup.string()
     .matches(
@@ -43,148 +45,288 @@ const FormSubmit = ({ onQRDomain, onSubmit }) => {
       validationSchema={brandSchema}
     >
       {(formikProps) => {
-        const { values, touched, errors, handleChange, handleBlur } =
-          formikProps;
+        const {
+          values,
+          touched,
+          errors,
+          handleChange,
+          handleBlur,
+          setFieldValue,
+          submitForm,
+        } = formikProps;
 
         return (
           <Form className="h-100">
-            <div className="h-100 bg-white d--f fd--c jc--sb">
-              <div className="position-relative">
-                <img
-                  src={toAbsoluteUrl("/app2021/images/map-app.jpg")}
-                  alt="Maps"
-                />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="var(--ezs-color)"
-                  style={{
-                    width: "60px",
-                    position: "absolute",
-                    top: "40%",
-                    left: "50%",
-                    transform: "translateX(-50%) translateY(-50%)",
-                  }}
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                    clipRule="evenodd"
+            {configs?.select && (
+              <div className="h-100 bg-white d--f fd--c">
+                <div className="d--f fd--c ai--c jc--c pt-15px">
+                  <img
+                    src={configs?.logo?.url}
+                    alt=""
+                    style={{
+                      width: configs?.logo?.with + "px",
+                    }}
                   />
-                </svg>
+                </div>
                 <div
                   style={{
-                    backgroundImage: "linear-gradient(#fff6ef, #fff)",
-                    height: "30px",
-                    marginTop: "-2px",
+                    flexGrow: "1",
                   }}
-                ></div>
-              </div>
-              <div className="p-20px">
-                <div className="mb-15px">
-                  <div
-                    className="mb-3px"
-                    style={{
-                      color: "rgb(120, 120, 120)",
-                    }}
-                  >
-                    Tên miền chi nhánh
-                  </div>
-                  <input
-                    name="Domain"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    style={{
-                      fontSize: "15px",
-                      width: "100%",
-                      border:
-                        errors.Domain && touched.Domain
-                          ? "1px solid #F64E60"
-                          : "1px solid #e8e8e8",
-                      height: "50px",
-                      borderRadius: ".125rem",
-                      padding: "0 15px",
-                    }}
-                    type="text"
-                    placeholder="Nhập tên miền chi nhánh (***.**)"
-                  />
-                  {errors.Domain && touched.Domain && (
+                  className="px-20px pt-20px overflow-auto hidden-scrollbar"
+                >
+                  {configs.stocks &&
+                    configs.stocks.map((item, index) => (
+                      <div
+                        className="p-15px last-mb-0 mb-15px"
+                        style={{
+                          border:
+                            item.Domain === values.Domain
+                              ? "1px solid var(--ezs-color)"
+                              : "1px solid #e8e8e8",
+                          borderRadius: "5px",
+                        }}
+                        key={index}
+                        onClick={() => {
+                          setFieldValue("Domain", item.Domain);
+                          f7.dialog.confirm(
+                            `Xác nhận truy cập tại cơ sở ${item.Title} ?`,
+                            () => {
+                              submitForm();
+                            },
+                            () => {
+                              setFieldValue("Domain", "");
+                            }
+                          );
+                        }}
+                      >
+                        <div
+                          className="text-uppercase fw-600 mb-5px"
+                          style={{
+                            color:
+                              item.Domain === values.Domain
+                                ? "var(--ezs-color)"
+                                : "#222",
+                            fontSize: "15px",
+                          }}
+                        >
+                          {item.Title}
+                        </div>
+                        <div className="text-muted">
+                          {item.Address &&
+                            item.Address.map((x, i) => (
+                              <div className="mb-1px last-mb-0" key={i}>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 16 16"
+                                  fill="currentColor"
+                                  className="w-12px"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 7c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                <span className="pl-3px">{x}</span>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+                <div className="p-20px">
+                  <div className="text-center position-relative mb-20px">
                     <div
-                      className="text-danger mt-5px"
-                      style={{ fontSize: "13px" }}
-                    >
-                      {errors.Domain}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    className="text-white fw-500"
-                    style={{
-                      fontSize: "15px",
-                      height: "50px",
-                      borderRadius: ".125rem",
-                      padding: "0 15px",
-                      background: "var(--ezs-color)",
-                      border: "1px solid var(--ezs-color)",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Tiếp tục
-                  </button>
-                </div>
-                <div className="text-center position-relative my-20px">
-                  <div
-                    className="position-absolute w-100"
-                    style={{
-                      height: "1px",
-                      top: "10px",
-                      left: "0px",
-                      background: "#e8e8e8",
-                    }}
-                  ></div>
-                  <span
-                    className="bg-white position-relative px-15px"
-                    style={{
-                      color: "rgb(120, 120, 120)",
-                      fontSize: "13px",
-                    }}
-                  >
-                    Hoặc tiếp tục bằng
-                  </span>
-                </div>
-                <div className="d--f jc--c">
-                  <div
-                    className="d--f jc--c ai--c"
-                    style={{
-                      background: "var(--ezs-color)",
-                      width: "60px",
-                      height: "60px",
-                      borderRadius: "100%",
-                      boxShadow: "rgba(0, 0, 0, 0.2) 0px 4px 16px 0px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => onQRDomain()}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="#fff"
+                      className="position-absolute w-100"
                       style={{
-                        width: "30px",
+                        height: "1px",
+                        top: "10px",
+                        left: "0px",
+                        background: "#e8e8e8",
+                      }}
+                    ></div>
+                    <span
+                      className="bg-white position-relative px-15px"
+                      style={{
+                        color: "rgb(120, 120, 120)",
+                        fontSize: "13px",
                       }}
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M3 4.875C3 3.839 3.84 3 4.875 3h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0 1 3 9.375v-4.5ZM4.875 4.5a.375.375 0 0 0-.375.375v4.5c0 .207.168.375.375.375h4.5a.375.375 0 0 0 .375-.375v-4.5a.375.375 0 0 0-.375-.375h-4.5Zm7.875.375c0-1.036.84-1.875 1.875-1.875h4.5C20.16 3 21 3.84 21 4.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5a1.875 1.875 0 0 1-1.875-1.875v-4.5Zm1.875-.375a.375.375 0 0 0-.375.375v4.5c0 .207.168.375.375.375h4.5a.375.375 0 0 0 .375-.375v-4.5a.375.375 0 0 0-.375-.375h-4.5ZM6 6.75A.75.75 0 0 1 6.75 6h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75A.75.75 0 0 1 6 7.5v-.75Zm9.75 0A.75.75 0 0 1 16.5 6h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75ZM3 14.625c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.035-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0 1 3 19.125v-4.5Zm1.875-.375a.375.375 0 0 0-.375.375v4.5c0 .207.168.375.375.375h4.5a.375.375 0 0 0 .375-.375v-4.5a.375.375 0 0 0-.375-.375h-4.5Zm7.875-.75a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm6 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75ZM6 16.5a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm9.75 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm-3 3a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm6 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                      Hoặc tiếp tục bằng
+                    </span>
+                  </div>
+                  <div className="d--f jc--c">
+                    <div
+                      className="d--f jc--c ai--c"
+                      style={{
+                        background: "var(--ezs-color)",
+                        width: "60px",
+                        height: "60px",
+                        borderRadius: "100%",
+                        boxShadow: "rgba(0, 0, 0, 0.2) 0px 4px 16px 0px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => onQRDomain()}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="#fff"
+                        style={{
+                          width: "30px",
+                        }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M3 4.875C3 3.839 3.84 3 4.875 3h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0 1 3 9.375v-4.5ZM4.875 4.5a.375.375 0 0 0-.375.375v4.5c0 .207.168.375.375.375h4.5a.375.375 0 0 0 .375-.375v-4.5a.375.375 0 0 0-.375-.375h-4.5Zm7.875.375c0-1.036.84-1.875 1.875-1.875h4.5C20.16 3 21 3.84 21 4.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5a1.875 1.875 0 0 1-1.875-1.875v-4.5Zm1.875-.375a.375.375 0 0 0-.375.375v4.5c0 .207.168.375.375.375h4.5a.375.375 0 0 0 .375-.375v-4.5a.375.375 0 0 0-.375-.375h-4.5ZM6 6.75A.75.75 0 0 1 6.75 6h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75A.75.75 0 0 1 6 7.5v-.75Zm9.75 0A.75.75 0 0 1 16.5 6h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75ZM3 14.625c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.035-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0 1 3 19.125v-4.5Zm1.875-.375a.375.375 0 0 0-.375.375v4.5c0 .207.168.375.375.375h4.5a.375.375 0 0 0 .375-.375v-4.5a.375.375 0 0 0-.375-.375h-4.5Zm7.875-.75a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm6 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75ZM6 16.5a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm9.75 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm-3 3a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm6 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {!configs?.select && (
+              <div className="h-100 bg-white d--f fd--c jc--sb">
+                <div className="position-relative">
+                  <img
+                    src={toAbsoluteUrl("/app2021/images/map-app.jpg")}
+                    alt="Maps"
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="var(--ezs-color)"
+                    style={{
+                      width: "60px",
+                      position: "absolute",
+                      top: "40%",
+                      left: "50%",
+                      transform: "translateX(-50%) translateY(-50%)",
+                    }}
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <div
+                    style={{
+                      backgroundImage: "linear-gradient(#fff6ef, #fff)",
+                      height: "30px",
+                      marginTop: "-2px",
+                    }}
+                  ></div>
+                </div>
+                <div className="p-20px">
+                  <div className="mb-15px">
+                    <div
+                      className="mb-3px"
+                      style={{
+                        color: "rgb(120, 120, 120)",
+                      }}
+                    >
+                      Tên miền chi nhánh
+                    </div>
+                    <input
+                      name="Domain"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      style={{
+                        fontSize: "15px",
+                        width: "100%",
+                        border:
+                          errors.Domain && touched.Domain
+                            ? "1px solid #F64E60"
+                            : "1px solid #e8e8e8",
+                        height: "50px",
+                        borderRadius: ".125rem",
+                        padding: "0 15px",
+                      }}
+                      type="text"
+                      placeholder="Nhập tên miền chi nhánh (***.**)"
+                    />
+                    {errors.Domain && touched.Domain && (
+                      <div
+                        className="text-danger mt-5px"
+                        style={{ fontSize: "13px" }}
+                      >
+                        {errors.Domain}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <button
+                      type="submit"
+                      className="text-white fw-500"
+                      style={{
+                        fontSize: "15px",
+                        height: "50px",
+                        borderRadius: ".125rem",
+                        padding: "0 15px",
+                        background: "var(--ezs-color)",
+                        border: "1px solid var(--ezs-color)",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Tiếp tục
+                    </button>
+                  </div>
+                  <div className="text-center position-relative my-20px">
+                    <div
+                      className="position-absolute w-100"
+                      style={{
+                        height: "1px",
+                        top: "10px",
+                        left: "0px",
+                        background: "#e8e8e8",
+                      }}
+                    ></div>
+                    <span
+                      className="bg-white position-relative px-15px"
+                      style={{
+                        color: "rgb(120, 120, 120)",
+                        fontSize: "13px",
+                      }}
+                    >
+                      Hoặc tiếp tục bằng
+                    </span>
+                  </div>
+                  <div className="d--f jc--c">
+                    <div
+                      className="d--f jc--c ai--c"
+                      style={{
+                        background: "var(--ezs-color)",
+                        width: "60px",
+                        height: "60px",
+                        borderRadius: "100%",
+                        boxShadow: "rgba(0, 0, 0, 0.2) 0px 4px 16px 0px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => onQRDomain()}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="#fff"
+                        style={{
+                          width: "30px",
+                        }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M3 4.875C3 3.839 3.84 3 4.875 3h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0 1 3 9.375v-4.5ZM4.875 4.5a.375.375 0 0 0-.375.375v4.5c0 .207.168.375.375.375h4.5a.375.375 0 0 0 .375-.375v-4.5a.375.375 0 0 0-.375-.375h-4.5Zm7.875.375c0-1.036.84-1.875 1.875-1.875h4.5C20.16 3 21 3.84 21 4.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5a1.875 1.875 0 0 1-1.875-1.875v-4.5Zm1.875-.375a.375.375 0 0 0-.375.375v4.5c0 .207.168.375.375.375h4.5a.375.375 0 0 0 .375-.375v-4.5a.375.375 0 0 0-.375-.375h-4.5ZM6 6.75A.75.75 0 0 1 6.75 6h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75A.75.75 0 0 1 6 7.5v-.75Zm9.75 0A.75.75 0 0 1 16.5 6h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75ZM3 14.625c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.035-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0 1 3 19.125v-4.5Zm1.875-.375a.375.375 0 0 0-.375.375v4.5c0 .207.168.375.375.375h4.5a.375.375 0 0 0 .375-.375v-4.5a.375.375 0 0 0-.375-.375h-4.5Zm7.875-.75a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm6 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75ZM6 16.5a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm9.75 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm-3 3a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Zm6 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-.75Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </Form>
         );
       }}
@@ -396,116 +538,6 @@ export default class Report extends React.Component {
     localStorage.setItem("DOMAIN", QRDomain);
     localStorage.setItem("GlobalConfig", data);
   };
-
-  // QRDebug = () => {
-  //   let val = "38685-83229028906225068177&11409&https://cserbeauty.com";
-  //   f7.dialog.preloader("Đang thực hiện ...");
-
-  //   let QRValue = val;
-
-  //   let QRToken = "";
-  //   let QRStocks = "";
-
-  //   let QRDomain =
-  //     "https://" +
-  //     QRValue.split("&")[0]
-  //       .replaceAll("https://", "")
-  //       .replaceAll("http://", "");
-
-  //   if (QRValue.split("&").length > 1) {
-  //     QRToken = QRValue.split("&")[0];
-  //     QRStocks = QRValue.split("&")[1];
-  //     QRDomain = QRValue.split("&")[2];
-  //   }
-
-  //   axios
-  //     .get(QRDomain + "/brand/global/Global.json")
-  //     .then(({ data }) => {
-  //       let datars = data;
-  //       if (QRToken && QRStocks) {
-  //         DeviceHelpers.get({
-  //           success: ({ deviceId }) => {
-  //             userService.QRCodeLogin(QRToken, deviceId).then(({ data }) => {
-  //               if (data.error || data?.Status === -1) {
-  //                 if (data.error === "Thiết bị chưa được cấp phép") {
-  //                   f7.dialog.close();
-  //                   f7.dialog.alert(
-  //                     "Tài khoản của bạn đang đăng nhập tại thiết bị khác."
-  //                   );
-  //                 } else {
-  //                   toast.error(
-  //                     data?.Status === -1
-  //                       ? "Tài khoản của bạn đã bị vô hiệu hoá."
-  //                       : "Mã QR Code không hợp lệ hoặc đã hết hạn.",
-  //                     {
-  //                       position: toast.POSITION.TOP_LEFT,
-  //                       autoClose: 3000,
-  //                     }
-  //                   );
-  //                   f7.dialog.close();
-  //                 }
-  //               } else {
-  //                 setUserStorage(data.token, data);
-  //                 data?.ByStockID && setStockIDStorage(data.ByStockID);
-  //                 data?.StockName && setStockNameStorage(data.StockName);
-  //                 SEND_TOKEN_FIREBASE().then(async ({ error, Token }) => {
-  //                   if (!error && Token) {
-  //                     userService
-  //                       .authSendTokenFirebase({
-  //                         Token: Token,
-  //                         ID: data.ID,
-  //                         Type: data.acc_type,
-  //                       })
-  //                       .then(() => {
-  //                         set(
-  //                           ref(database, `/qrcode/${QRStocks}/${QRToken}`),
-  //                           null
-  //                         ).then(() => {
-  //                           if (data?.acc_type === "M") {
-  //                             setUserLoginStorage(data?.MobilePhone, null);
-  //                           }
-  //                           this.setGlobal({ data: datars, QRDomain });
-  //                           f7.dialog.close();
-  //                           f7.views.main.router.navigate("/", {
-  //                             animate: true,
-  //                             transition: "f7-flip",
-  //                           });
-  //                         });
-  //                       });
-  //                   } else {
-  //                     setSubscribe(data, () => {
-  //                       set(
-  //                         ref(
-  //                           database,
-  //                           `/qrcode/${qrcodeStock}/${qrcodeLogin}`
-  //                         ),
-  //                         null
-  //                       ).then(() => {
-  //                         this.setGlobal({ data: datars, QRDomain });
-  //                         f7.dialog.close();
-  //                         f7.views.main.router.navigate("/", {
-  //                           animate: true,
-  //                           transition: "f7-flip",
-  //                         });
-  //                       });
-  //                     });
-  //                   }
-  //                 });
-  //               }
-  //             });
-  //           },
-  //         });
-  //       } else {
-  //         this.setGlobal({ data, QRDomain });
-  //         f7.dialog.close();
-  //         f7.views.main.router.navigate("/");
-  //       }
-  //     })
-  //     .catch(() => {
-  //       f7.dialog.close();
-  //       toast.error("Tên miền không hợp lệ.");
-  //     });
-  // };
 
   render() {
     return (
