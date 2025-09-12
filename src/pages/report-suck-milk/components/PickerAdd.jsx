@@ -120,6 +120,8 @@ function PickerAdd({ children, refetch, item, onClose }) {
             autoClose: 1000,
           });
           setVisible(false);
+
+          onClose && onClose();
         },
       }
     );

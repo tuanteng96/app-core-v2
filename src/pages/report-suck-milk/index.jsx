@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  f7,
   Link,
   ListInput,
   Navbar,
@@ -178,6 +179,8 @@ export default class extends React.Component {
         loading: false,
         data: { ...this.state.data, TotalArray: Dates, TimeArray: Times },
       });
+
+      f7.dialog.close();
     } catch (err) {
       console.log(err);
     }
@@ -243,57 +246,63 @@ export default class extends React.Component {
               </PickerAdd>
             </div>
           </div>
-          <Subnavbar className="sub-nav-bar b">
-            <i
-              className="las la-calendar"
-              style={{
-                position: "absolute",
-                right: "15px",
-                fontSize: "24px",
-              }}
-            ></i>
-            <PickerDate
-              headerFormat="DD/MM/YYYY"
-              config={{
-                date: {
-                  caption: "Ngày",
-                  format: "D",
-                  step: 1,
-                },
-                month: {
-                  caption: "Tháng",
-                  format: "M",
-                  step: 1,
-                },
-                year: {
-                  caption: "Năm",
-                  format: "YYYY",
-                  step: 1,
-                },
-              }}
-              onChange={(date) => {
-                this.setState({
-                  filters: { ...this.state.filters, CrDate: date },
-                });
-              }}
-              value={filters.CrDate}
-            >
-              {({ open }) => (
-                <div
-                  onClick={open}
-                  className="px-15px fw-500"
-                  style={{ fontSize: "14px" }}
-                >
-                  {moment(getStartEndOfWeek(filters.CrDate).startOfWeek).format(
-                    "DD/MM/YYYY"
-                  )}
-                  <span className="px-8px">-</span>
-                  {moment(getStartEndOfWeek(filters.CrDate).endOfWeek).format(
-                    "DD/MM/YYYY"
-                  )}
-                </div>
-              )}
-            </PickerDate>
+          <Subnavbar className="sub-nav-bar">
+            <div className="w-100 h-100 position-relative">
+              <i
+                className="las la-calendar"
+                style={{
+                  position: "absolute",
+                  right: "15px",
+                  fontSize: "24px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  pointerEvents: "none",
+                }}
+              ></i>
+              <PickerDate
+                headerFormat="DD/MM/YYYY"
+                config={{
+                  date: {
+                    caption: "Ngày",
+                    format: "D",
+                    step: 1,
+                  },
+                  month: {
+                    caption: "Tháng",
+                    format: "M",
+                    step: 1,
+                  },
+                  year: {
+                    caption: "Năm",
+                    format: "YYYY",
+                    step: 1,
+                  },
+                }}
+                onChange={(date) => {
+                  this.setState({
+                    filters: { ...this.state.filters, CrDate: date },
+                  });
+                }}
+                value={filters.CrDate}
+                className="w-100 h-100"
+              >
+                {({ open }) => (
+                  <div
+                    onClick={open}
+                    className="px-15px fw-500 h-100 d--f ai--c"
+                    style={{ fontSize: "14px" }}
+                  >
+                    {moment(
+                      getStartEndOfWeek(filters.CrDate).startOfWeek
+                    ).format("DD/MM/YYYY")}
+                    <span className="px-8px">-</span>
+                    {moment(getStartEndOfWeek(filters.CrDate).endOfWeek).format(
+                      "DD/MM/YYYY"
+                    )}
+                  </div>
+                )}
+              </PickerDate>
+            </div>
           </Subnavbar>
         </Navbar>
         <style>
@@ -477,7 +486,8 @@ export default class extends React.Component {
                               fontSize: "12px",
                               backgroundColor:
                                 sub?.sum > 0
-                                  ? sub?.sum > window?.GlobalConfig?.APP?.AverageMilk
+                                  ? sub?.sum >
+                                    window?.GlobalConfig?.APP?.AverageMilk
                                     ? "#067f08"
                                     : "#ffa701"
                                   : "transparent",
@@ -577,7 +587,7 @@ export default class extends React.Component {
                 các giá trị đang hiển thị trên màn hình.
               </div>
               <div>
-                - Bảng này có giá trị nhất khi các mom kích sửa / cho bé ăn đúng
+                - Bảng này có giá trị nhất khi các mom kích sữa / cho bé ăn đúng
                 giờ.
               </div>
             </div>
