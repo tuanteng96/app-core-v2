@@ -78,6 +78,7 @@ import PointPage from "../pages/user/Point.jsx";
 import ScheduleClassPage from "../pages/ScheduleClass/index.jsx";
 import SheduleClassListPage from "../pages/ScheduleClass/SheduleClassList.jsx";
 import AdminOtpPage from "../pages/admin/AdminOtp.jsx";
+import ReportSuckMilkPage from "../pages/report-suck-milk/index.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -103,7 +104,7 @@ const checkRouterHome = () => {
   }
   if (ACC_TYPE === "M") {
     return HomeIndex
-    //return ScheduleClassPage; //HomeIndex
+    //return ReportSuckMilkPage; //HomeIndex
   }
 
   if (ACC_TYPE === "U") {
@@ -531,6 +532,14 @@ var routes = [
     options: {
       transition: "f7-cover",
     },
+  },
+  {
+    path: "/report-suck-milk/", // Báo cáo ngày
+    asyncComponent: () => ReportSuckMilkPage,
+    options: {
+      transition: "f7-cover",
+    },
+    beforeEnter: checkAuth,
   },
   {
     path: "/report/date/", // Báo cáo ngày

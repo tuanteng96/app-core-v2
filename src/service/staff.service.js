@@ -113,6 +113,21 @@ class StaffService {
       headers: { Authorization: `Bearer ${getToken()}` },
     });
   }
+  getSuckMilk(body) {
+    return http.post(`/api/v4/MemberCustome@get`, JSON.stringify(body), {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    });
+  }
+  addEditSuckMilk(body) {
+    return http.post(`/api/v4/MemberCustome@edit`, JSON.stringify(body), {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    });
+  }
+  deleteSuckMilk(body) {
+    return http.post(`/api/v4/MemberCustome@delete`, JSON.stringify(body), {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    });
+  }
 }
 
 export default new StaffService();
