@@ -204,7 +204,12 @@ export default class extends React.Component {
     let { filters, data, loading } = this.state;
 
     return (
-      <Page ptr className="bg-white" onPtrRefresh={this.loadRefresh.bind(this)}>
+      <Page
+        noToolbar
+        ptr
+        className="bg-white"
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -591,6 +596,18 @@ export default class extends React.Component {
                 giờ.
               </div>
             </div>
+          </div>
+          <div className="mt-15px">
+            <Link
+              href="/report-suck-milk-chart/"
+              noLinkClass
+              className="btn-reviews w-100 text-center"
+              style={{
+                display: "block",
+              }}
+            >
+              Biểu đồ hút sữa
+            </Link>
           </div>
         </div>
       </Page>

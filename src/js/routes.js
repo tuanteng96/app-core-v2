@@ -79,6 +79,7 @@ import ScheduleClassPage from "../pages/ScheduleClass/index.jsx";
 import SheduleClassListPage from "../pages/ScheduleClass/SheduleClassList.jsx";
 import AdminOtpPage from "../pages/admin/AdminOtp.jsx";
 import ReportSuckMilkPage from "../pages/report-suck-milk/index.jsx";
+import SuckMilkChartPage from "../pages/report-suck-milk/SuckMilkChart.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -103,8 +104,7 @@ const checkRouterHome = () => {
     return window?.GlobalConfig?.APP?.v2Login ? LoginV2Page : LoginPage;
   }
   if (ACC_TYPE === "M") {
-    return HomeIndex
-    //return ReportSuckMilkPage; //HomeIndex
+    return HomeIndex;
   }
 
   if (ACC_TYPE === "U") {
@@ -290,7 +290,8 @@ var routes = [
   },
   {
     path: "/login/",
-    asyncComponent: () => window?.GlobalConfig?.APP?.v2Login ? LoginV2Page : LoginPage,
+    asyncComponent: () =>
+      window?.GlobalConfig?.APP?.v2Login ? LoginV2Page : LoginPage,
     options: {
       transition: "f7-cover",
     },
@@ -378,7 +379,7 @@ var routes = [
       transition: "f7-cover",
     },
   },
-  
+
   {
     path: "/schedule/", // Thẻ dịch vụ
     asyncComponent: () => SchedulePage,
@@ -536,6 +537,14 @@ var routes = [
   {
     path: "/report-suck-milk/", // Báo cáo ngày
     asyncComponent: () => ReportSuckMilkPage,
+    options: {
+      transition: "f7-cover",
+    },
+    beforeEnter: checkAuth,
+  },
+  {
+    path: "/report-suck-milk-chart/", // Báo cáo ngày
+    asyncComponent: () => SuckMilkChartPage,
     options: {
       transition: "f7-cover",
     },
