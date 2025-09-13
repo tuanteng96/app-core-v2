@@ -339,6 +339,7 @@ export default class extends React.Component {
               xAxisIndex: 0,
               start: 0,
               end: 20, // chỉ hiển thị 50% ban đầu
+              show: false
             },
             {
               type: "inside",
@@ -403,6 +404,7 @@ export default class extends React.Component {
               xAxisIndex: 0,
               start: 0,
               end: 20, // chỉ hiển thị 50% ban đầu
+              show: false
             },
             {
               type: "inside",
@@ -568,7 +570,7 @@ export default class extends React.Component {
     let { filters, data, loading, isDetail, CrDate } = this.state;
 
     return (
-      <Page noToolbar ptr className="bg-white" onPtrRefresh={this.loadRefresh.bind(this)}>
+      <Page noToolbar className="bg-white">
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">

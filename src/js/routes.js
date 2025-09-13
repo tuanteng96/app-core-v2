@@ -104,6 +104,7 @@ const checkRouterHome = () => {
     return window?.GlobalConfig?.APP?.v2Login ? LoginV2Page : LoginPage;
   }
   if (ACC_TYPE === "M") {
+    //return SuckMilkChartPage
     return HomeIndex;
   }
 
