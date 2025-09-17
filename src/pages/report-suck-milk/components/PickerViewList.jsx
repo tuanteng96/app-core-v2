@@ -263,7 +263,7 @@ function PickerViewList({ children, refetch, Items, sub }) {
 
                                   <div className="mb-5px">
                                     <span style={totalStyle}>
-                                      {time?.ParseData2?.TotalChest || 0}
+                                      {time?.ParseData2?.TotalChest || 0} ml
                                     </span>
                                   </div>
                                   <div style={chipGroup}>

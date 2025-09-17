@@ -50,7 +50,7 @@ const valiSchema = Yup.object().shape({
   RightChest: Yup.string().required("Vui lòng nhập số lượng."),
 });
 
-function PickerAdd({ children, refetch, item, onClose }) {
+function PickerAdd({ children, refetch, item, onClose, isSuckMilk = false }) {
   let [visible, setVisible] = useState(false);
   let [initialValues, setInitialValues] = useState({
     CreateDate: new Date(),
@@ -61,13 +61,23 @@ function PickerAdd({ children, refetch, item, onClose }) {
 
   useEffect(() => {
     if (item && item.ID > 0) {
-      setInitialValues({
-        ID: item.ID,
-        CreateDate: moment(item.CreateDate, "YYYY-MM-DD HH:mm").toDate(),
-        LeftChest: item?.ParseData2?.LeftChest || "",
-        RightChest: item?.ParseData2?.RightChest || "",
-        Desc: item?.ParseData2?.Desc || "",
-      });
+      if (isSuckMilk) {
+        setInitialValues({
+          ID: item.ID,
+          CreateDate: moment(item.CreateDate, "YYYY-MM-DD HH:mm").toDate(),
+          LeftChest: item?.ParseData3?.LeftChest || "",
+          RightChest: item?.ParseData3?.RightChest || "",
+          Desc: item?.ParseData3?.Desc || "",
+        });
+      } else {
+        setInitialValues({
+          ID: item.ID,
+          CreateDate: moment(item.CreateDate, "YYYY-MM-DD HH:mm").toDate(),
+          LeftChest: item?.ParseData2?.LeftChest || "",
+          RightChest: item?.ParseData2?.RightChest || "",
+          Desc: item?.ParseData2?.Desc || "",
+        });
+      }
     } else {
       setInitialValues({
         CreateDate: new Date(),
@@ -106,7 +116,7 @@ function PickerAdd({ children, refetch, item, onClose }) {
         ? moment(values.CreateDate).format("YYYY-MM-DD HH:mm")
         : null,
     };
-    data["Data2"] = JSON.stringify(values);
+    data[isSuckMilk ? "Data3" : "Data2"] = JSON.stringify(values);
 
     updateMutation.mutate(
       {
@@ -213,9 +223,20 @@ function PickerAdd({ children, refetch, item, onClose }) {
                         }}
                       >
                         <div style={containerStyle}>
-                          {item?.ID > 0
-                            ? "Chỉnh sửa giờ hút sữa"
-                            : "Thêm giờ hút sữa"}
+                          {isSuckMilk ? (
+                            <>
+                              {item?.ID > 0
+                                ? "Chỉnh sửa giờ bú sữa"
+                                : "Thêm giờ bú sữa"}
+                            </>
+                          ) : (
+                            <>
+                              {item?.ID > 0
+                                ? "Chỉnh sửa giờ hút sữa"
+                                : "Thêm giờ hút sữa"}
+                            </>
+                          )}
+
                           <div
                             style={iconContainerRight}
                             onClick={() => setVisible(false)}
@@ -240,76 +261,146 @@ function PickerAdd({ children, refetch, item, onClose }) {
                         <div className="px-15px">
                           <div className="mb-15px last-mb-0">
                             <div className="mb-2px text-muted">Thời gian</div>
-                            <PickerDate
-                              value={values.CreateDate}
-                              onChange={(val) => {
-                                setFieldValue("CreateDate", val);
+                            <div
+                              className="d--f"
+                              style={{
+                                gap: "10px",
                               }}
                             >
-                              {({ open }) => (
-                                <div
-                                  className="position-relative"
-                                  onClick={open}
-                                >
+                              <div
+                                style={{
+                                  width: "100px",
+                                  height: "47px",
+                                }}
+                              >
+                                <input
+                                  value={
+                                    values.CreateDate
+                                      ? moment(values.CreateDate).format(
+                                          "HH:mm"
+                                        )
+                                      : moment(values.CreateDate).format()
+                                  }
+                                  onChange={(e) => {
+                                    setFieldValue(
+                                      "CreateDate",
+                                      moment(values.CreateDate)
+                                        .set({
+                                          hour: e.target.value.split(":")[0],
+                                          minute: e.target.value.split(":")[1],
+                                          second: 0,
+                                          millisecond: 0,
+                                        })
+                                        .toDate()
+                                    );
+                                  }}
+                                  className="w-100 px-12px"
+                                  type="time"
+                                  placeholder="Chọn thời gian"
+                                  style={{
+                                    border: "1px solid #E4E6EF",
+                                    borderRadius: "5px",
+                                    height: "47px",
+                                    fontSize: "15px",
+                                    fontWeight: 500,
+                                  }}
+                                />
+                              </div>
+
+                              <PickerDate
+                                headerFormat="DD/MM/YYYY"
+                                style={{
+                                  flexGrow: "1",
+                                }}
+                                value={values.CreateDate}
+                                onChange={(val) => {
+                                  setFieldValue("CreateDate", val);
+                                }}
+                                config={{
+                                  date: {
+                                    caption: "Ngày",
+                                    format: "D",
+                                    step: 1,
+                                  },
+                                  month: {
+                                    caption: "Tháng",
+                                    format: "M",
+                                    step: 1,
+                                  },
+                                  year: {
+                                    caption: "Năm",
+                                    format: "YYYY",
+                                    step: 1,
+                                  },
+                                }}
+                              >
+                                {({ open }) => (
                                   <div
-                                    className="w-full pl-12px d--f ai--c"
-                                    style={{
-                                      border: "1px solid #E4E6EF",
-                                      borderRadius: "5px",
-                                      height: "45px",
-                                      fontSize: "15px",
-                                      fontWeight: 500,
-                                    }}
+                                    className="position-relative"
+                                    onClick={open}
                                   >
-                                    {values.CreateDate ? (
-                                      <span>
-                                        {moment(values.CreateDate).format(
-                                          "HH:mm DD/MM/YYYY"
-                                        )}
-                                      </span>
-                                    ) : (
-                                      <span className="text-muted">
-                                        Chọn thời gian
-                                      </span>
-                                    )}
-                                  </div>
-                                  <div
-                                    className="d--f ai--c jc--c fw-500"
-                                    style={{
-                                      position: "absolute",
-                                      top: 0,
-                                      right: 0,
-                                      background: "#e5e7ef",
-                                      width: "45px",
-                                      height: "100%",
-                                      borderTopRightRadius: "5px",
-                                      borderBottomRightRadius: "5px",
-                                      color: "#727272",
-                                    }}
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      strokeWidth="1.5"
-                                      stroke="currentColor"
+                                    <div
+                                      className="w-full pl-12px d--f ai--c"
                                       style={{
-                                        width: "24px",
+                                        border: "1px solid #E4E6EF",
+                                        borderRadius: "5px",
+                                        height: "45px",
+                                        fontSize: "15px",
+                                        fontWeight: 500,
                                       }}
                                     >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                      />
-                                    </svg>
+                                      {values.CreateDate ? (
+                                        <span>
+                                          {moment(values.CreateDate).format(
+                                            "DD/MM/YYYY"
+                                          )}
+                                        </span>
+                                      ) : (
+                                        <span className="text-muted">
+                                          Chọn thời gian
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div
+                                      className="d--f ai--c jc--c fw-500"
+                                      style={{
+                                        position: "absolute",
+                                        top: 0,
+                                        right: 0,
+                                        background: "#e5e7ef",
+                                        width: "45px",
+                                        height: "100%",
+                                        borderTopRightRadius: "5px",
+                                        borderBottomRightRadius: "5px",
+                                        color: "#727272",
+                                      }}
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        style={{
+                                          width: "24px",
+                                        }}
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+                                        />
+                                      </svg>
+                                    </div>
                                   </div>
-                                </div>
-                              )}
-                            </PickerDate>
+                                )}
+                              </PickerDate>
+                            </div>
                           </div>
                           <div className="mb-15px last-mb-0">
-                            <div className="mb-2px text-muted">Ngực phải</div>
+                            <div className="mb-2px text-muted">
+                              {isSuckMilk ? "Bú bình" : "Ngực phải"}
+                            </div>
                             <div className="position-relative">
                               <NumberFormat
                                 name="LeftChest"
@@ -357,7 +448,9 @@ function PickerAdd({ children, refetch, item, onClose }) {
                             </div>
                           </div>
                           <div className="mb-15px last-mb-0">
-                            <div className="mb-2px text-muted">Ngực trái</div>
+                            <div className="mb-2px text-muted">
+                              {isSuckMilk ? "Bú mẹ" : "Ngực trái"}
+                            </div>
                             <div className="position-relative">
                               <NumberFormat
                                 name="RightChest"

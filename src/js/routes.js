@@ -79,7 +79,9 @@ import ScheduleClassPage from "../pages/ScheduleClass/index.jsx";
 import SheduleClassListPage from "../pages/ScheduleClass/SheduleClassList.jsx";
 import AdminOtpPage from "../pages/admin/AdminOtp.jsx";
 import ReportSuckMilkPage from "../pages/report-suck-milk/index.jsx";
+import ReportSuckMilkPage2 from "../pages/report-suck-milk/index2.jsx";
 import SuckMilkChartPage from "../pages/report-suck-milk/SuckMilkChart.jsx";
+import SuckMilkChartPage2 from "../pages/report-suck-milk/SuckMilkChart2.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -104,8 +106,8 @@ const checkRouterHome = () => {
     return window?.GlobalConfig?.APP?.v2Login ? LoginV2Page : LoginPage;
   }
   if (ACC_TYPE === "M") {
-    //return SuckMilkChartPage
-    return HomeIndex;
+    return ReportSuckMilkPage
+    //return HomeIndex;
   }
 
   if (ACC_TYPE === "U") {
@@ -536,7 +538,7 @@ var routes = [
     },
   },
   {
-    path: "/report-suck-milk/", // Báo cáo ngày
+    path: "/report-suck-milk/", // Báo cáo hút sữa
     asyncComponent: () => ReportSuckMilkPage,
     options: {
       transition: "f7-cover",
@@ -544,8 +546,24 @@ var routes = [
     beforeEnter: checkAuth,
   },
   {
-    path: "/report-suck-milk-chart/", // Báo cáo ngày
+    path: "/report-suck-milk2/", // Báo cáo bú sữa
+    asyncComponent: () => ReportSuckMilkPage2,
+    options: {
+      transition: "f7-cover",
+    },
+    beforeEnter: checkAuth,
+  },
+  {
+    path: "/report-suck-milk-chart/", // Báo cáo hút sữa
     asyncComponent: () => SuckMilkChartPage,
+    options: {
+      transition: "f7-cover",
+    },
+    beforeEnter: checkAuth,
+  },
+  {
+    path: "/report-suck-milk-chart2/", // Báo cáo bú sữa
+    asyncComponent: () => SuckMilkChartPage2,
     options: {
       transition: "f7-cover",
     },

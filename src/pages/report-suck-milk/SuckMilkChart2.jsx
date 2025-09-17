@@ -227,7 +227,12 @@ const ChartWithScroll = ({
           <div style={timelineContainer}>
             {Items &&
               Items.map((time, idx) => (
-                <PickerAdd key={idx} item={time} refetch={refetch}>
+                <PickerAdd
+                  isSuckMilk={true}
+                  key={idx}
+                  item={time}
+                  refetch={refetch}
+                >
                   {({ open }) => (
                     <div onClick={open} style={itemStyle}>
                       <div style={iconStyle}>🍼</div>
@@ -257,19 +262,19 @@ const ChartWithScroll = ({
 
                       <div className="mb-5px">
                         <span style={totalStyle}>
-                          {time?.ParseData2?.TotalChest || 0}ml
+                          {time?.ParseData3?.TotalChest || 0}ml
                         </span>
                       </div>
                       <div style={chipGroup}>
-                        <span style={chip("rgb(255,183,197)", "#000")}>
-                          Phải {time?.ParseData2?.LeftChest || 0} ml
-                        </span>
                         <span style={chip("rgb(173,216,230)", "#000")}>
-                          Trái {time?.ParseData2?.RightChest || 0} ml
+                          Bú bình {time?.ParseData3?.LeftChest || 0} ml
+                        </span>
+                        <span style={chip("rgb(255,183,197)", "#000")}>
+                          Bú mẹ {time?.ParseData3?.RightChest || 0} ml
                         </span>
                       </div>
-                      {time?.ParseData2?.Desc && (
-                        <div className="mt-12px">{time?.ParseData2?.Desc}</div>
+                      {time?.ParseData3?.Desc && (
+                        <div className="mt-12px">{time?.ParseData3?.Desc}</div>
                       )}
                     </div>
                   )}
@@ -319,7 +324,7 @@ export default class extends React.Component {
         options: {
           title: { show: false },
           tooltip: { show: false, axisPointer: { type: "none" } },
-          legend: { data: ["Ngực phải", "Ngực trái"] },
+          legend: { data: ["Bú bình", "Bú mẹ"] },
           grid: {
             left: 60, // giữ khoảng trống cho trục Y
             right: 15,
@@ -356,7 +361,7 @@ export default class extends React.Component {
           ],
           series: [
             {
-              name: "Ngực phải",
+              name: "Bú mẹ",
               type: "bar",
               stack: "total",
               data: getMonthDays(new Date()).map(() => 0),
@@ -372,7 +377,7 @@ export default class extends React.Component {
               formatter: (params) => (params.value > 0 ? params.value : ""),
             },
             {
-              name: "Ngực trái",
+              name: "Bú bình",
               type: "bar",
               stack: "total",
               data: getMonthDays(new Date()).map(() => 0),
@@ -472,18 +477,18 @@ export default class extends React.Component {
         Items = rsfirst.Items
           ? rsfirst.Items.map((item) => ({
               ...item,
-              ParseData2: item.Data2 ? JSON.parse(item.Data2) : null,
+              ParseData3: item.Data3 ? JSON.parse(item.Data3) : null,
               RoundCreateDate: item.CreateDate
                 ? moment(item.CreateDate).startOf("hour").toDate()
                 : null,
             })).map((item) => ({
               ...item,
-              ParseData2: item.ParseData2
+              ParseData3: item.ParseData3
                 ? {
-                    ...item.ParseData2,
+                    ...item.ParseData3,
                     TotalChest:
-                      Number(item.ParseData2?.LeftChest || 0) +
-                      Number(item.ParseData2?.RightChest || 0),
+                      Number(item.ParseData3?.LeftChest || 0) +
+                      Number(item.ParseData3?.RightChest || 0),
                   }
                 : null,
             }))
@@ -504,23 +509,23 @@ export default class extends React.Component {
       Dates = Dates.map((date) => {
         let newDate = { ...date };
         newDate["children"] = date.children
-          ? date.children.filter((x) => x.Data2)
+          ? date.children.filter((x) => x.Data3)
           : [];
         let count =
-          (date.children && date.children.filter((x) => x.Data2)?.length) || 0;
+          (date.children && date.children.filter((x) => x.Data3)?.length) || 0;
         let total =
           date.children?.reduce(
-            (a, b) => a + (b.ParseData2?.TotalChest || 0),
+            (a, b) => a + (b.ParseData3?.TotalChest || 0),
             0
           ) || 0;
         let totalLeftChest =
           date.children?.reduce(
-            (a, b) => a + (b.ParseData2?.LeftChest || 0),
+            (a, b) => a + (b.ParseData3?.LeftChest || 0),
             0
           ) || 0;
         let totalRightChest =
           date.children?.reduce(
-            (a, b) => a + (b.ParseData2?.RightChest || 0),
+            (a, b) => a + (b.ParseData3?.RightChest || 0),
             0
           ) || 0;
         let avg = count > 0 ? Math.round(total / count) : 0;
@@ -539,8 +544,8 @@ export default class extends React.Component {
       let names = Dates.map((d) => moment(d.date).format("DD/MM"));
 
       newOptions.xAxis.data = names;
-      newOptions.series[0].data = Dates.map((d) => d.totalLeftChest); // Ngực trái
-      newOptions.series[1].data = Dates.map((d) => d.totalRightChest); // Ngực phải
+      newOptions.series[0].data = Dates.map((d) => d.totalRightChest); // Bú mẹ
+      newOptions.series[1].data = Dates.map((d) => d.totalLeftChest); // Bú bình
 
       newOptionsTotal.xAxis.data = names;
       newOptionsTotal.series[0].data = Dates.map((d) => d.total);
@@ -605,7 +610,7 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Biểu đồ hút sữa</span>
+              <span className="title">Biểu đồ bú sữa</span>
             </div>
             <div
               className="page-navbar__back"
@@ -613,7 +618,7 @@ export default class extends React.Component {
                 width: "70px",
               }}
             >
-              <PickerAdd refetch={this.fetchList}>
+              <PickerAdd isSuckMilk={true} refetch={this.fetchList}>
                 {({ open }) => (
                   <Link
                     style={{

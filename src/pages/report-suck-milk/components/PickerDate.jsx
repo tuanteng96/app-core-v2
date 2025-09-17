@@ -4,6 +4,7 @@ import DatePicker from "react-mobile-datepicker";
 import { motion, AnimatePresence } from "framer-motion";
 
 const PickerDate = ({
+  style = {},
   className = "",
   children,
   onChange,
@@ -42,7 +43,7 @@ const PickerDate = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className={className}>
+    <div className={className} style={style}>
       {children({ open: () => setIsOpen(true) })}
 
       {createPortal(

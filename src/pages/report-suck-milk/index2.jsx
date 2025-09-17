@@ -88,18 +88,18 @@ export default class extends React.Component {
         Items = rsfirst.Items
           ? rsfirst.Items.map((item) => ({
               ...item,
-              ParseData2: item.Data2 ? JSON.parse(item.Data2) : null,
+              ParseData3: item.Data3 ? JSON.parse(item.Data3) : null,
               RoundCreateDate: item.CreateDate
                 ? moment(item.CreateDate).startOf("hour").toDate()
                 : null,
             })).map((item) => ({
               ...item,
-              ParseData2: item.ParseData2
+              ParseData3: item.ParseData3
                 ? {
-                    ...item.ParseData2,
+                    ...item.ParseData3,
                     TotalChest:
-                      Number(item.ParseData2?.LeftChest || 0) +
-                      Number(item.ParseData2?.RightChest || 0),
+                      Number(item.ParseData3?.LeftChest || 0) +
+                      Number(item.ParseData3?.RightChest || 0),
                   }
                 : null,
             }))
@@ -119,10 +119,10 @@ export default class extends React.Component {
 
       Dates = Dates.map((date) => {
         let newDate = { ...date };
-        let count = date.children && date.children.filter(x => x.Data2)?.length || 0;
+        let count = date.children && date.children.filter(x => x.Data3)?.length || 0;
         let total =
           date.children?.reduce(
-            (a, b) => a + (b.ParseData2?.TotalChest || 0),
+            (a, b) => a + (b.ParseData3?.TotalChest || 0),
             0
           ) || 0;
         let avg = count > 0 ? Math.round(total / count) : 0;
@@ -163,7 +163,7 @@ export default class extends React.Component {
               )
             : [];
           newDay["sum"] = newDay["children"].reduce(
-            (a, b) => a + (b.ParseData2?.TotalChest || 0),
+            (a, b) => a + (b.ParseData3?.TotalChest || 0),
             0
           );
           newDay["count"] = newDay["children"]?.length || 0;
@@ -222,7 +222,7 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Thống kê hút sữa</span>
+              <span className="title">Thống kê bú sữa</span>
             </div>
             <div
               className="page-navbar__back"
@@ -230,7 +230,7 @@ export default class extends React.Component {
                 width: "70px",
               }}
             >
-              <PickerAdd refetch={this.fetchList}>
+              <PickerAdd isSuckMilk={true} refetch={this.fetchList}>
                 {({ open }) => (
                   <Link
                     style={{
@@ -436,6 +436,7 @@ export default class extends React.Component {
             >
               SL
             </div>
+            
             {data.TotalArray &&
               data.TotalArray.map((item, index) => (
                 <div
@@ -506,6 +507,7 @@ export default class extends React.Component {
                   }
                   return (
                     <PickerAdd
+                      isSuckMilk={true}
                       key={i}
                       item={
                         sub?.children && sub?.children.length > 0
@@ -599,14 +601,14 @@ export default class extends React.Component {
           </div>
           <div className="mt-15px">
             <Link
-              href="/report-suck-milk-chart/"
+              href="/report-suck-milk-chart2/"
               noLinkClass
               className="btn-reviews w-100 text-center"
               style={{
                 display: "block",
               }}
             >
-              Biểu đồ hút sữa
+              Biểu đồ bú sữa
             </Link>
           </div>
         </div>
