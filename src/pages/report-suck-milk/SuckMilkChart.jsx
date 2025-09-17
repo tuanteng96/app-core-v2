@@ -391,7 +391,7 @@ export default class extends React.Component {
         },
         optionsTotal: {
           title: { show: false },
-          tooltip: { trigger: "axis" },
+          tooltip: { show: false, axisPointer: { type: "none" } },
           grid: {
             left: 60, // giữ khoảng trống cho trục Y
             right: 15,

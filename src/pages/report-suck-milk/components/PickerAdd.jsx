@@ -301,6 +301,7 @@ function PickerAdd({ children, refetch, item, onClose, isSuckMilk = false }) {
                                     border: "1px solid #E4E6EF",
                                     borderRadius: "5px",
                                     height: "47px",
+                                    lineHeight: "47px",
                                     fontSize: "15px",
                                     fontWeight: 500,
                                   }}
