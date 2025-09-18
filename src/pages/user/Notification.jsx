@@ -57,7 +57,8 @@ export default class extends React.Component {
       infoUser.acc_id,
       0,
       200,
-      refresh
+      refresh,
+      true
     )
       .then((response) => {
         const data = response.data.data;
