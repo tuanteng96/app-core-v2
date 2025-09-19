@@ -1,3 +1,4 @@
+import { f7 } from "framework7-react";
 import { SERVER_APP } from "./config";
 import { getToken } from "./user";
 
@@ -98,7 +99,18 @@ export const SEND_TOKEN_FIREBASE = () => {
     return new Promise((resolve, reject) => {
       t.prom("KEY", JSON.stringify({ key: "FirebaseNotiToken" }))
         .then(({ data }) => {
-          resolve({ Token: data });
+          if(data) {
+            resolve({ Token: data });
+          }
+          else {
+            if(f7?.device?.os && f7?.device?.os.toUpperCase().indexOf("ANDROID") > -1) {
+              t.prom("GET_NOTI_TOKEN").then((rs) => {
+                resolve({ Token: rs });
+              }).catch(({ error }) => {
+                resolve({ Token: error });
+              })
+            }
+          }
         })
         .catch(({ error }) => {
           //resolve({ error: error });
