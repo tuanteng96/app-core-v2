@@ -483,6 +483,7 @@ export default class extends React.Component {
                         refetch={this.fetchList}
                         item={time}
                         sub={sub}
+                        isSuckMilk
                       >
                         {({ open }) => (
                           <div

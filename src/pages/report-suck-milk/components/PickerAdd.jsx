@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import PickerDate from "./PickerDate";
 import { Form, Formik } from "formik";
@@ -52,6 +52,7 @@ const valiSchema = Yup.object().shape({
 
 function PickerAdd({ children, refetch, item, onClose, isSuckMilk = false }) {
   let [visible, setVisible] = useState(false);
+  let timeInputRef = useRef();
   let [initialValues, setInitialValues] = useState({
     CreateDate: new Date(),
     LeftChest: "",
@@ -268,35 +269,13 @@ function PickerAdd({ children, refetch, item, onClose, isSuckMilk = false }) {
                               }}
                             >
                               <div
+                                className="position-relative"
                                 style={{
-                                  width: "100px",
+                                  width: "120px",
                                   height: "47px",
                                 }}
                               >
-                                <input
-                                  value={
-                                    values.CreateDate
-                                      ? moment(values.CreateDate).format(
-                                          "HH:mm"
-                                        )
-                                      : moment(values.CreateDate).format()
-                                  }
-                                  onChange={(e) => {
-                                    setFieldValue(
-                                      "CreateDate",
-                                      moment(values.CreateDate)
-                                        .set({
-                                          hour: e.target.value.split(":")[0],
-                                          minute: e.target.value.split(":")[1],
-                                          second: 0,
-                                          millisecond: 0,
-                                        })
-                                        .toDate()
-                                    );
-                                  }}
-                                  className="w-100 px-12px"
-                                  type="time"
-                                  placeholder="Chọn thời gian"
+                                <NumberFormat
                                   style={{
                                     border: "1px solid #E4E6EF",
                                     borderRadius: "5px",
@@ -305,7 +284,108 @@ function PickerAdd({ children, refetch, item, onClose, isSuckMilk = false }) {
                                     fontSize: "15px",
                                     fontWeight: 500,
                                   }}
+                                  value={moment(values.CreateDate).format(
+                                    "HH:mm"
+                                  )}
+                                  format={(val) => {
+                                    if (!val) return "--:--";
+                                    if (val.length <= 2) return val;
+                                    return (
+                                      val.slice(0, 2) + ":" + val.slice(2, 4)
+                                    );
+                                  }}
+                                  allowEmptyFormatting
+                                  placeholder="--:--"
+                                  onValueChange={(values) => {
+                                    const { value } = values;
+                                    if (/^\d{4}$/.test(value)) {
+                                      const hour = parseInt(
+                                        value.substring(0, 2),
+                                        10
+                                      );
+                                      const minute = parseInt(
+                                        value.substring(2, 4),
+                                        10
+                                      );
+                                      if (
+                                        hour >= 0 &&
+                                        hour <= 23 &&
+                                        minute >= 0 &&
+                                        minute <= 59
+                                      ) {
+                                        setFieldValue(
+                                          "CreateDate",
+                                          moment(values.CreateDate)
+                                            .set({
+                                              hour,
+                                              minute,
+                                              second: 0,
+                                              millisecond: 0,
+                                            })
+                                            .toDate()
+                                        );
+                                      }
+                                    }
+                                  }}
+                                  className="w-100 pl-12px d--f ai--c"
                                 />
+                                <div
+                                  className="position-absolute h-100 top-0 right-0"
+                                  style={{
+                                    width: "48px",
+                                    background: "rgb(229, 231, 239)",
+                                    color: "rgb(114, 114, 114)",
+                                    borderTopRightRadius: "5px",
+                                    borderBottomRightRadius: "5px",
+                                    overflow: "hidden",
+                                  }}
+                                >
+                                  <PickerDate
+                                    headerFormat="hh:mm"
+                                    style={{
+                                      flexGrow: "1",
+                                    }}
+                                    value={values.CreateDate}
+                                    onChange={(val) => {
+                                      setFieldValue("CreateDate", val);
+                                    }}
+                                    config={{
+                                      hour: {
+                                        format: "hh",
+                                        caption: "Giờ",
+                                        step: 1,
+                                      },
+                                      minute: {
+                                        format: "mm",
+                                        caption: "Phút",
+                                        step: 1,
+                                      },
+                                    }}
+                                  >
+                                    {({ open }) => (
+                                      <div
+                                        className="position-absolute w-100 h-100 top-0 left-0 d--f ai--c jc--c"
+                                        style={{ zIndex: 2, cursor: "pointer" }}
+                                        onClick={open}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          style={{ width: "20px" }}
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                          />
+                                        </svg>
+                                      </div>
+                                    )}
+                                  </PickerDate>
+                                </div>
                               </div>
 
                               <PickerDate

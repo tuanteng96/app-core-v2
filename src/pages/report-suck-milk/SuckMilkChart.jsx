@@ -597,7 +597,7 @@ export default class extends React.Component {
                       isDetail: false,
                     });
                   } else {
-                    this.$f7router.back();
+                    this.$f7router.back({ force: true });
                   }
                 }}
               >

@@ -88,7 +88,7 @@ const chip = (bg, color) => ({
   fontSize: "12px",
 });
 
-function PickerViewList({ children, refetch, Items, sub }) {
+function PickerViewList({ children, refetch, Items, sub, isSuckMilk = false }) {
   let [visible, setVisible] = useState(false);
 
   return (
@@ -219,67 +219,153 @@ function PickerViewList({ children, refetch, Items, sub }) {
                       </div>
                     </div>
                     <div className="mt-15px position-relative">
-                      <div style={timelineContainer}>
-                        {Items &&
-                          Items.map((time, idx) => (
-                            <PickerAdd
-                              key={idx}
-                              item={time}
-                              onClose={async () => {
-                                f7.dialog.preloader("Đang tải mới...");
-                                await refetch();
-                                f7.dialog.close();
-                              }}
-                            >
-                              {({ open }) => (
-                                <div onClick={open} style={itemStyle}>
-                                  <div style={iconStyle}>🍼</div>
-                                  <div className="d--f jc--sb">
-                                    <div
-                                      className="text-muted"
-                                      style={timeStyle}
-                                    >
-                                      {moment(time.CreateDate).format("HH:mm")}
-                                    </div>
-                                    <div className="text-muted">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        style={{
-                                          width: "24px",
-                                        }}
+                      {isSuckMilk && (
+                        <div style={timelineContainer}>
+                          {Items &&
+                            Items.map((time, idx) => (
+                              <PickerAdd
+                                key={idx}
+                                item={time}
+                                onClose={async () => {
+                                  f7.dialog.preloader("Đang tải mới...");
+                                  await refetch();
+                                  f7.dialog.close();
+                                }}
+                                isSuckMilk
+                              >
+                                {({ open }) => (
+                                  <div onClick={open} style={itemStyle}>
+                                    <div style={iconStyle}>🍼</div>
+                                    <div className="d--f jc--sb">
+                                      <div
+                                        className="text-muted"
+                                        style={timeStyle}
                                       >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                                        />
-                                      </svg>
+                                        {moment(time.CreateDate).format(
+                                          "HH:mm"
+                                        )}
+                                      </div>
+                                      <div className="text-muted">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          style={{
+                                            width: "24px",
+                                          }}
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                          />
+                                        </svg>
+                                      </div>
                                     </div>
-                                  </div>
 
-                                  <div className="mb-5px">
-                                    <span style={totalStyle}>
-                                      {time?.ParseData2?.TotalChest || 0} ml
-                                    </span>
+                                    <div className="mb-5px">
+                                      <span style={totalStyle}>
+                                        {time?.ParseData3?.TotalChest || 0} ml
+                                      </span>
+                                    </div>
+                                    <div style={chipGroup}>
+                                      <span
+                                        style={chip("rgb(173,216,230)", "#000")}
+                                      >
+                                        Bú bình{" "}
+                                        {time?.ParseData3?.LeftChest || 0} ml
+                                      </span>
+                                      <span
+                                        style={chip("rgb(255,183,197)", "#000")}
+                                      >
+                                        Bú mẹ{" "}
+                                        {time?.ParseData3?.RightChest || 0} ml
+                                      </span>
+                                    </div>
+                                    {time?.ParseData3?.Desc && (
+                                      <div className="mt-12px">
+                                        {time?.ParseData3?.Desc}
+                                      </div>
+                                    )}
                                   </div>
-                                  <div style={chipGroup}>
-                                    <span style={chip("#e8f5e9", "#388e3c")}>
-                                      Trái {time?.ParseData2?.RightChest || 0}{" "}
-                                      ml
-                                    </span>
-                                    <span style={chip("#ffebee", "#d32f2f")}>
-                                      Phải {time?.ParseData2?.LeftChest || 0} ml
-                                    </span>
+                                )}
+                              </PickerAdd>
+                            ))}
+                        </div>
+                      )}
+                      {!isSuckMilk && (
+                        <div style={timelineContainer}>
+                          {Items &&
+                            Items.map((time, idx) => (
+                              <PickerAdd
+                                key={idx}
+                                item={time}
+                                onClose={async () => {
+                                  f7.dialog.preloader("Đang tải mới...");
+                                  await refetch();
+                                  f7.dialog.close();
+                                }}
+                              >
+                                {({ open }) => (
+                                  <div onClick={open} style={itemStyle}>
+                                    <div style={iconStyle}>🍼</div>
+                                    <div className="d--f jc--sb">
+                                      <div
+                                        className="text-muted"
+                                        style={timeStyle}
+                                      >
+                                        {moment(time.CreateDate).format(
+                                          "HH:mm"
+                                        )}
+                                      </div>
+                                      <div className="text-muted">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          style={{
+                                            width: "24px",
+                                          }}
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                          />
+                                        </svg>
+                                      </div>
+                                    </div>
+
+                                    <div className="mb-5px">
+                                      <span style={totalStyle}>
+                                        {time?.ParseData2?.TotalChest || 0} ml
+                                      </span>
+                                    </div>
+                                    <div style={chipGroup}>
+                                      <span style={chip("#e8f5e9", "#388e3c")}>
+                                        Trái {time?.ParseData2?.RightChest || 0}{" "}
+                                        ml
+                                      </span>
+                                      <span style={chip("#ffebee", "#d32f2f")}>
+                                        Phải {time?.ParseData2?.LeftChest || 0}{" "}
+                                        ml
+                                      </span>
+                                    </div>
+                                    {time?.ParseData2?.Desc && (
+                                      <div className="mt-12px">
+                                        {time?.ParseData3?.Desc}
+                                      </div>
+                                    )}
                                   </div>
-                                </div>
-                              )}
-                            </PickerAdd>
-                          ))}
-                      </div>
+                                )}
+                              </PickerAdd>
+                            ))}
+                        </div>
+                      )}
                       <div
                         style={{
                           position: "absolute",
