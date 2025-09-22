@@ -106,8 +106,8 @@ const checkRouterHome = () => {
     return window?.GlobalConfig?.APP?.v2Login ? LoginV2Page : LoginPage;
   }
   if (ACC_TYPE === "M") {
-    return ReportSuckMilkPage
-    //return HomeIndex;
+    //return ReportSuckMilkPage
+    return HomeIndex;
   }
 
   if (ACC_TYPE === "U") {
