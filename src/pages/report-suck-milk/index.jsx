@@ -119,7 +119,8 @@ export default class extends React.Component {
 
       Dates = Dates.map((date) => {
         let newDate = { ...date };
-        let count = date.children && date.children.filter(x => x.Data2)?.length || 0;
+        let count =
+          (date.children && date.children.filter((x) => x.Data2)?.length) || 0;
         let total =
           date.children?.reduce(
             (a, b) => a + (b.ParseData2?.TotalChest || 0),
@@ -493,8 +494,8 @@ export default class extends React.Component {
                                 sub?.sum > 0
                                   ? sub?.sum >
                                     window?.GlobalConfig?.APP?.AverageMilk
-                                    ? "#067f08"
-                                    : "#ffa701"
+                                    ? "#ffb7c5"
+                                    : "#add8e6"
                                   : "transparent",
                             }}
                           >
@@ -526,8 +527,8 @@ export default class extends React.Component {
                             backgroundColor:
                               sub?.sum > 0
                                 ? sub?.sum > 200
-                                  ? "#067f08"
-                                  : "#ffa701"
+                                  ? "#ffb7c5"
+                                  : "#add8e6"
                                 : "transparent",
                           }}
                         >
@@ -546,7 +547,7 @@ export default class extends React.Component {
               style={{
                 width: "25px",
                 height: "16px",
-                background: "#67b269",
+                background: "#ffb7c5",
                 border: "1px solid #f1f1f1",
               }}
             ></div>
@@ -564,7 +565,7 @@ export default class extends React.Component {
               style={{
                 width: "25px",
                 height: "16px",
-                background: "#ffa602",
+                background: "#add8e6",
                 border: "1px solid #f1f1f1",
               }}
             ></div>

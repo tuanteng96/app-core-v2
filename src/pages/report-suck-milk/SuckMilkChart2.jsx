@@ -375,6 +375,13 @@ export default class extends React.Component {
               showSymbol: false,
               markPoint: { data: [] },
               formatter: (params) => (params.value > 0 ? params.value : ""),
+              emphasis: {
+                focus: "none",
+                itemStyle: {
+                  opacity: 1,
+                  color: "rgb(255,183,197)",
+                },
+              },
             },
             {
               name: "Bú bình",
@@ -387,6 +394,13 @@ export default class extends React.Component {
               },
               itemStyle: {
                 color: "rgb(173,216,230)", // ✅ Màu nền của cột Ngực trái
+              },
+              emphasis: {
+                focus: "none",
+                itemStyle: {
+                  opacity: 1,
+                  color: "rgb(173,216,230)",
+                },
               },
               showSymbol: false,
               markPoint: { data: [] },
@@ -439,6 +453,16 @@ export default class extends React.Component {
               label: {
                 show: true,
                 position: "inside", // hiển thị phía trên cột
+              },
+              itemStyle: {
+                color: "rgb(255,183,197)",
+              },
+              emphasis: {
+                focus: "none",
+                itemStyle: {
+                  opacity: 1,
+                  color: "rgb(255,183,197)",
+                },
               },
             },
           ],
