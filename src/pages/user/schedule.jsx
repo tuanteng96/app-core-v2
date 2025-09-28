@@ -27,7 +27,6 @@ import { toast } from "react-toastify";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import moment from "moment";
 import "moment/locale/vi";
-import _ from "lodash";
 import { Animated } from "react-animated-css";
 import Select, { components } from "react-select";
 import staffService from "../../service/staff.service";

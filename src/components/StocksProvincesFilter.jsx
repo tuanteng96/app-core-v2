@@ -278,6 +278,9 @@ function StocksProvincesFilter({
                               app_request("unsubscribe", "");
                             }
                             iOS() && REMOVE_BADGE();
+                            
+                            window.hasReport = false;
+                            
                             await localStorage.clear();
 
                             f7.dialog.close();

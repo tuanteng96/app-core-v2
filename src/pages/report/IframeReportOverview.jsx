@@ -5,14 +5,6 @@ import Dom7 from "dom7";
 import UserService from "../../service/user.service";
 import IframeComm from "react-iframe-comm";
 
-window.Info = {
-  User: getUser(),
-  Stocks: [],
-  CrStockID: getStockIDStorage(),
-};
-
-window.token = localStorage.getItem("token");
-
 function IframeReportOverview({ f7 }) {
   const iframeRef = useRef(null);
   const [isShow, setIsShow] = useState(false);
@@ -22,38 +14,29 @@ function IframeReportOverview({ f7 }) {
     if ($(".dialog-preloader").length === 0) {
       f7.dialog.preloader("Đang tải báo cáo ... ");
     }
-    UserService.getStock().then((response) => {
-      const ListStock = response.data.data.all.filter(
-        (item) => item.ID !== 778
-      );
-      let InfoU = { ...getUser()["Info"] };
-      let rightsSum = { ...InfoU["rightsSum"] };
-      if (InfoU?.rightTree?.groups) {
-        let i = InfoU?.rightTree?.groups.findIndex(
-          (x) => x.group === "Báo cáo"
-        );
-        if (i > -1) {
-          let { hasRight, IsAllStock, stocksList } =
-            InfoU?.rightTree?.groups[i].rights[0];
-          rightsSum["report"] = {
-            IsAllStock,
-            hasRight,
-            stocks: stocksList,
-          };
-        }
-      }
 
-      window.Info = {
-        ...window.Info,
-        CrStockID: getStockIDStorage(),
-        rightsSum: rightsSum,
-        Stocks: getUser()["Info"]["StockRights"],
-        ...getUser(),
-        rightTree: InfoU?.rightTree,
-      };
-      window.token = localStorage.getItem("token");
+    if (window.hasReport) {
       setIsShow(true);
-    });
+    } else {
+      UserService.getInfo().then(({ data }) => {
+        if (data) {
+          window.Info = {
+            ...data,
+            CrStockID: getStockIDStorage(),
+            rightsSum: data?.Info?.rightsSum,
+            Stocks: data?.Info?.StockRights,
+            rightTree: data?.Info?.rightTree,
+          };
+          window.token = data?.token;
+
+          window.hasReport = true
+
+          setIsShow(true);
+        } else {
+          setIsShow(true);
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -68,12 +51,12 @@ function IframeReportOverview({ f7 }) {
   if (!isShow) {
     return "";
   }
-  
+
   return (
     <IframeComm
       attributes={{
         src: `${
-          (window.SERVER || SERVER_APP)
+          window.SERVER || SERVER_APP
         }/Admin/Reports/index.html?v=${new Date().valueOf()}`,
         width: "100%",
         height: "100%",
@@ -82,6 +65,7 @@ function IframeReportOverview({ f7 }) {
       postMessageData={JSON.stringify({
         Info: window.Info,
         token: window.token,
+        isApp: true,
       })}
       handleReady={() => {
         f7.dialog.close();

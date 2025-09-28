@@ -3,14 +3,6 @@ import { getStockIDStorage } from "../../../../../constants/user";
 import ShopDataService from "../../../../../service/shop.service";
 import { Link } from "framework7-react";
 import Skeleton from "react-loading-skeleton";
-import PerfectScrollbar from "react-perfect-scrollbar";
-
-const perfectScrollbarOptions = {
-  wheelSpeed: 5,
-  wheelPropagation: false,
-  suppressScrollY: true,
-  swipeEasing: false,
-};
 
 export default class CategoriesList extends React.Component {
   constructor() {
@@ -70,9 +62,8 @@ export default class CategoriesList extends React.Component {
     if (this.props.id === "hot") return "";
 
     return (
-      <PerfectScrollbar
-        options={perfectScrollbarOptions}
-        className="list-cate scroll-hidden scroll"
+      <div
+        className="list-cate"
       >
       
         {loading &&
@@ -104,7 +95,7 @@ export default class CategoriesList extends React.Component {
               </Link>
             );
           })}
-      </PerfectScrollbar>
+      </div>
     );
   }
 }

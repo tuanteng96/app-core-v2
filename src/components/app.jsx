@@ -73,7 +73,11 @@ export default class extends React.Component {
                     } else {
                       app_request("unsubscribe", "");
                     }
+
+                    window.hasReport = false;
+
                     iOS() && REMOVE_BADGE();
+
                     let CrDomain = localStorage.getItem("DOMAIN");
 
                     await localStorage.clear();
@@ -100,6 +104,9 @@ export default class extends React.Component {
                       let CrDomain = localStorage.getItem("DOMAIN");
 
                       iOS() && REMOVE_BADGE();
+
+                      window.hasReport = false;
+
                       await localStorage.clear();
 
                       window.UnSubscribe && window.UnSubscribe();
@@ -143,6 +150,8 @@ export default class extends React.Component {
                                 }
 
                                 iOS() && REMOVE_BADGE();
+
+                                window.hasReport = false;
 
                                 let CrDomain = localStorage.getItem("DOMAIN");
 
@@ -283,6 +292,9 @@ export default class extends React.Component {
                 app_request("unsubscribe", "");
               }
               iOS() && REMOVE_BADGE();
+
+              window.hasReport = false;
+              
               let CrDomain = localStorage.getItem("DOMAIN");
 
               await localStorage.clear();

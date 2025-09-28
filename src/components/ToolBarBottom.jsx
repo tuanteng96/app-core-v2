@@ -12,25 +12,6 @@ import { toast } from "react-toastify";
 import PrivateNavReport from "../auth/PrivateNavReport";
 import userService from "../service/user.service";
 
-function stringToSlug(str) {
-  // remove accents
-  var from =
-      "àáãảạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệđùúủũụưừứửữựòóỏõọôồốổỗộơờớởỡợìíỉĩịäëïîöüûñçýỳỹỵỷ",
-    to =
-      "aaaaaaaaaaaaaaaaaeeeeeeeeeeeduuuuuuuuuuuoooooooooooooooooiiiiiaeiiouuncyyyyy";
-  for (var i = 0, l = from.length; i < l; i++) {
-    str = str.replace(RegExp(from[i], "gi"), to[i]);
-  }
-
-  str = str
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\-]/g, "-")
-    .replace(/-+/g, "-");
-
-  return str;
-}
-
 export default class ToolBarCustom extends React.Component {
   constructor() {
     super();
@@ -60,7 +41,7 @@ export default class ToolBarCustom extends React.Component {
         let Info = getUser();
         this.setState({
           currenRouter:
-            Info && Info?.acc_type === "U" && newRoute.url === "/"
+            Info && Info?.acc_type === "M" && newRoute.url === "/"
               ? "/report/"
               : newRoute.url,
         });
@@ -330,17 +311,8 @@ export default class ToolBarCustom extends React.Component {
               />
             )}
 
-            {window?.GlobalConfig?.APP?.fwf_report ? (
-              <PrivateNav
-                className="page-toolbar-bottom__link js-toolbar-link"
-                icon="las la-chart-bar"
-                text="Báo cáo"
-                roles="all"
-                href="/report-tq/"
-              />
-            ) : (
-              <PrivateNavReport currenRouter={this.state.currenRouter} />
-            )}
+            <PrivateNavReport roles="all" currenRouter={this.state.currenRouter} />
+
             {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
               <Link
                 noLinkClass
@@ -379,17 +351,7 @@ export default class ToolBarCustom extends React.Component {
                 href="/admin/send-otp/"
               />
             )}
-            {window?.GlobalConfig?.APP?.fwf_report ? (
-              <PrivateNav
-                className="page-toolbar-bottom__link js-toolbar-link"
-                icon="las la-chart-bar"
-                text="Báo cáo"
-                roles={[]}
-                href="/report-tq/"
-              />
-            ) : (
-              <PrivateNavReport currenRouter={this.state.currenRouter} />
-            )}
+            <PrivateNavReport currenRouter={this.state.currenRouter} />
             {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
               <Link
                 noLinkClass

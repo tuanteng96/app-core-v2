@@ -2,7 +2,7 @@ import React from "react";
 import { f7, Link, Page } from "framework7-react";
 import userService from "../../service/user.service";
 import { toast } from "react-toastify";
-import IframeResizer from "iframe-resizer-react";
+import IframeComm from "react-iframe-comm";
 import { auth, database } from "../../firebase/firebase";
 import { ref, onValue, set } from "firebase/database";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
@@ -211,15 +211,18 @@ export default class extends React.Component {
                 {!window.GlobalConfig?.APP?.FirebaseOTPHidden && (
                   <>
                     {iOS() && Uuid && (
-                      <IframeResizer
-                        heightCalculationMethod="bodyScroll"
-                        src={`${
-                          window.SERVER || SERVER_APP
-                        }/App2021/forgotUI?uuid=${Uuid}&color=${window?.GlobalConfig?.APP?.Css[
-                          "--ezs-color"
-                        ].replaceAll("#", "")}`}
-                        style={{ border: 0 }}
-                        onLoad={() => this.$f7.dialog.close()}
+                      <IframeComm
+                        attributes={{
+                          src: `${
+                            window.SERVER || SERVER_APP
+                          }/App2021/forgotUI?uuid=${Uuid}&color=${window?.GlobalConfig?.APP?.Css[
+                            "--ezs-color"
+                          ].replaceAll("#", "")}`,
+                          width: "100%",
+                          height: "100%",
+                          frameBorder: 0,
+                        }}
+                        handleReady={() => this.$f7.dialog.close()}
                       />
                     )}
                     {!iOS() && (

@@ -17,6 +17,7 @@ function PrivateNavReport({
   currenRouter,
   ...props
 }) {
+  
   const infoUser = getUser();
   const userRoles = infoUser.GroupTitles;
   const hasRole =

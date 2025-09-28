@@ -4,12 +4,6 @@ import IframeComm from "react-iframe-comm";
 import { getStockIDStorage, getUser } from "../../../constants/user";
 import { SERVER_APP } from "../../../constants/config";
 
-window.Info = {
-  User: getUser(),
-  Stocks: [],
-  CrStockID: getStockIDStorage(),
-};
-
 function IframeWheel({ f7, params }) {
   useEffect(() => {
     var $ = Dom7;

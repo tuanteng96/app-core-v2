@@ -19,7 +19,6 @@ import SelectStock from "../../components/SelectStock";
 import { Suspense } from "react";
 import Skeleton from "react-loading-skeleton";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import _ from "lodash";
 import NoProduct from "../../assets/images/no-product.png";
 import { checkSLDisabled } from "../../constants/helpers";
 import { OPEN_LINK } from "../../constants/prom21";

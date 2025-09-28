@@ -3,16 +3,7 @@ import { Link, Navbar, Page, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
 import SelectStock from "../../components/SelectStock";
-import { getStockIDStorage, getUser } from "../../constants/user";
 import IframeReport from "./IframeReport";
-
-window.Info = {
-  User: getUser(),
-  Stocks: [],
-  CrStockID: getStockIDStorage(),
-};
-
-window.token = localStorage.getItem("token");
 
 export default class Report extends React.Component {
   constructor() {

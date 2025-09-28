@@ -5,6 +5,13 @@
         box-shadow: 0 8px 20px 0 rgb(0 0 0 / 4%);
         box-sizing: border-box;
         display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        &:-webkit-scrollbar {
+            display: none;
+        }
         a {
             background: transparent !important;
             font-size: 14px;

@@ -5,7 +5,6 @@
 @import './abstracts/variables';
 @import './components/variables';
 @import './../css/abstracts/mixins';
-@import './plugins/mixins/perfect-scrollbar';
 ////////// base
 @import './base/reset',
 "./base/mixins";
@@ -26,8 +25,7 @@
 "./components/button",
 './components/svg',
 './components/sheet',
-"./components/react-select",
-'./plugins/perfect-scrollbar';
+"./components/react-select";
 ////////// layout
 @import './../css/layout/iconanimation';
 @import './../css/layout/button';

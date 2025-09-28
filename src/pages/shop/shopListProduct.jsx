@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from "react";
 import { formatPriceVietnamese, checkSale } from "../../constants/format";
-import _ from "lodash";
 import {
   Page,
   Link,
@@ -22,6 +21,7 @@ import { TruncateLines } from "react-truncate-lines";
 import clsx from "clsx";
 import { toast } from "react-toastify";
 import { toAbsoluteUrl } from "../../constants/assetPath";
+import { debounce } from 'lodash-es';
 
 const ButtonCart = ({ item, f7, f7router }) => {
   const [loading, setLoading] = useState(false);
@@ -109,7 +109,7 @@ export default class extends React.Component {
       keySearch: "",
     };
 
-    this.delayedCallback = _.debounce(this.inputCallback, 400);
+    this.delayedCallback = debounce(this.inputCallback, 400);
   }
 
   getDataList = (ID, pi, ps, tag, keys) => {

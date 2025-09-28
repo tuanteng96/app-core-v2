@@ -14,7 +14,6 @@ import {
 import ShopDataService from "./../../service/shop.service";
 import ReactHtmlParser from "react-html-parser";
 import ToolBarBottom from "../../components/ToolBarBottom";
-import _ from "lodash";
 import SkeletonListService from "./components/Skeleton/SkeletonListService";
 import CategoriesList from "./components/CategoriesList/CategoriesList/CategoriesList";
 import ShopListServiceItem from "./shopListServiceItem";
@@ -23,6 +22,7 @@ import clsx from "clsx";
 import axios from "axios";
 import PickerDetail from "./components/PickerDetail";
 import { toAbsoluteUrl } from "../../constants/assetPath";
+import { debounce } from 'lodash-es';
 
 const CancelToken = axios.CancelToken;
 let cancel;
@@ -46,7 +46,7 @@ export default class extends React.Component {
       showPreloader: false,
     };
 
-    this.delayedCallback = _.debounce(this.inputCallback, 400);
+    this.delayedCallback = debounce(this.inputCallback, 400);
   }
   getService = (id) => {
     if (cancel !== undefined) cancel();

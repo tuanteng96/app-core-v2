@@ -15,7 +15,6 @@ import IconLocation from "../../assets/images/location1.svg";
 import SkeletonStock from "./SkeletonStock";
 import Carousel from "nuka-carousel";
 import DatePicker from "react-mobile-datepicker";
-import _ from "lodash";
 import { clsx } from "clsx";
 import ConfigServiceAPI from "../../service/config.service";
 import BookDataService from "../../service/book.service";
