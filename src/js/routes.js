@@ -1,4 +1,5 @@
 import HomeIndex from "../pages/home/homeIndex";
+import HomeNail from "../pages/home/homeNail.jsx";
 import SlideDetail from "../pages/home/components/BannerSlide/SlideDetail";
 
 //import NewsPage from '../pages/news/news.jsx';
@@ -106,7 +107,9 @@ const checkRouterHome = () => {
     return window?.GlobalConfig?.APP?.v2Login ? LoginV2Page : LoginPage;
   }
   if (ACC_TYPE === "M") {
-    //return ReportSuckMilkPage
+    if (window?.GlobalConfig?.APP?.Home?.Slidernail) {
+      return HomeNail;
+    }
     return HomeIndex;
   }
 
@@ -126,6 +129,9 @@ const checkRouterHome = () => {
         return EmployeeStatisticalPage;
       }
     }
+  }
+  if (window?.GlobalConfig?.APP?.Home?.Slidernail) {
+    return HomeNail;
   }
   return HomeIndex;
 };
@@ -163,7 +169,7 @@ var routes = [
   },
   {
     path: "/news/",
-    asyncComponent: () => HomeIndex,
+    asyncComponent: () => window?.GlobalConfig?.APP?.Home?.Slidernail ? HomeNail : HomeIndex,
     options: {
       transition: "f7-cover",
     },

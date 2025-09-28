@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { Swiper, SwiperSlide } from "framework7-react";
 import { toAbsoluteUrl } from "../../../../constants/assetPath";
 import PickerConfirm from "../PickerConfirm";
+import { SERVER_APP } from "../../../../constants/config";
 
 function PickerCardImageGallery({ children, data, index }) {
   let elSwiper = useRef();
@@ -20,6 +21,14 @@ function PickerCardImageGallery({ children, data, index }) {
     setVisible(false);
   };
 
+  const fixedContentDomain = (content) => {
+    if (!content) return "";
+    return content.replace(
+      /src=\"\//g,
+      'src="' + (window.SERVER || SERVER_APP) + "/"
+    );
+  };
+
   return (
     <>
       {children({
@@ -31,10 +40,17 @@ function PickerCardImageGallery({ children, data, index }) {
           <AnimatePresence exitBeforeEnter>
             <motion.div
               className="position-fixed w-100 bottom-0 left-0 bg-white"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.95,
+                transition: { duration: 0.2, ease: "easeIn" },
+              }}
               style={{
                 zIndex: 10001,
                 height: "100%",
@@ -63,10 +79,9 @@ function PickerCardImageGallery({ children, data, index }) {
                           <img
                             className="w-100"
                             src={toAbsoluteUrl(
-                              "/Upload/image/" +
-                                (item.FileName2 || item.FileName)
+                              "/Upload/image/" + item.source.Thumbnail
                             )}
-                            alt={item.Title}
+                            alt={item.source.Title}
                           />
                           <div
                             className="position-absolute right-15px top-15px text-white"
@@ -89,12 +104,23 @@ function PickerCardImageGallery({ children, data, index }) {
                               color: "var(--ezs-color)",
                             }}
                           >
-                            {item.Title}
+                            {item.source.Title}
                           </div>
                           <div
                             className="content_"
                             dangerouslySetInnerHTML={{
-                              __html: item.Desc,
+                              __html: fixedContentDomain(item.source.Desc),
+                            }}
+                            style={{
+                              fontSize: "15px",
+                              lineHeight: "24px",
+                              color: "#3c3c3c",
+                            }}
+                          ></div>
+                          <div
+                            className="content_"
+                            dangerouslySetInnerHTML={{
+                              __html: fixedContentDomain(item.source.Content),
                             }}
                             style={{
                               fontSize: "15px",
@@ -103,7 +129,12 @@ function PickerCardImageGallery({ children, data, index }) {
                             }}
                           ></div>
                           <div className="mt-15px">
-                            <PickerConfirm initialValue={item}>
+                            <PickerConfirm
+                              initialValue={{
+                                ...item,
+                                Title: item.source.Title,
+                              }}
+                            >
                               {({ open }) => (
                                 <button
                                   className="btn-submit-order btn-submit-order rounded"

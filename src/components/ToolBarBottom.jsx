@@ -145,9 +145,12 @@ export default class ToolBarCustom extends React.Component {
                 hasRightTool = hasRight;
               }
               if (!IsAllStock) {
-                let idx = stocksList && stocksList.findIndex(
-                  (k) => k.ID === Number(localStorage.getItem("CurrentStockID"))
-                );
+                let idx =
+                  stocksList &&
+                  stocksList.findIndex(
+                    (k) =>
+                      k.ID === Number(localStorage.getItem("CurrentStockID"))
+                  );
 
                 if (idx > -1) {
                   hasRightTool = true;
@@ -332,7 +335,7 @@ export default class ToolBarCustom extends React.Component {
                 className="page-toolbar-bottom__link js-toolbar-link"
                 icon="las la-chart-bar"
                 text="Báo cáo"
-                roles={[]}
+                roles="all"
                 href="/report-tq/"
               />
             ) : (
