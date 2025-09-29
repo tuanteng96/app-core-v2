@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import clsx from "clsx";
 import userService from "../../service/user.service";
 import moment from "moment";
+import { debounce } from "lodash-es";
 
 export default class extends React.Component {
   constructor() {
@@ -103,7 +104,7 @@ export default class extends React.Component {
     });
   };
 
-  delayedClick = _.debounce(() => {
+  delayedClick = debounce(() => {
     this.saveChangeCount();
   }, 800);
 

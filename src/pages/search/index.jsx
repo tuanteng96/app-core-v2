@@ -12,6 +12,7 @@ import {
 } from "../../constants/user";
 import { checkImageProduct } from "../../constants/format";
 import ShopDataService from "../../service/shop.service";
+import { debounce } from "lodash-es";
 
 export default class extends React.Component {
   constructor() {
@@ -34,7 +35,7 @@ export default class extends React.Component {
   }
 
   componentWillMount() {
-    this.delayedCallback = _.debounce(function (event) {
+    this.delayedCallback = debounce(function (event) {
       const value = event.target.value;
       if (value.length > 0) {
         this.setState({
