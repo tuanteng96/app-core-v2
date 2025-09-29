@@ -188,7 +188,7 @@ class UserService {
     );
   }
   deleteNotification(data) {
-    return http.post(`/api/v3/noti2/?cmd=clear2`, data, {
+    return http.post(`/api/v3/noti2/?cmd=clear2&token=${localStorage.getItem("token")}`, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
