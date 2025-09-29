@@ -195,19 +195,35 @@ export default class ServiceHot2Nail extends React.Component {
                               alt=""
                             />
                           </div>
-                          <div className="f--1 pt-15px pr-15px pb-15px d--f jc--c fd--c">
+
+                          <div
+                            className="f--1 pt-15px pr-15px pb-15px d--f jc--c fd--c"
+                            style={{
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
                             <div
                               className="text-white fw-500 mb-2px"
                               style={{
                                 fontSize: "18px",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
                               }}
                             >
-                              {item?.Title}
+                              {item?.text?.split(";")?.[0] || ""}
                             </div>
                             <div
+                              style={{
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
                               className="text-desc"
                               dangerouslySetInnerHTML={{
-                                __html: item.Desc,
+                                __html: item?.text?.split(";")?.[1] || "",
                               }}
                             ></div>
                           </div>

@@ -166,7 +166,7 @@ class UserService {
     return http.get(
       `/api/v3/noti2?cmd=nextoffset&acctype=${acctype}&accid=${accid}&offset=${offset}&next=${next}${
         refresh ? "&refresh=1" : ""
-      }${reload? "&reload=1" : ""}`,
+      }${reload? "&reload=1" : ""}&token=${localStorage.getItem("token")}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
