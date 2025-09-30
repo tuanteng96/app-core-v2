@@ -1,6 +1,6 @@
 import React from "react";
 import { f7, f7ready, Link, List, ListItem, Popover } from "framework7-react";
-import { getStockIDStorage, getUser } from "../constants/user";
+import { getRightTree, getStockIDStorage, getUser } from "../constants/user";
 import iconBook from "../assets/images/bookicon.png";
 import { checkRole } from "../constants/checkRole";
 import PrivateNav from "../auth/PrivateNav";
@@ -107,10 +107,11 @@ export default class ToolBarCustom extends React.Component {
   };
 
   getHasTool = () => {
-    const infoUser = getUser();
+    const rightTree = getRightTree();
+    
     let hasRightTool = false;
-    if (infoUser?.Info?.rightTree?.groups) {
-      infoUser?.Info?.rightTree?.groups.every((rt) => {
+    if (rightTree?.groups) {
+      rightTree?.groups.every((rt) => {
         if (rt.rights && rt.rights.findIndex((x) => x.name === "adminTools")) {
           let index = rt.rights.findIndex((x) => x.name === "adminTools");
           if (index > -1) {
@@ -146,6 +147,7 @@ export default class ToolBarCustom extends React.Component {
         return true;
       });
     }
+    
     return hasRightTool;
   };
 
@@ -311,7 +313,10 @@ export default class ToolBarCustom extends React.Component {
               />
             )}
 
-            <PrivateNavReport roles="all" currenRouter={this.state.currenRouter} />
+            <PrivateNavReport
+              roles="all"
+              currenRouter={this.state.currenRouter}
+            />
 
             {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
               <Link

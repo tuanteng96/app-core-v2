@@ -7,8 +7,7 @@ export default class extends React.Component {
     super();
     this.state = {};
   }
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render() {
     return (
@@ -16,7 +15,7 @@ export default class extends React.Component {
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
-              <Link onClick={() => this.$f7router.back("/", { force: true })}>
+              <Link onClick={() => this.$f7router.back("/")}>
                 <i className="las la-angle-left"></i>
               </Link>
             </div>
@@ -27,7 +26,7 @@ export default class extends React.Component {
         </Navbar>
 
         <div className="h-100">
-          <IframeWheel f7={this.$f7} params={this.$f7route.params}/>
+          <IframeWheel f7={this.$f7} params={this.$f7route.params} />
         </div>
       </Page>
     );

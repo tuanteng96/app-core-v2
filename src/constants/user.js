@@ -73,12 +73,15 @@ export const removeUserStorage = () => {
 export const setUserStorage = (token, user) => {
   if (token) localStorage.setItem("token", token);
   if (user) {
-    let newUser = {
-      ...user,
-      StockInfo: user?.StockInfo
-        ? { ID: user?.StockInfo?.ID, Title: user?.StockInfo?.Title }
-        : null,
-    };
+    let newUser = JSON.parse(
+      JSON.stringify({
+        ...user,
+        StockInfo: user?.StockInfo
+          ? { ID: user?.StockInfo?.ID, Title: user?.StockInfo?.Title }
+          : null,
+      })
+    );
+
     [
       "AppInfo",
       "Auth2TokenIds",
@@ -102,7 +105,6 @@ export const setUserStorage = (token, user) => {
       "RoleLetters",
       "Selected",
       "SoCaYeuCau",
-
     ].forEach((key) => delete newUser[key]);
     if (newUser?.Info) {
       [
@@ -122,13 +124,22 @@ export const setUserStorage = (token, user) => {
         "User",
         "rightTree",
         "rightsSum",
-        "Stocks"
+        "Stocks",
       ].forEach((key) => delete newUser["Info"][key]);
     }
-   
+
     localStorage.setItem("user", JSON.stringify(newUser));
+
+    localStorage.setItem(
+      "rightTree",
+      JSON.stringify(user?.Info?.rightTree || null)
+    );
   }
-  //localStorage.setItem('password', password);
+};
+export const getRightTree = () => {
+  const rightTree = localStorage.getItem("rightTree");
+  if (rightTree) return JSON.parse(rightTree);
+  else return null;
 };
 // get Stock
 export const getStockIDStorage = () => {

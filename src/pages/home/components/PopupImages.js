@@ -13,8 +13,11 @@ function PopupImages({ f7 }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    NewsDataService.getBannerName("APP.POPUP").then(async ({ data }) => {
-      
+    checkVQMM();
+  }, []);
+
+  const checkVQMM = () => {
+    return NewsDataService.getBannerName("APP.POPUP").then(async ({ data }) => {
       if (window?.GlobalConfig?.vong_quay_may_man) {
         let PrizeJson = await httpCommon.get(
           `/brand/minigame/assets/json/prize.json?` + new Date().getTime()
@@ -27,7 +30,6 @@ function PopupImages({ f7 }) {
               ? !PrizeJson?.data?.unlimitedTurns
               : window.PopUpVQMM)
           ) {
-            
             let { ID } = getUser();
             let res = data.data[0];
             userService
@@ -39,26 +41,42 @@ function PopupImages({ f7 }) {
                 setData(res);
                 if (!data?.contact) {
                   setData(res);
-                  setVisible(true);
+                  setVisible(
+                    f7.views.main.router?.currentRoute?.path?.includes(
+                      "/vong-quay/"
+                    )
+                      ? false
+                      : true
+                  );
                 } else {
                   localStorage.setItem("_vqmm", false);
                 }
               });
           } else {
             setData(data.data[0]);
-            setVisible(true);
+            setVisible(
+              f7.views.main.router?.currentRoute?.path?.includes("/vong-quay/")
+                ? false
+                : true
+            );
             localStorage.removeItem("_vqmm");
           }
         }
       } else {
         if (data && data.data && data.data.length > 0) {
           setData(data.data[0]);
-          setVisible(true);
+          setVisible(
+            f7.views.main.router?.currentRoute?.path?.includes("/vong-quay/")
+              ? false
+              : true
+          );
           localStorage.removeItem("_vqmm");
         }
       }
     });
-  }, []);
+  };
+
+  window.refetchVQMM = checkVQMM;
 
   const onClose = () => {
     setVisible(false);

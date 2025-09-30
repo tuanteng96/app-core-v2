@@ -14,23 +14,22 @@ export const iOS = () => {
 export const getMobileOperatingSystem = () => {
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-    // Windows Phone must come first because its UA also contains "Android"
-    if (/windows phone/i.test(userAgent)) {
-        return "Windows Phone";
-    }
+  // Windows Phone must come first because its UA also contains "Android"
+  if (/windows phone/i.test(userAgent)) {
+    return "Windows Phone";
+  }
 
-    if (/android/i.test(userAgent)) {
-        return "Android";
-    }
+  if (/android/i.test(userAgent)) {
+    return "Android";
+  }
 
-    // iOS detection from: http://stackoverflow.com/a/9039885/177710
-    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-        return "iOS";
-    }
+  // iOS detection from: http://stackoverflow.com/a/9039885/177710
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    return "iOS";
+  }
 
-    return "unknown";
-
-}
+  return "unknown";
+};
 
 export const uuid = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -81,3 +80,18 @@ export const checkDevices = ({ Auth, deviceId }) =>
       resolve("");
     }
   });
+
+export const getRandomItemByPercentage = (items, percentages) => {
+  const total = percentages.reduce((sum, value) => sum + value, 0);
+  const randomValue = Math.random() * total;
+
+  let runningSum = 0;
+  for (let i = 0; i < items.length; i++) {
+    runningSum += percentages[i];
+    if (randomValue <= runningSum) {
+      return i;
+    }
+  }
+
+  return items.length - 1;
+};

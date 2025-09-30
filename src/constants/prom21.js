@@ -105,7 +105,7 @@ export const SEND_TOKEN_FIREBASE = () => {
           else {
             if(f7?.device?.os && f7?.device?.os.toUpperCase().indexOf("ANDROID") > -1) {
               t.prom("GET_NOTI_TOKEN").then((rs) => {
-                resolve({ Token: rs });
+                resolve({ Token: rs?.data || rs });
               }).catch(({ error }) => {
                 resolve({ Token: error });
               })

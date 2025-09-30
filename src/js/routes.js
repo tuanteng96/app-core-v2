@@ -108,6 +108,7 @@ const checkRouterHome = () => {
   }
   if (ACC_TYPE === "M") {
     if (window?.GlobalConfig?.APP?.Home?.Slidernail) {
+      //return WheelSpinPage
       return HomeNail;
     }
     return HomeIndex;

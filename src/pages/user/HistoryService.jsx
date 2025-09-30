@@ -123,7 +123,7 @@ export default class extends React.Component {
                 List.length > 0 &&
                 List.map((item, index) => (
                   <div key={index}>
-                    <div class="fw-700 mb-10px d--f ai--c">
+                    <div className="fw-700 mb-10px d--f ai--c">
                       <div
                         style={{
                           width: "0.375rem",
@@ -134,7 +134,7 @@ export default class extends React.Component {
                         }}
                       ></div>
                       <div
-                        class="px-3 py-1 rounded overflow-hidden position-relative"
+                        className="px-3 py-1 rounded overflow-hidden position-relative"
                         style={{
                           padding: "0.25rem 0.75rem",
                           zIndex: 1,
@@ -155,23 +155,23 @@ export default class extends React.Component {
                       {item.items &&
                         item.items.map((k, idx) => (
                           <div
-                            class="bg-white p-12px rounded mb-12px"
+                            className="bg-white p-12px rounded mb-12px"
                             key={idx}
                           >
-                            <div class="font-medium text-muted mb-5px">
+                            <div className="font-medium text-muted mb-5px">
                               {moment(k.BookDate).format("HH:mm")}
                             </div>
-                            <div class="zoom text-sm">
-                              <div class="text-[#3f4254] mb-3px">
+                            <div className="zoom text-sm">
+                              <div className="text-[#3f4254] mb-3px">
                                 {k.ProdTitle}{" "}
                               </div>
-                              <div class="text-muted">
+                              <div className="text-muted">
                                 {k.ProdService || k.ProdService2}
                               </div>
                             </div>
                             {(k.Rate || k.Rate == 0) && (
-                              <div class="border-top pt-10px mt-10px">
-                                <div class="d--f ai--c">
+                              <div className="border-top pt-10px mt-10px">
+                                <div className="d--f ai--c">
                                   {[1, 2, 3, 4, 5].map((v, i) => (
                                     <svg
                                       className={clsx(
@@ -193,18 +193,18 @@ export default class extends React.Component {
                                     </svg>
                                   ))}
 
-                                  <div class="ml-2px text-[13px] text-gray-500">
+                                  <div className="ml-2px text-[13px] text-gray-500">
                                     {k.Rate}
                                   </div>
-                                  <div class="ml-2px text-[13px] text-gray-500">
+                                  <div className="ml-2px text-[13px] text-gray-500">
                                     trên
                                   </div>
-                                  <div class="ml-2px text-[13px] text-gray-500">
+                                  <div className="ml-2px text-[13px] text-gray-500">
                                     5
                                   </div>
                                 </div>
                                 {k.RateNote && (
-                                  <div class="text-muted text-[13px] mt-5px">
+                                  <div className="text-muted text-[13px] mt-5px">
                                     {k.RateNote}
                                   </div>
                                 )}

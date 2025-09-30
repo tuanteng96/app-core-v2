@@ -200,6 +200,7 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
                 data?.StockName && setStockNameStorage(data.StockName);
                 SEND_TOKEN_FIREBASE().then(async ({ error, Token }) => {
                   if (!error && Token) {
+                    
                     firebaseMutation.mutate(
                       {
                         Token: Token,
