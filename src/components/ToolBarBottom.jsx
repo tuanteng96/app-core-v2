@@ -108,11 +108,15 @@ export default class ToolBarCustom extends React.Component {
 
   getHasTool = () => {
     const rightTree = getRightTree();
-    
+
     let hasRightTool = false;
+
     if (rightTree?.groups) {
       rightTree?.groups.every((rt) => {
-        if (rt.rights && rt.rights.findIndex((x) => x.name === "adminTools")) {
+        if (
+          rt.rights &&
+          rt.rights.findIndex((x) => x.name === "adminTools") > -1
+        ) {
           let index = rt.rights.findIndex((x) => x.name === "adminTools");
           if (index > -1) {
             let adminTools_byStockIndex =
@@ -147,7 +151,58 @@ export default class ToolBarCustom extends React.Component {
         return true;
       });
     }
-    
+
+    return hasRightTool;
+  };
+
+  getHasPos = () => {
+    const rightTree = getRightTree();
+
+    let hasRightTool = false;
+
+    if (rightTree?.groups) {
+      rightTree?.groups.every((rt) => {
+        if (
+          rt.rights &&
+          rt.rights.findIndex((x) => x.name === "pos_mng") > -1
+        ) {
+          let index = rt.rights.findIndex((x) => x.name === "pos_mng");
+
+          if (index > -1) {
+            let adminTools_byStockIndex =
+              rt.rights[index].subs &&
+              rt.rights[index].subs.findIndex(
+                (o) => o.name_and_group === "pos_mng_pos_mng"
+              );
+
+            if (adminTools_byStockIndex > -1) {
+              let { IsAllStock, stocksList, hasRight } =
+                rt.rights[index].subs[adminTools_byStockIndex];
+              if (hasRight) {
+                hasRightTool = hasRight;
+              }
+              if (!IsAllStock) {
+                let idx =
+                  stocksList &&
+                  stocksList.findIndex(
+                    (k) =>
+                      k.ID === Number(localStorage.getItem("CurrentStockID"))
+                  );
+
+                if (idx > -1) {
+                  hasRightTool = true;
+                } else {
+                  hasRightTool = false;
+                }
+              }
+              return;
+            }
+          }
+        }
+        return true;
+      });
+    }
+
     return hasRightTool;
   };
 
@@ -156,7 +211,11 @@ export default class ToolBarCustom extends React.Component {
 
     let add = 0;
 
-    if (this.getHasTool() && window?.GlobalConfig?.Admin?.otp_kh) {
+    if (
+      this.getHasTool() &&
+      this.getHasPos() &&
+      window?.GlobalConfig?.Admin?.otp_kh
+    ) {
       add = add + 1;
     }
 
@@ -303,15 +362,17 @@ export default class ToolBarCustom extends React.Component {
               roles={"all"}
               href="/employee/statistical/"
             />
-            {this.getHasTool() && window?.GlobalConfig?.Admin?.otp_kh && (
-              <PrivateNav
-                className="page-toolbar-bottom__link js-toolbar-link"
-                icon="las la-comment-dots"
-                text="Send OTP"
-                roles={"all"}
-                href="/admin/send-otp/"
-              />
-            )}
+            {this.getHasTool() &&
+              this.getHasPos() &&
+              window?.GlobalConfig?.Admin?.otp_kh && (
+                <PrivateNav
+                  className="page-toolbar-bottom__link js-toolbar-link"
+                  icon="las la-comment-dots"
+                  text="Send OTP"
+                  roles={"all"}
+                  href="/admin/send-otp/"
+                />
+              )}
 
             <PrivateNavReport
               roles="all"
@@ -347,15 +408,17 @@ export default class ToolBarCustom extends React.Component {
               roles={[]}
               href="/employee/statistical/"
             />
-            {this.getHasTool() && window?.GlobalConfig?.Admin?.otp_kh && (
-              <PrivateNav
-                className="page-toolbar-bottom__link js-toolbar-link"
-                icon="las la-comment-dots"
-                text="Send OTP"
-                roles={"all"}
-                href="/admin/send-otp/"
-              />
-            )}
+            {this.getHasTool() &&
+              this.getHasPos() &&
+              window?.GlobalConfig?.Admin?.otp_kh && (
+                <PrivateNav
+                  className="page-toolbar-bottom__link js-toolbar-link"
+                  icon="las la-comment-dots"
+                  text="Send OTP"
+                  roles={"all"}
+                  href="/admin/send-otp/"
+                />
+              )}
             <PrivateNavReport currenRouter={this.state.currenRouter} />
             {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
               <Link
