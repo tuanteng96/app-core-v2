@@ -48,46 +48,37 @@ function SpinnerLoading({ size = 80, color = "#fff" }) {
 
 function WinnerModal({ data, prize, onClose, params }) {
   useEffect(() => {
-    if (prize) {
-      // Tìm hoặc tạo canvas confetti
-      let canvas = document.querySelector("canvas.confetti-canvas");
-      if (!canvas) {
-        canvas = document.createElement("canvas");
-        canvas.className = "confetti-canvas";
-        canvas.style.position = "fixed";
-        canvas.style.top = "0";
-        canvas.style.left = "0";
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.style.pointerEvents = "none"; // để không chặn click modal
-        canvas.style.zIndex = "20000"; // cao hơn modal
-        document.body.appendChild(canvas);
-      }
-
-      const myConfetti = confetti.create(canvas, { resize: true });
-
-      const duration = 2 * 1000;
-      const animationEnd = Date.now() + duration;
-
-      const interval = setInterval(() => {
-        const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-          return clearInterval(interval);
-        }
-
-        const particleCount = 50 * (timeLeft / duration);
-        myConfetti({
-          particleCount,
-          startVelocity: 40,
-          spread: 70,
-          origin: { x: Math.random(), y: Math.random() - 0.2 },
-        });
-      }, 250);
-
-      return () => clearInterval(interval);
+  if (prize) {
+    // Tìm hoặc tạo canvas confetti
+    let canvas = document.querySelector("canvas.confetti-canvas");
+    if (!canvas) {
+      canvas = document.createElement("canvas");
+      canvas.className = "confetti-canvas";
+      canvas.style.position = "fixed";
+      canvas.style.top = "0";
+      canvas.style.left = "0";
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.style.pointerEvents = "none";
+      canvas.style.zIndex = "20000";
+      document.body.appendChild(canvas);
     }
-  }, [prize]);
+
+    const myConfetti = confetti.create(canvas, { resize: true });
+
+    const interval = setInterval(() => {
+      myConfetti({
+        particleCount: 50,
+        startVelocity: 40,
+        spread: 70,
+        origin: { x: Math.random(), y: Math.random() - 0.2 },
+      });
+    }, 400); // mỗi 0.4s bắn 1 loạt
+
+    // cleanup khi prize thay đổi hoặc về null
+    return () => clearInterval(interval);
+  }
+}, [prize]);
 
   return createPortal(
     <AnimatePresence>
@@ -483,7 +474,7 @@ function IframeWheel({ f7, params }) {
   return (
     <>
       <div
-        className="h-100 d--f fd--c"
+        className="h-100 d--f fd--c position-relative"
         style={{
           "--color-bg": data?.color || "#d51e1e",
           background: `url(${toAbsoluteUrl(

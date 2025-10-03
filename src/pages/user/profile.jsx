@@ -62,7 +62,7 @@ export default class extends React.Component {
             if (CrDomain) {
               localStorage.setItem("DOMAIN", CrDomain);
             }
-            window.UnSubscribe && window.UnSubscribe()
+            window.UnSubscribe && window.UnSubscribe();
 
             await new Promise((resolve) => setTimeout(resolve, 300));
           });
@@ -95,7 +95,7 @@ export default class extends React.Component {
           iOS() && REMOVE_BADGE();
 
           window.hasReport = false;
-          
+
           let CrDomain = localStorage.getItem("DOMAIN");
 
           await localStorage.clear();
@@ -103,8 +103,8 @@ export default class extends React.Component {
           if (CrDomain) {
             localStorage.setItem("DOMAIN", CrDomain);
           }
-          
-          window.UnSubscribe && window.UnSubscribe()
+
+          window.UnSubscribe && window.UnSubscribe();
 
           await new Promise((resolve) => setTimeout(resolve, 300));
           f7.dialog.close();
@@ -229,7 +229,7 @@ export default class extends React.Component {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3,minmax(0,1fr))",
-              gap: "10px"
+              gap: "10px",
             }}
           >
             <div width="33">
@@ -256,14 +256,17 @@ export default class extends React.Component {
                 <span>Nhật ký</span>
               </Link>
             </div>
-            <div width="33">
-              <Link noLinkClass href="/order/">
-                <div className="image">
-                  <img src={imgOrder} />
-                </div>
-                <span>Đơn hàng</span>
-              </Link>
-            </div>
+            {!window?.GlobalConfig?.APP?.hiddenOrder && (
+              <div width="33">
+                <Link noLinkClass href="/order/">
+                  <div className="image">
+                    <img src={imgOrder} />
+                  </div>
+                  <span>Đơn hàng</span>
+                </Link>
+              </div>
+            )}
+
             <div width="33">
               <Link noLinkClass href="/voucher/">
                 <div className="image">
@@ -286,7 +289,7 @@ export default class extends React.Component {
               <div width="33">
                 <Link noLinkClass href="/aff/">
                   <div className="image">
-                    <img style={{width: "35px"}} src={imgAff} />
+                    <img style={{ width: "35px" }} src={imgAff} />
                   </div>
                   <span>Người giới thiệu</span>
                 </Link>

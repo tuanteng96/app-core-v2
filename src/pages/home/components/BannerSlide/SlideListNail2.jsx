@@ -29,13 +29,12 @@ export default class SlideListNail2 extends React.Component {
   }
 
   getBanner = () => {
-    NewsDataService.getNewsIdCate(this.props.BannerID)
-      .then(({ data }) => {
-        let newItems = data?.data
-          ? data?.data.filter((x) => x.source.Status === "0")
-          : [];
+    NewsDataService.getBannerName("APP.MAINSALE")
+      .then((response) => {
+        const arrBanner = response.data.data;
+        
         this.setState({
-          arrBanner: newItems.length > 4 ? [newItems[4]] : [],
+          arrBanner: arrBanner && arrBanner.length > 0 ? arrBanner.slice(0,1) : [],
           isLoading: false,
         });
       })
@@ -117,7 +116,7 @@ export default class SlideListNail2 extends React.Component {
     if (arrBanner && arrBanner.length === 0) {
       return <></>;
     }
-
+    console.log(arrBanner)
     return (
       <React.Fragment>
         {!isLoading && (
@@ -126,15 +125,13 @@ export default class SlideListNail2 extends React.Component {
               <div className={this.props.containerClass}>
                 <div className={`body-slide ${this.props.className}`}>
                   <Slider {...settingsBanner}>
-                    {arrBanner &&
-                      arrBanner.slice(0, 4).map((item, index) => (
+                    {arrBanner.map((item, index) => (
                         <PickerCardView
                           key={index}
                           data={{
-                            Thumbnail: item.source.Thumbnail,
-                            Title: item.source.Title,
-                            Desc: item.source.Desc,
-                            Content: item.source.Content,
+                            Thumbnail: item.FileName,
+                            Title: item.Title,
+                            Desc: item.Desc,
                           }}
                         >
                           {({ open }) => (
@@ -149,7 +146,7 @@ export default class SlideListNail2 extends React.Component {
                                   display: "block",
                                 }}
                                 src={toAbsoluteUrl(
-                                  "/Upload/image/" + item.source.Thumbnail
+                                  "/Upload/image/" + item.FileName
                                 )}
                                 alt={item.text}
                               />

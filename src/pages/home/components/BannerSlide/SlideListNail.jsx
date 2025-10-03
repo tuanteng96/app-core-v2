@@ -31,7 +31,9 @@ export default class SlideListNail extends React.Component {
     NewsDataService.getNewsIdCate(this.props.BannerID)
       .then(({ data }) => {
         this.setState({
-          arrBanner: data?.data ? data?.data.filter((x) => x.source.Status === "0") : [],
+          arrBanner: data?.data
+            ? data?.data.filter((x) => x.source.Status === "0").slice(0, 5)
+            : [],
           isLoading: false,
         });
       })
@@ -109,7 +111,7 @@ export default class SlideListNail extends React.Component {
       slidesToScroll: 1,
       autoplay: true,
       autoplaySpeed: this.props.autoplaySpeed,
-      adaptiveHeight: true,   
+      adaptiveHeight: true,
     };
     if (arrBanner && arrBanner.length === 0) {
       return <></>;
@@ -124,7 +126,7 @@ export default class SlideListNail extends React.Component {
                 <div className={`body-slide ${this.props.className}`}>
                   <Slider {...settingsBanner}>
                     {arrBanner &&
-                      arrBanner.slice(0, 4).map((item, index) => (
+                      arrBanner.map((item, index) => (
                         <PickerCardView
                           key={index}
                           data={{
