@@ -2,7 +2,7 @@ import React from "react";
 import { Page, Link, Navbar } from "framework7-react";
 import bgImage from "../../assets/images/headerbottombgapp.png";
 import IconChangePassword from "../../assets/images/edit-password.svg";
-import { getUser } from "../../constants/user";
+import { getUser, setUserLoginStorage } from "../../constants/user";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
 
@@ -67,24 +67,23 @@ export default class extends React.Component {
     if (isSubmit === true) {
       UserService.updatePassword(bodyData)
         .then((response) => {
-          setTimeout(() => {
-            self.$f7.preloader.hide();
-            if (response.data.error) {
-              toast.error(response.data.error, {
-                position: toast.POSITION.TOP_LEFT,
-                autoClose: 2000,
-              });
-              self.resetValue();
-            } else {
-              toast.success("Cập nhật mật khẩu mới công !", {
-                position: toast.POSITION.TOP_CENTER,
-                autoClose: 1000,
-              });
-              setUserLoginStorage(null, pwd);
-              self.resetValue();
-              self.$f7router.back();
-            }
-          }, 1000);
+          
+          self.$f7.preloader.hide();
+          if (response?.data?.data?.error) {
+            toast.error(response?.data?.data?.error, {
+              position: toast.POSITION.TOP_LEFT,
+              autoClose: 2000,
+            });
+            self.resetValue();
+          } else {
+            toast.success("Cập nhật mật khẩu mới công !", {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: 1000,
+            });
+            setUserLoginStorage(null, pwd);
+            self.resetValue();
+            self.$f7router.back();
+          }
         })
         .catch((err) => console.log(err));
     }

@@ -28,7 +28,7 @@ export default class SlideListNail extends React.Component {
   }
 
   getBanner = () => {
-    NewsDataService.getNewsIdCate(this.props.BannerID)
+    NewsDataService.getNewsIdCate(this.props.BannerID, true)
       .then(({ data }) => {
         this.setState({
           arrBanner: data?.data
@@ -134,6 +134,7 @@ export default class SlideListNail extends React.Component {
                             Title: item.source.Title,
                             Desc: item.source.Desc,
                             Content: item.source.Content,
+                            Photos: item?.source?.Photos || []
                           }}
                         >
                           {({ open }) => (

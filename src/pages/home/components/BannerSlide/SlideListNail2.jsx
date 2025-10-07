@@ -116,7 +116,7 @@ export default class SlideListNail2 extends React.Component {
     if (arrBanner && arrBanner.length === 0) {
       return <></>;
     }
-    console.log(arrBanner)
+    
     return (
       <React.Fragment>
         {!isLoading && (

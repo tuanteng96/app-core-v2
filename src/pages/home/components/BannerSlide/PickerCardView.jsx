@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { createPortal } from "react-dom";
-import { toAbsoluteUrl } from "../../../../constants/assetPath";
 import PickerConfirm from "../PickerConfirm";
 import { SERVER_APP } from "../../../../constants/config";
+import PhotosGallery from "./PhotosGallery";
 
 function PickerCardView({ children, data }) {
   const [visible, setVisible] = useState(false);
-  const [positon, setPosition] = useState(0);
 
   const close = () => {
     setVisible(false);
@@ -60,50 +59,9 @@ function PickerCardView({ children, data }) {
                     flexGrow: "1",
                     overflow: "auto",
                   }}
-                  onScroll={(e) => {
-                    setPosition(e.target.scrollTop);
-                  }}
                 >
-                  <div className="positon-relative">
-                    <img
-                      className="w-100"
-                      src={toAbsoluteUrl("/Upload/image/" + data?.Thumbnail)}
-                      alt={data.Title}
-                    />
-                    <div
-                      className="position-absolute right-0 top-0 text-white w-100 px-15px bz-bb d--f ai--c jc--sb"
-                      style={{
-                        background:
-                          positon > 0 ? "var(--ezs-color)" : "transparent",
-                        height: "48px",
-                        transition: "background .3s ease",
-                      }}
-                    >
-                      <div
-                        className="fw-500 text-truncate"
-                        style={{
-                          width: "80%",
-                          opacity: positon > 0 ? 1 : 0,
-                          visibility: positon > 0 ? "visible" : "hidden",
-                        }}
-                      >
-                        {data.Title}
-                      </div>
-                      <div onClick={close}>
-                        <i className="icon f7-icons">xmark_circle_fill</i>
-                      </div>
-                    </div>
-                  </div>
+                  <PhotosGallery Images={[data?.Thumbnail, ...data?.Photos]} />
                   <div className="p-15px">
-                    <div
-                      className="fw-500 mb-10px"
-                      style={{
-                        fontSize: "18px",
-                        color: "var(--ezs-color)",
-                      }}
-                    >
-                      {data.Title}
-                    </div>
                     <div
                       className="content_"
                       dangerouslySetInnerHTML={{
@@ -128,14 +86,61 @@ function PickerCardView({ children, data }) {
                     ></div>
                   </div>
                 </div>
-                <div className="p-15px">
-                  <div>
+                <div
+                  className="p-15px"
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "50px",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className="btn-submit-order btn-submit-order rounded"
+                      onClick={close}
+                      style={{
+                        background: "transparent",
+                        border: "1px solid #d3d3d3",
+                        minHeight: "48px",
+                        color: "#222",
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        style={{
+                          width: "24px",
+                        }}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15.75 19.5 8.25 12l7.5-7.5"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div
+                    style={{
+                      flexGrow: "1",
+                    }}
+                  >
                     <PickerConfirm initialValue={data}>
                       {({ open }) => (
                         <button
                           className="btn-submit-order btn-submit-order rounded"
                           type="submit"
                           onClick={open}
+                          style={{
+                            minHeight: "48px",
+                          }}
                         >
                           <span>Đặt lịch ngay</span>
                         </button>

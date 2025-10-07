@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { toAbsoluteUrl } from "../../../constants/assetPath";
 import { useMutation, useQuery } from "react-query";
 import NewsDataService from "../../../service/news.service";
@@ -48,37 +48,37 @@ function SpinnerLoading({ size = 80, color = "#fff" }) {
 
 function WinnerModal({ data, prize, onClose, params }) {
   useEffect(() => {
-  if (prize) {
-    // Tìm hoặc tạo canvas confetti
-    let canvas = document.querySelector("canvas.confetti-canvas");
-    if (!canvas) {
-      canvas = document.createElement("canvas");
-      canvas.className = "confetti-canvas";
-      canvas.style.position = "fixed";
-      canvas.style.top = "0";
-      canvas.style.left = "0";
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
-      canvas.style.pointerEvents = "none";
-      canvas.style.zIndex = "20000";
-      document.body.appendChild(canvas);
+    if (prize) {
+      // Tìm hoặc tạo canvas confetti
+      let canvas = document.querySelector("canvas.confetti-canvas");
+      if (!canvas) {
+        canvas = document.createElement("canvas");
+        canvas.className = "confetti-canvas";
+        canvas.style.position = "fixed";
+        canvas.style.top = "0";
+        canvas.style.left = "0";
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.pointerEvents = "none";
+        canvas.style.zIndex = "20000";
+        document.body.appendChild(canvas);
+      }
+
+      const myConfetti = confetti.create(canvas, { resize: true });
+
+      const interval = setInterval(() => {
+        myConfetti({
+          particleCount: 50,
+          startVelocity: 40,
+          spread: 70,
+          origin: { x: Math.random(), y: Math.random() - 0.2 },
+        });
+      }, 400); // mỗi 0.4s bắn 1 loạt
+
+      // cleanup khi prize thay đổi hoặc về null
+      return () => clearInterval(interval);
     }
-
-    const myConfetti = confetti.create(canvas, { resize: true });
-
-    const interval = setInterval(() => {
-      myConfetti({
-        particleCount: 50,
-        startVelocity: 40,
-        spread: 70,
-        origin: { x: Math.random(), y: Math.random() - 0.2 },
-      });
-    }, 400); // mỗi 0.4s bắn 1 loạt
-
-    // cleanup khi prize thay đổi hoặc về null
-    return () => clearInterval(interval);
-  }
-}, [prize]);
+  }, [prize]);
 
   return createPortal(
     <AnimatePresence>
@@ -291,10 +291,13 @@ function WinnerModal({ data, prize, onClose, params }) {
   );
 }
 
-function IframeWheel({ f7, params }) {
+const IframeWheel = forwardRef(({ f7, params }, ref) => {
   const [Rotate, setRotate] = useState(0);
   const [winnerPrize, setWinnerPrize] = useState(null);
 
+  const isShowingError = useRef(false);
+
+  const timeoutRef = useRef(null);
   const wheelRef = useRef(null);
   const audioRef = useRef(
     typeof Audio !== "undefined"
@@ -306,13 +309,6 @@ function IframeWheel({ f7, params }) {
   const winerSound = useRef(
     new Audio(toAbsoluteUrl("/brand/minigame/assets/mp3/fanfare-winner.mp3"))
   );
-
-  useEffect(() => {
-    // var $ = Dom7;
-    // if ($(".dialog-preloader").length === 0) {
-    //   f7.dialog.preloader("Đang tải vòng quay ... ");
-    // }
-  }, []);
 
   const { data, refetch, isLoading } = useQuery({
     queryKey: ["SpinJson"],
@@ -366,7 +362,14 @@ function IframeWheel({ f7, params }) {
     if (!data?.data) return;
 
     if (!data?.unlimitedTurns && data?.contact) {
-      toast.error("Bạn đã hết lượt quay.");
+      if (!isShowingError.current) {
+        isShowingError.current = true;
+        toast.error("Bạn đã hết lượt quay.", {
+          onClose: () => {
+            isShowingError.current = false;
+          },
+        });
+      }
       return;
     }
 
@@ -470,6 +473,28 @@ function IframeWheel({ f7, params }) {
       },
     });
   };
+
+  useImperativeHandle(ref, () => ({
+    onClose: () => {
+      
+      setWinnerPrize(null);
+
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+
+      if (winerSound.current) {
+        winerSound.current.pause();
+        winerSound.current.currentTime = 0;
+      }
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    },
+  }));
 
   return (
     <>
@@ -608,27 +633,6 @@ function IframeWheel({ f7, params }) {
       </div>
     </>
   );
-  // return (
-  //   <IframeComm
-  //     attributes={{
-  //       src: `${
-  //         window.SERVER || SERVER_APP
-  //       }/minigame/vong-quay-may-man?v=${new Date().valueOf()}&DepartmentID=${
-  //         params?.DepartmentID
-  //       }&EndDate=${params?.EndDate}`,
-  //       width: "100%",
-  //       height: "100%",
-  //       frameBorder: 0,
-  //       display: "block",
-  //     }}
-  //     postMessageData={JSON.stringify({
-  //       Info: getUser(),
-  //     })}
-  //     handleReady={() => {
-  //       f7.dialog.close();
-  //     }}
-  //   />
-  // );
-}
+});
 
 export default IframeWheel;

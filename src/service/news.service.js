@@ -13,8 +13,8 @@ class NewsDataService {
   get(id) {
     return http.get(`/tutorials/${id}`);
   }
-  getNewsIdCate(id) {
-    return http.get(`/api/gl/select2?cmd=art&includeSource=1&channels=${id}`);
+  getNewsIdCate(id, isPhoto = '') {
+    return http.get(`/api/gl/select2?cmd=art&includeSource=1&channels=${id}${isPhoto ? '&photo=1' : ''}`);
   }
   getNewsNameCate(id) {
     return http.get(

@@ -10,11 +10,11 @@ function CardImageGallery(props) {
   let { data } = useQuery({
     queryKey: ["CardImageGallery"],
     queryFn: async () => {
-      let { data } = await NewsDataService.getNewsIdCate(11608);
+      let { data } = await NewsDataService.getNewsIdCate(11608, true);
       return data?.data ? data?.data.filter(x => x.source.Status === "1") : [];
     },
   });
-
+  
   if (!data || data.length === 0) return <></>;
 
   return (

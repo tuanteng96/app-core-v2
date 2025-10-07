@@ -21,29 +21,12 @@ import {
   removeStockNameStorage,
   setUserLoginStorage,
   setUserStorage,
-  getUserLoginStorage,
 } from "../../constants/user";
 import ListService from "./components/Service/ListService";
-import SlideList from "../home/components/BannerSlide/SlideList";
-import SlideListCenter from "./components/BannerSlide/SlideListCenter";
-import ListImage from "../home/components/Customer/ListImage";
-// const ListImage = React.lazy(() =>
-//   import("../home/components/Customer/ListImage")
-// );
-import NewsList from "../home/components/news/NewsList";
-// const NewsList = React.lazy(() => import("../home/components/news/NewsList"));
-// const QuickAction = React.lazy(() => import("../../components/quickAction"));
 import QuickAction from "../../components/quickAction";
-// const ProductList = React.lazy(() =>
-//   import("../home/components/Product/ProductList")
-// );
-import ProductList from "../home/components/Product/ProductList";
 import ModalChangePWD from "../../components/ModalChangePWD";
-import ServiceHot2 from "./components/ServiceHot/ServiceHot2";
 import ServiceHot from "./components/ServiceHot/ServiceHot";
-import Reviews from "./components/Reviews/Reviews";
 import PopupImages from "./components/PopupImages";
-import ServiceHot3 from "./components/ServiceHot/ServiceHot3";
 import CardImageGallery from "./components/BannerSlide/CardImageGallery";
 import SlideListNail from "./components/BannerSlide/SlideListNail";
 import ServiceHot2Nail from "./components/ServiceHot/ServiceHot2Nail";

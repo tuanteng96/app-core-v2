@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "framework7-react";
 import { toAbsoluteUrl } from "../../../../constants/assetPath";
 import PickerConfirm from "../PickerConfirm";
 import { SERVER_APP } from "../../../../constants/config";
+import PhotosGallery from "./PhotosGallery";
 
 function PickerCardImageGallery({ children, data, index }) {
   let elSwiper = useRef();
@@ -35,9 +36,9 @@ function PickerCardImageGallery({ children, data, index }) {
         open: () => setVisible(true),
         close: close,
       })}
-      {visible &&
-        createPortal(
-          <AnimatePresence exitBeforeEnter>
+      {createPortal(
+        <AnimatePresence exitBeforeEnter>
+          {visible && (
             <motion.div
               className="position-fixed w-100 bottom-0 left-0 bg-white"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -75,71 +76,107 @@ function PickerCardImageGallery({ children, data, index }) {
                           flexDirection: "column",
                         }}
                       >
-                        <div className="positon-relative">
-                          <img
-                            className="w-100"
-                            src={toAbsoluteUrl(
-                              "/Upload/image/" + item.source.Thumbnail
-                            )}
-                            alt={item.source.Title}
-                          />
-                          <div
-                            className="position-absolute right-15px top-15px text-white"
-                            onClick={close}
-                          >
-                            <i className="icon f7-icons">xmark_circle_fill</i>
-                          </div>
-                        </div>
                         <div
-                          className="p-15px"
                           style={{
                             flexGrow: "1",
                             overflow: "auto",
                           }}
                         >
-                          <div
-                            className="fw-500 mb-10px"
-                            style={{
-                              fontSize: "18px",
-                              color: "var(--ezs-color)",
-                            }}
-                          >
-                            {item.source.Title}
-                          </div>
-                          <div
-                            className="content_"
-                            dangerouslySetInnerHTML={{
-                              __html: fixedContentDomain(item.source.Desc),
-                            }}
-                            style={{
-                              fontSize: "15px",
-                              lineHeight: "24px",
-                              color: "#3c3c3c",
-                            }}
-                          ></div>
-                          <div
-                            className="content_"
-                            dangerouslySetInnerHTML={{
-                              __html: fixedContentDomain(item.source.Content),
-                            }}
-                            style={{
-                              fontSize: "15px",
-                              lineHeight: "24px",
-                              color: "#3c3c3c",
-                            }}
-                          ></div>
-                          <div className="mt-15px">
-                            <PickerConfirm
-                              initialValue={{
-                                ...item,
-                                Title: item.source.Title,
+                          <PhotosGallery
+                            Images={[
+                              item.source?.Thumbnail,
+                              ...item.source?.Photos,
+                            ]}
+                          />
+                          <div className="p-15px">
+                            <div
+                              className="fw-500 mb-10px"
+                              style={{
+                                fontSize: "18px",
+                                color: "var(--ezs-color)",
                               }}
                             >
+                              {item.source.Title}
+                            </div>
+                            <div
+                              className="content_"
+                              dangerouslySetInnerHTML={{
+                                __html: fixedContentDomain(item.source.Desc),
+                              }}
+                              style={{
+                                fontSize: "15px",
+                                lineHeight: "24px",
+                                color: "#3c3c3c",
+                              }}
+                            ></div>
+                            <div
+                              className="content_"
+                              dangerouslySetInnerHTML={{
+                                __html: fixedContentDomain(item.source.Content),
+                              }}
+                              style={{
+                                fontSize: "15px",
+                                lineHeight: "24px",
+                                color: "#3c3c3c",
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div
+                          className="p-15px"
+                          style={{
+                            display: "flex",
+                            gap: "12px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "50px",
+                            }}
+                          >
+                            <button
+                              type="button"
+                              className="btn-submit-order btn-submit-order rounded"
+                              onClick={close}
+                              style={{
+                                background: "transparent",
+                                border: "1px solid #d3d3d3",
+                                minHeight: "48px",
+                                color: "#222",
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                style={{
+                                  width: "24px",
+                                }}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M15.75 19.5 8.25 12l7.5-7.5"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                          <div
+                            style={{
+                              flexGrow: "1",
+                            }}
+                          >
+                            <PickerConfirm initialValue={data}>
                               {({ open }) => (
                                 <button
                                   className="btn-submit-order btn-submit-order rounded"
                                   type="submit"
                                   onClick={open}
+                                  style={{
+                                    minHeight: "48px",
+                                  }}
                                 >
                                   <span>Đặt lịch ngay</span>
                                 </button>
@@ -152,9 +189,10 @@ function PickerCardImageGallery({ children, data, index }) {
                   ))}
               </Swiper>
             </motion.div>
-          </AnimatePresence>,
-          document.getElementById("framework7-root")
-        )}
+          )}
+        </AnimatePresence>,
+        document.getElementById("framework7-root")
+      )}
     </>
   );
 }
