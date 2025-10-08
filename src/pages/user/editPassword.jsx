@@ -69,8 +69,8 @@ export default class extends React.Component {
         .then((response) => {
           
           self.$f7.preloader.hide();
-          if (response?.data?.data?.error) {
-            toast.error(response?.data?.data?.error, {
+          if (response?.data?.data?.error || response?.data?.error) {
+            toast.error(response?.data?.data?.error || response?.data?.error || "Lỗi không xác định.", {
               position: toast.POSITION.TOP_LEFT,
               autoClose: 2000,
             });
