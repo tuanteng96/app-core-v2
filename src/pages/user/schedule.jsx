@@ -87,7 +87,7 @@ export default class extends React.Component {
           window?.GlobalConfig?.StocksNotBook &&
           window?.GlobalConfig?.StocksNotBook?.includes(getStockIDStorage())
             ? ""
-            : getNameStock() && getStockIDStorage() || '',
+            : (getNameStock() && getStockIDStorage()) || "",
         nameStock: getNameStock(),
         AtHome: false,
         time: "",
@@ -365,10 +365,22 @@ export default class extends React.Component {
           StockID: DateTimeBook.stock || 0,
           AtHome: DateTimeBook.AtHome,
           UserServiceIDs: StaffSelected ? StaffSelected.value : "",
+          InfoMore: {
+            Member: {
+              ID: infoUser.ID,
+              FullName: infoUser.FullName,
+              MobilePhone: infoUser.MobilePhone,
+            },
+            Roots: selectedService
+              ? selectedService.map((x) => ({
+                  ID: x.ID,
+                  Title: x.Title,
+                }))
+              : null,
+          },
         },
       ],
     };
-
     if (
       this.$f7route.params.ID &&
       Number(this.$f7route.params.ID) > 0 &&

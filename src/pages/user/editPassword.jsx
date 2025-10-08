@@ -76,7 +76,7 @@ export default class extends React.Component {
             });
             self.resetValue();
           } else {
-            toast.success("Cập nhật mật khẩu mới công !", {
+            toast.success("Cập nhật mật khẩu mới thành công !", {
               position: toast.POSITION.TOP_CENTER,
               autoClose: 1000,
             });
