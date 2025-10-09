@@ -25,6 +25,7 @@ import { OPEN_LINK } from "../../constants/prom21";
 import { toAbsoluteUrl } from "../../constants/assetPath";
 import { Swiper, SwiperSlide } from "framework7-react";
 import Slider from "react-slick";
+import moment from "moment";
 
 export default class extends React.Component {
   constructor() {
@@ -50,6 +51,8 @@ export default class extends React.Component {
       showPreloader: false,
       indexSlide: 0,
     };
+
+    this.toastRef = null;
   }
 
   getDetialProduct = async () => {
@@ -65,6 +68,25 @@ export default class extends React.Component {
       );
       const resultRes = result.data;
       const { images, combos } = resultRes;
+      let ProdAddMax = -1;
+      if (window?.GlobalConfig?.APP?.ProdAddMax && resultRes?.product) {
+        let index = window.GlobalConfig.APP.ProdAddMax.findIndex(
+          (x) => x.ID === resultRes.product.ID
+        );
+        if (index > -1) {
+          if (!infoUser) ProdAddMax = 0;
+          else {
+            if (infoUser.CreateDate) {
+              let days = moment().diff(moment(infoUser.CreateDate), "days");
+
+              ProdAddMax =
+                days <= window.GlobalConfig.APP.ProdAddMax[index].DaysCreated
+                  ? 0
+                  : window.GlobalConfig.APP.ProdAddMax[index].Qty;
+            }
+          }
+        }
+      }
 
       let ptotosNew = [];
       for (let photo in images) {
@@ -95,6 +117,7 @@ export default class extends React.Component {
           aff_value: resultRes.aff_value,
         },
         OriginalCurrent: combos && combos.length > 0 ? combos[0].Product : null,
+        ProdAddMax,
       });
       setViewed(resultRes.product);
     } catch (error) {
@@ -106,7 +129,24 @@ export default class extends React.Component {
     this.getDetialProduct();
   }
   openSheet = () => {
-    const { arrProduct, isOpenStock } = this.state;
+    const { arrProduct, isOpenStock, ProdAddMax } = this.state;
+
+    if (ProdAddMax === 0) {
+      if (!this.toastRef) {
+        this.toastRef = toast.error(
+          "Bạn không thể mua mặt hàng này do không đủ điều kiện mua.",
+          {
+            position: toast.POSITION.TOP_LEFT,
+            autoClose: 2500,
+            onClose: () => {
+              this.toastRef = null;
+            },
+          }
+        );
+      }
+      return;
+    }
+
     const getStock = getStockIDStorage();
     if (!getStock) {
       this.setState({
@@ -450,6 +490,7 @@ export default class extends React.Component {
       copied,
       OriginalCurrent,
       indexSlide,
+      ProdAddMax,
     } = this.state;
 
     const settings = {
@@ -466,7 +507,6 @@ export default class extends React.Component {
           indexSlide: next,
         });
       },
-
     };
     return (
       <Page
@@ -918,12 +958,18 @@ export default class extends React.Component {
                       type="number"
                       value={quantity}
                       onChange={this.handleChangeQty}
-                      readOnly={checkSLDisabled(arrProductCurrent?.ID).Disabled}
+                      readOnly={
+                        checkSLDisabled(arrProductCurrent?.ID).Disabled ||
+                        (ProdAddMax > 0 && quantity >= ProdAddMax)
+                      }
                     />
                     <button
                       className="increase"
                       onClick={this.IncrementItem}
-                      disabled={checkSLDisabled(arrProductCurrent?.ID).Disabled}
+                      disabled={
+                        checkSLDisabled(arrProductCurrent?.ID).Disabled ||
+                        (ProdAddMax > 0 && quantity >= ProdAddMax)
+                      }
                     >
                       +
                     </button>
@@ -1055,7 +1101,9 @@ export default class extends React.Component {
                   } ${
                     arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"
                   }`}
-                  onClick={() => this.openSheet()}
+                  onClick={() => {
+                    this.openSheet();
+                  }}
                 >
                   <span>Đặt hàng</span>
                   <div className="loading-icon">

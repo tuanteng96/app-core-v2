@@ -379,9 +379,7 @@ export default class extends React.Component {
     if (!window.VoucherInfo) {
       let { data: vouchers } = await userService.getVoucher(infoUser?.ID);
       contactMiniGame = vouchers?.data.contactMiniGame;
-      
-    }
-    else {
+    } else {
       contactMiniGame = window.VoucherInfo?.contactMiniGame;
       delete window.VoucherInfo;
     }
@@ -574,6 +572,29 @@ export default class extends React.Component {
     }, 600);
   }
 
+  checkMaxQty = (item) => {
+    if (window?.GlobalConfig?.APP?.ProdAddMax) {
+      const infoUser = getUser();
+      let index = window.GlobalConfig.APP.ProdAddMax.findIndex(
+        (x) => x.ID === item.ProdID
+      );
+
+      if (index > -1) {
+        if (infoUser?.CreateDate) {
+          let days = moment().diff(moment(infoUser.CreateDate), "days");
+
+          if (days <= window.GlobalConfig.APP.ProdAddMax[index].DaysCreated) {
+            return true;
+          }
+          else {
+            return item.Qty >= window.GlobalConfig.APP.ProdAddMax[index].Qty;
+          }
+        }
+      }
+    }
+    return false;
+  };
+
   render() {
     const {
       items,
@@ -702,10 +723,14 @@ export default class extends React.Component {
                               -
                             </button>
                             <div className="qty-form__count">{item.Qty}</div>
+
                             <button
                               className="increase"
                               onClick={() => this.IncrementItem(item.ID)}
-                              disabled={checkSLDisabled(item?.ProdID).Disabled}
+                              disabled={
+                                checkSLDisabled(item?.ProdID).Disabled ||
+                                this.checkMaxQty(item)
+                              }
                             >
                               +
                             </button>

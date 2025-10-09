@@ -85,7 +85,6 @@ export const setUserStorage = (token, user) => {
     [
       "AppInfo",
       "Auth2TokenIds",
-      "CreateDate",
       "Debug",
       "Friend",
       "StockInfo",
