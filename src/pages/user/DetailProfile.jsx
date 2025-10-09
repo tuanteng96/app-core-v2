@@ -90,7 +90,7 @@ export default class extends React.Component {
               localStorage.setItem("DOMAIN", CrDomain);
             }
 
-            window.UnSubscribe && window.UnSubscribe()
+            window.UnSubscribe && window.UnSubscribe();
 
             await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -107,6 +107,7 @@ export default class extends React.Component {
   };
 
   handleClickBirthday = (BirthDate) => {
+    if (window?.GlobalConfig?.APP?.DisabledEditBirth) return;
     if (!BirthDate) {
       this.setState({ isOpen: true });
     }
@@ -173,16 +174,16 @@ export default class extends React.Component {
               iOS() && REMOVE_BADGE();
 
               window.hasReport = false;
-              
+
               let CrDomain = localStorage.getItem("DOMAIN");
-              
+
               await localStorage.clear();
 
               if (CrDomain) {
                 localStorage.setItem("DOMAIN", CrDomain);
               }
-              
-              window.UnSubscribe && window.UnSubscribe()
+
+              window.UnSubscribe && window.UnSubscribe();
 
               await new Promise((resolve) => setTimeout(resolve, 100));
               f7.dialog.close();
