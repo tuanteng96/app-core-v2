@@ -73,16 +73,48 @@ export default class extends React.Component {
         let index = window.GlobalConfig.APP.ProdAddMax.findIndex(
           (x) => x.ID === resultRes.product.ID
         );
+
         if (index > -1) {
           if (!infoUser) ProdAddMax = 0;
           else {
             if (infoUser.CreateDate) {
               let days = moment().diff(moment(infoUser.CreateDate), "days");
+              if (
+                days > window.GlobalConfig.APP.ProdAddMax[index].DaysCreated
+              ) {
+                let order = await ShopDataService.getUpdateOrder({
+                  order: {
+                    ID: 0,
+                    SenderID: infoUser.ID,
+                    VCode: "",
+                  },
+                  addProps: "ProdTitle",
+                });
+                let { ID, Qty } = window.GlobalConfig.APP.ProdAddMax[index];
 
-              ProdAddMax =
-                days <= window.GlobalConfig.APP.ProdAddMax[index].DaysCreated
-                  ? 0
-                  : window.GlobalConfig.APP.ProdAddMax[index].Qty;
+                if (
+                  order?.data?.data?.items &&
+                  order?.data?.data?.items.length > 0
+                ) {
+                  let index = order.data.data.items.findIndex(
+                    (x) => x.ProdID === ID
+                  );
+                  if (index > -1) {
+                    if (order.data.data.items[index].Qty >= Qty) {
+                      ProdAddMax = 0;
+                    } else {
+                      ProdAddMax = Qty;
+                    }
+                  }
+                } else {
+                  ProdAddMax = Qty;
+                }
+              }
+
+              // ProdAddMax =
+              //   days <= window.GlobalConfig.APP.ProdAddMax[index].DaysCreated
+              //     ? 0
+              //     : window.GlobalConfig.APP.ProdAddMax[index].Qty;
             }
           }
         }
@@ -134,7 +166,7 @@ export default class extends React.Component {
     if (ProdAddMax === 0) {
       if (!this.toastRef) {
         this.toastRef = toast.error(
-          "Bạn không thể mua mặt hàng này do không đủ điều kiện mua.",
+          "Bạn không thể mua mặt hàng này do đã mua hoặc không đủ điều kiện mua.",
           {
             position: toast.POSITION.TOP_LEFT,
             autoClose: 2500,

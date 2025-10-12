@@ -1,5 +1,13 @@
 import React from "react";
-import { Page, Navbar, Link, Toolbar, Popup, Sheet } from "framework7-react";
+import {
+  Page,
+  Navbar,
+  Link,
+  Toolbar,
+  Popup,
+  Sheet,
+  f7,
+} from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import userService from "../../service/user.service";
 import ReactHtmlParser from "react-html-parser";
@@ -16,6 +24,7 @@ import moment from "moment";
 import "moment/locale/vi";
 import { SERVER_APP } from "../../constants/config";
 import { toAbsoluteUrl } from "../../constants/assetPath";
+import { AiOutlineClose } from "react-icons/ai";
 
 moment.locale("vi");
 
@@ -135,7 +144,6 @@ export default class extends React.Component {
   }
 
   onSubmit = (values) => {
-  
     const Id = this.$f7route.params.id;
     const { data } = this.state;
 
@@ -242,7 +250,10 @@ export default class extends React.Component {
 
   fixedContentDomain = (content) => {
     if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + (window.SERVER || SERVER_APP) + "/");
+    return content.replace(
+      /src=\"\//g,
+      'src="' + (window.SERVER || SERVER_APP) + "/"
+    );
   };
 
   formatHtmlString = (htmlString) => {
@@ -254,6 +265,28 @@ export default class extends React.Component {
       htmlString = htmlString.replace(oembedRegex, iframeElement);
     }
     return htmlString;
+  };
+
+  deleteNoti = () => {
+    const Id = this.$f7route.params.id;
+    f7.dialog.confirm("Bạn có chắc chắn muốn xóa thông báo này?", () => {
+      f7.dialog.preloader("Đang xóa...");
+      const data = new FormData();
+      data.append("ids", Id);
+      userService.deleteNotification(data)
+        .then((response) => {
+          f7.dialog.close();
+          window['getNotification'] && window['getNotification']();
+          if (response.data) {
+            toast.success(" Xóa thành công !", {
+              position: toast.POSITION.TOP_LEFT,
+              autoClose: 3000,
+            });
+            this.$f7router.back();
+          }
+        })
+        .catch((er) => console.log(er));
+    });
   };
 
   render() {
@@ -283,7 +316,14 @@ export default class extends React.Component {
               </span>
             </div>
 
-            <div className="page-navbar__noti"></div>
+            <div className="page-navbar__noti">
+              <Link
+                className="d--f ai--c jc--c"
+                onClick={() => this.deleteNoti()}
+              >
+                <i className="las la-trash"></i>
+              </Link>
+            </div>
           </div>
         </Navbar>
         <div className="page-render bg-white p-0">
@@ -404,7 +444,7 @@ export default class extends React.Component {
                                         border: "1px solid #ebebeb",
                                         borderRadius: "3px",
                                         display: "flex",
-                                        justifyContent: "space-between"
+                                        justifyContent: "space-between",
                                       }}
                                       onClick={() =>
                                         this.setState({ isOpen: true })
@@ -441,7 +481,7 @@ export default class extends React.Component {
                                   />
                                   <div className="sheet-pay-body__btn">
                                     <button
-                                      style={{borderRadius: "30px"}}
+                                      style={{ borderRadius: "30px" }}
                                       className={
                                         "page-btn-order btn-submit-order " +
                                         (btnLoading ? "loading" : "")

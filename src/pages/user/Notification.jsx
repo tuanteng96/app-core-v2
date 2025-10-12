@@ -34,6 +34,8 @@ export default class extends React.Component {
       isCheckAll: false,
       itemActions: null,
     };
+
+    window['getNotification'] = this.getNotification;
   }
   componentDidMount() {
     //SET_BADGE();
@@ -78,6 +80,9 @@ export default class extends React.Component {
       })
       .catch((er) => console.log(er));
   };
+
+  
+
   iconNoti = () => {
     return (
       <svg
@@ -310,7 +315,7 @@ export default class extends React.Component {
                             </div> */}
                           </div>
                           <Button
-                            onClick={() => this.setState({ itemActions: item })}
+                            onClick={() => this.handleDetail(item)}
                             className="action-open"
                           ></Button>
                         </div>
