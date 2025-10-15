@@ -41,7 +41,7 @@ class ShopDataService {
         return http.get(`/app/index.aspx?cmd=service_prodsid&token=${getToken()}&id=${id}&stockid=${stockid}`);
     }
     getSearchService(keys, cateId, stockid) {
-        return http.get(`/app/index.aspx?cmd=search_prods&token=${getToken()}&key=${keys}&cates=${cateId}&pi=1&ps=1000&stockid=${stockid}`);
+        return http.get(`/app/index.aspx?cmd=search_prods&token=${getToken()}&key=${keys}&cates=${cateId}&pi=1&ps=1000&stockid=${stockid}&hascombo=1`);
     }
     getProd() {
         return http.get(`/app/index.aspx?cmd=ProdService&token=${getToken()}`);
@@ -53,7 +53,7 @@ class ShopDataService {
         return http.get(`/api/v3/VoucherClient?cmd=precheck&token=${getToken()}&orderid=${data.orderId}&vcode=${data.vcode}`);
     }
     searchProd(data) {
-        return http.get(`/app/index.aspx?cmd=search_prods&token=${getToken()}&key=${data.key}&cates=&pi=1&ps=${data.count}&tags=&stockid=${data.stockid}`);
+        return http.get(`/app/index.aspx?cmd=search_prods&token=${getToken()}&key=${data.key}&cates=&pi=1&ps=${data.count}&tags=&stockid=${data.stockid}&hascombo=1`);
     }
 }
 
