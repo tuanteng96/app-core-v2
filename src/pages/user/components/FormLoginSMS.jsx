@@ -68,58 +68,99 @@ function FormLoginSMS({ f7, f7router }) {
       existPhoneMutation.mutate(
         { phone: values.phone },
         {
-          onSettled: (data) => {
-            if (data && data.length === 1) {
-              sendOTPMutation.mutate(
-                { phone: values.phone },
-                {
-                  onSettled: ({ data }) => {
-                    if (data.ID) {
-                      f7.dialog.close();
-                      new Promise((resolve, reject) => {
-                        open({ Phone: values.phone, resolve });
-                      }).then(({ login }) => {
-                        if (login) {
-                          f7.preloader.show();
-                          DeviceHelpers.get({
-                            success: ({ deviceId }) => {
-                              loginTokenMutation.mutate(
-                                { Token: login.token, deviceid: deviceId },
-                                {
-                                  onSettled: ({ data }) => {
-                                    if (data.error || data?.Status === -1) {
-                                      if (
-                                        data.error ===
-                                        "Thiết bị chưa được cấp phép"
-                                      ) {
-                                        f7.preloader.hide();
-                                        f7.dialog.alert(
-                                          "Tài khoản của bạn đang đăng nhập tại thiết bị khác."
-                                        );
-                                      } else {
-                                        toast.error(
-                                          data?.Status === -1
-                                            ? "Tài khoản của bạn đã bị vô hiệu hoá."
-                                            : data.error,
-                                          {
-                                            position: toast.POSITION.TOP_LEFT,
-                                            autoClose: 3000,
-                                          }
-                                        );
-                                        f7.preloader.hide();
-                                      }
+          onSettled: (rs) => {
+            if (rs && rs.length === 1) {
+              const MemberID = rs[0].id;
+              let TranOTP = {
+                TranOTP: {
+                  MemberID,
+                  IsNoti: false,
+                  IsZALOZNS: false,
+                  IsSMS: false,
+                },
+              };
+
+              if (
+                !window?.GlobalConfig?.SMSOTP_TYPE ||
+                window?.GlobalConfig?.SMSOTP_TYPE.toUpperCase() === "SMS"
+              ) {
+                TranOTP.TranOTP.IsSMS = true;
+              } else if (
+                window?.GlobalConfig?.SMSOTP_TYPE.toUpperCase() === "ZALO"
+              ) {
+                TranOTP.TranOTP.IsZALOZNS = true;
+              }
+
+              sendOTPMutation.mutate(TranOTP, {
+                onSuccess: ({ data }) => {
+                  f7.dialog.close();
+                  if (data?.error) {
+                    toast.error(data.error);
+                  } else {
+                    new Promise((resolve, reject) => {
+                      open({ Phone: values.phone, MemberID, resolve });
+                    }).then(({ login }) => {
+                      if (login) {
+                        f7.preloader.show();
+                        DeviceHelpers.get({
+                          success: ({ deviceId }) => {
+                            loginTokenMutation.mutate(
+                              { Token: login.token, deviceid: deviceId },
+                              {
+                                onSuccess: ({ data }) => {
+                                  if (data.error || data?.Status === -1) {
+                                    if (
+                                      data.error ===
+                                      "Thiết bị chưa được cấp phép"
+                                    ) {
+                                      f7.preloader.hide();
+                                      f7.dialog.alert(
+                                        "Tài khoản của bạn đang đăng nhập tại thiết bị khác."
+                                      );
                                     } else {
-                                      setUserStorage(login?.token, login);
-                                      login?.ByStockID &&
-                                        setStockIDStorage(login?.ByStockID);
-                                      login?.StockName &&
-                                        setStockNameStorage(login?.StockName);
-                                      SEND_TOKEN_FIREBASE().then(
-                                        async ({ error, Token }) => {
-                                          if (!error && Token) {
+                                      toast.error(
+                                        data?.Status === -1
+                                          ? "Tài khoản của bạn đã bị vô hiệu hoá."
+                                          : data.error,
+                                        {
+                                          position: toast.POSITION.TOP_LEFT,
+                                          autoClose: 3000,
+                                        }
+                                      );
+                                      f7.preloader.hide();
+                                    }
+                                  } else {
+                                    setUserStorage(login?.token, login);
+                                    login?.ByStockID &&
+                                      setStockIDStorage(login?.ByStockID);
+                                    login?.StockName &&
+                                      setStockNameStorage(login?.StockName);
+                                    SEND_TOKEN_FIREBASE().then(
+                                      async ({ error, Token }) => {
+                                        if (!error && Token) {
+                                          firebaseMutation.mutate(
+                                            {
+                                              Token: Token,
+                                              ID: login?.ID,
+                                              Type: login?.acc_type,
+                                            },
+                                            {
+                                              onSettled: () => {
+                                                f7.preloader.hide();
+                                                f7router.navigate("/", {
+                                                  animate: true,
+                                                  transition: "f7-flip",
+                                                });
+                                              },
+                                            }
+                                          );
+                                        } else {
+                                          setSubscribe(login, () => {
                                             firebaseMutation.mutate(
                                               {
-                                                Token: Token,
+                                                Token:
+                                                  f7?.device?.os ||
+                                                  "BROWSER_NOT_SPECIFIED",
                                                 ID: login?.ID,
                                                 Type: login?.acc_type,
                                               },
@@ -133,42 +174,23 @@ function FormLoginSMS({ f7, f7router }) {
                                                 },
                                               }
                                             );
-                                          } else {
-                                            setSubscribe(login, () => {
-                                              firebaseMutation.mutate(
-                                                {
-                                                  Token: f7?.device?.os || "BROWSER_NOT_SPECIFIED",
-                                                  ID: login?.ID,
-                                                  Type: login?.acc_type,
-                                                },
-                                                {
-                                                  onSettled: () => {
-                                                    f7.preloader.hide();
-                                                    f7router.navigate("/", {
-                                                      animate: true,
-                                                      transition: "f7-flip",
-                                                    });
-                                                  },
-                                                }
-                                              );
-                                            });
-                                          }
+                                          });
                                         }
-                                      );
-                                      localStorage.setItem("_Subscribe", true);
-                                      window.Subscribe && window.Subscribe();
-                                    }
-                                  },
-                                }
-                              );
-                            },
-                          });
-                        }
-                      });
-                    }
-                  },
-                }
-              );
+                                      }
+                                    );
+                                    localStorage.setItem("_Subscribe", true);
+                                    window.Subscribe && window.Subscribe();
+                                  }
+                                },
+                              }
+                            );
+                          },
+                        });
+                      }
+                    });
+                  }
+                },
+              });
             } else {
               f7.dialog.close();
               setFieldError("phone", "Số điện thoại chưa được đăng ký.");

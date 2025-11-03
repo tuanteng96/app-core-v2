@@ -238,10 +238,12 @@ class UserService {
     );
   }
   sendStringee(body) {
-    return http.post("/api/v3/Stringee24@send", JSON.stringify(body));
+    return http.post("/api/v3/TranOTP@Send", JSON.stringify(body));
+    //return http.post("/api/v3/Stringee24@send", JSON.stringify(body));
   }
   verifyStringee(body) {
-    return http.post("/api/v3/Stringee24@get", JSON.stringify(body));
+    return http.post("/api/v3/TranOTP@Verify", JSON.stringify(body));
+    //return http.post("/api/v3/Stringee24@get", JSON.stringify(body));
   }
   existPhone(phone) {
     return http.get(

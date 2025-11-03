@@ -81,21 +81,23 @@ function PickerVerify({ children, f7 }) {
   const onSubmit = (values) => {
     verifyOTPMutation.mutate(
       {
-        phone: values.Phone,
-        code: values.Code,
+        MemberID: values?.MemberID,
+        SecureCode: values.Code,
+        IncludeAuth: true,
       },
       {
         onSettled: (data) => {
-          if (!data.stringee) {
-            toast.error("Mã OTP không hợp lệ.", {
+          if (data?.error) {
+            toast.error(data?.error, {
               position: toast.POSITION.TOP_LEFT,
               autoClose: 3000,
             });
           } else {
             onClose();
+
             values.resolve({
-              login: data?.login || null,
-              code: values.Code
+              login: data?.authen || null,
+              code: values.Code,
             });
           }
         },
@@ -105,21 +107,42 @@ function PickerVerify({ children, f7 }) {
 
   const onResetOTP = (values) => {
     f7.dialog.preloader("Đang gửi OTP ...");
-    sendOTPMutation.mutate(
-      { phone: values.Phone },
-      {
-        onSuccess: ({ data }) => {
-          if (data.ID) {
-            f7.dialog.close();
-            toast.success("Gửi mã OTP thành công.", {
-              position: toast.POSITION.TOP_LEFT,
-              autoClose: 3000,
-            });
-            resetTimer();
-          }
-        },
-      }
-    );
+
+    let TranOTP = {
+      TranOTP: {
+        MemberID: values.MemberID,
+        IsNoti: false,
+        IsZALOZNS: false,
+        IsSMS: false,
+      },
+    };
+
+    if (
+      !window?.GlobalConfig?.SMSOTP_TYPE ||
+      window?.GlobalConfig?.SMSOTP_TYPE.toUpperCase() === "SMS"
+    ) {
+      TranOTP.TranOTP.IsSMS = true;
+    } else if (window?.GlobalConfig?.SMSOTP_TYPE.toUpperCase() === "ZALO") {
+      TranOTP.TranOTP.IsZALOZNS = true;
+    }
+
+    sendOTPMutation.mutate(TranOTP, {
+      onSuccess: ({ data }) => {
+        f7.dialog.close();
+        if (!data?.error) {
+          toast.success("Gửi mã OTP thành công.", {
+            position: toast.POSITION.TOP_LEFT,
+            autoClose: 3000,
+          });
+          resetTimer();
+        } else {
+          toast.error(data?.error, {
+            position: toast.POSITION.TOP_LEFT,
+            autoClose: 3000,
+          });
+        }
+      },
+    });
   };
 
   const onClose = () => {
@@ -133,6 +156,7 @@ function PickerVerify({ children, f7 }) {
       {children({
         open: (values, formikProps) => {
           setInitialValues({
+            MemberID: values.MemberID,
             Phone: values.Phone,
             resolve: values.resolve,
             Code: "",

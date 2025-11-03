@@ -91,48 +91,68 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
         existPhoneMutation.mutate(
           { phone: values.phone },
           {
-            onSettled: (data) => {
-              if (!data || data.length === 0) {
-                sendOTPMutation.mutate(
-                  { phone: values.phone },
-                  {
-                    onSettled: ({ data }) => {
-                      if (data.ID) {
-                        f7.dialog.close();
-                        new Promise((resolve, reject) => {
-                          open({ Phone: values.phone, resolve });
-                        }).then((result) => {
-                          f7.preloader.show();
-                          regMutation.mutate(
-                            { ...values, stockid: CrStocks },
-                            {
-                              onSettled: ({ data }) => {
-                                if (data.errors) {
-                                  toast.error(data.error, {
-                                    position: toast.POSITION.TOP_LEFT,
-                                    autoClose: 3000,
-                                  });
-                                  f7.preloader.hide();
-                                } else {
-                                  toast.success("Đăng ký thành công.", {
-                                    position: toast.POSITION.TOP_LEFT,
-                                    autoClose: 500,
-                                    onClose: () => {
-                                      onLogin({
-                                        username: values.phone,
-                                        password: values.password,
-                                      });
-                                    },
-                                  });
-                                }
-                              },
-                            }
-                          );
-                        });
-                      }
-                    },
-                  }
-                );
+            onSettled: (rs) => {
+              if (!rs || rs.length === 0) {
+                const MemberID = rs[0].id;
+                let TranOTP = {
+                  TranOTP: {
+                    MemberID,
+                    IsNoti: false,
+                    IsZALOZNS: false,
+                    IsSMS: false,
+                  },
+                };
+
+                if (
+                  !window?.GlobalConfig?.SMSOTP_TYPE ||
+                  window?.GlobalConfig?.SMSOTP_TYPE.toUpperCase() === "SMS"
+                ) {
+                  TranOTP.TranOTP.IsSMS = true;
+                } else if (
+                  window?.GlobalConfig?.SMSOTP_TYPE.toUpperCase() === "ZALO"
+                ) {
+                  TranOTP.TranOTP.IsZALOZNS = true;
+                }
+
+                sendOTPMutation.mutate(TranOTP, {
+                  onSuccess: ({ data }) => {
+                    f7.dialog.close();
+                    if (data?.error) {
+                      toast.error(data.error);
+                    } else {
+                      new Promise((resolve, reject) => {
+                        open({ Phone: values.phone, MemberID, resolve });
+                      }).then((result) => {
+                        f7.preloader.show();
+                        regMutation.mutate(
+                          { ...values, stockid: CrStocks },
+                          {
+                            onSuccess: ({ data }) => {
+                              if (data.errors) {
+                                toast.error(data.error, {
+                                  position: toast.POSITION.TOP_LEFT,
+                                  autoClose: 3000,
+                                });
+                                f7.preloader.hide();
+                              } else {
+                                toast.success("Đăng ký thành công.", {
+                                  position: toast.POSITION.TOP_LEFT,
+                                  autoClose: 500,
+                                  onClose: () => {
+                                    onLogin({
+                                      username: values.phone,
+                                      password: values.password,
+                                    });
+                                  },
+                                });
+                              }
+                            },
+                          }
+                        );
+                      });
+                    }
+                  },
+                });
               } else {
                 f7.dialog.close();
                 formikProps.setFieldError(
@@ -200,7 +220,6 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
                 data?.StockName && setStockNameStorage(data.StockName);
                 SEND_TOKEN_FIREBASE().then(async ({ error, Token }) => {
                   if (!error && Token) {
-                    
                     firebaseMutation.mutate(
                       {
                         Token: Token,

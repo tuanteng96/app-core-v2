@@ -5,6 +5,7 @@ import clsx from "clsx";
 import * as Yup from "yup";
 import UserService from "../../../service/user.service";
 import { useMutation } from "react-query";
+import { toast } from "react-toastify";
 
 const forgotSchema = Yup.object().shape({
   phone: Yup.string().required("Vui lòng nhập Số điện thoại hoặc Email."),
@@ -77,27 +78,53 @@ function FormForgotSMS({ f7, f7router }) {
       existPhoneMutation.mutate(
         { phone: values.phone },
         {
-          onSettled: (data) => {
-            if (data && data.length === 1) {
-              sendOTPMutation.mutate(
-                { phone: values.phone },
-                {
-                  onSettled: ({ data }) => {
-                    if (data.ID) {
+          onSuccess: (rs) => {
+            if (rs && rs.length === 1) {
+              const MemberID = rs[0].id;
+              let TranOTP = {
+                TranOTP: {
+                  MemberID,
+                  IsNoti: false,
+                  IsZALOZNS: false,
+                  IsSMS: false,
+                },
+              };
+
+              if (
+                !window?.GlobalConfig?.SMSOTP_TYPE ||
+                window?.GlobalConfig?.SMSOTP_TYPE.toUpperCase() === "SMS"
+              ) {
+                TranOTP.TranOTP.IsSMS = true;
+              } else if (
+                window?.GlobalConfig?.SMSOTP_TYPE.toUpperCase() === "ZALO"
+              ) {
+                TranOTP.TranOTP.IsZALOZNS = true;
+              }
+
+              sendOTPMutation.mutate(TranOTP, {
+                onSuccess: ({ data }) => {
+                  if (data?.error) {
+                    toast.error(data.error);
+                    f7.dialog.close();
+                  } else {
+                    new Promise((resolve, reject) => {
                       f7.dialog.close();
-                      new Promise((resolve, reject) => {
-                        open({ Phone: values.phone, resolve });
-                      }).then(({ login, code }) => {
-                        if ((login && code)) {
-                          f7router.navigate(
-                            `/forgot-change/?phone=${values.phone}&code=${code}`
-                          );
-                        }
+
+                      open({
+                        Phone: values.phone,
+                        MemberID: MemberID,
+                        resolve,
                       });
-                    }
-                  },
-                }
-              );
+                    }).then(({ login, code }) => {
+                      if (login && code) {
+                        f7router.navigate(
+                          `/forgot-change/?phone=${values.phone}&code=${code}`
+                        );
+                      }
+                    });
+                  }
+                },
+              });
             } else {
               f7.dialog.close();
               setFieldError("phone", "Số điện thoại chưa được đăng ký.");
@@ -129,9 +156,11 @@ function FormForgotSMS({ f7, f7router }) {
             } = formikProps;
 
             return (
-              <Form style={{
-                padding: "0 20px"
-              }}>
+              <Form
+                style={{
+                  padding: "0 20px",
+                }}
+              >
                 <div className="page-login__form-item">
                   <div className="position-relative">
                     <input
