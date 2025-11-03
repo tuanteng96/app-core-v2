@@ -33,18 +33,28 @@ export default class ServiceHot2 extends React.Component {
     });
   };
 
-  getServiceHot = () => {
-    NewsDataService.getBannerName(this.props.id)
-      .then((response) => {
-        const arrService = response.data.data;
-        this.setState({
-          arrService: arrService,
-          isLoading: false,
+  getServiceHot = async () => {
+    let arrService = [];
+
+    let minigame = await NewsDataService.getNewsIdCate("11609");
+    if (minigame && minigame?.data?.data?.length > 0) {
+      let [games] = minigame?.data?.data;
+      if (games?.source?.IsPublic) {
+        let split = games.text.split(";");
+        arrService.push({
+          ...games,
+          isMiniGame: true,
+          Title: split[0],
+          Desc: split.length > 1 ? split[1] : "",
         });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+      }
+    }
+    let response = await NewsDataService.getBannerName(this.props.id);
+    arrService = [...arrService, ...(response?.data?.data || [])];
+    this.setState({
+      arrService: arrService,
+      isLoading: false,
+    });
   };
   handleUrl = (item) => {
     const userCurent = getUser();
@@ -131,8 +141,15 @@ export default class ServiceHot2 extends React.Component {
   getRandomImage = () => {
     const { IconsRandom } = window.GlobalConfig?.APP;
     let newBgRandom = IconsRandom || [];
-    return toAbsoluteUrl(newBgRandom[Math.floor(Math.random() * newBgRandom.length)])
-  }
+    return toAbsoluteUrl(
+      newBgRandom[Math.floor(Math.random() * newBgRandom.length)]
+    );
+  };
+
+  stripHtml = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  };
 
   render() {
     const { arrService, isLoading, initialValues, show, btnLoading } =
@@ -155,74 +172,172 @@ export default class ServiceHot2 extends React.Component {
               <div className="rounded-lg overflow-hidden">
                 <Slider {...settingsNews}>
                   {arrService &&
-                    arrService.slice(0, 6).map((item, index) => (
-                      <Link
-                        className="service-hot2 d-block"
-                        key={index}
-                        style={this.handStyle()}
-                        onClick={() => this.handleUrl(item)}
-                      >
-                        <div
-                          className="bg"
-                          style={{
-                            background: this.getColor(index, arrService),
-                          }}
-                        ></div>
-                        <div
-                          className="d-flex position-absolute top-0 left-0 h-100 w-100"
-                          style={{ zIndex: 2 }}
-                        >
-                          <div
-                            className="p-15px"
-                            style={{
-                              aspectRatio: "1",
-                            }}
+                    arrService.slice(0, 6).map((item, index) => {
+                      if (item.isMiniGame) {
+                        return (
+                          <Link
+                            className="service-hot2 d-block"
+                            key={index}
+                            style={this.handStyle()}
+                            href={this.stripHtml(item.source.Desc)}
                           >
-                            <img
-                              className="w-100 h-100 object-cover rounded-lg"
-                              src={item.FileName ? toAbsoluteUrl(
-                                `/Upload/image/${item.FileName}`
-                              ) :  this.getRandomImage()}
-                              alt=""
-                            />
-                          </div>
-                          <div className="f--1 pt-15px pr-15px pb-15px d--f jc--c fd--c">
                             <div
-                              className="text-white fw-500 mb-2px"
+                              className="bg"
                               style={{
-                                fontSize: "18px",
-                              }}
-                            >
-                              {item.Title}
-                            </div>
-                            <div
-                              className="text-desc"
-                              dangerouslySetInnerHTML={{
-                                __html: item.Desc,
+                                background: this.getColor(index, arrService),
                               }}
                             ></div>
-                          </div>
-                          <div className="d--f px-15px">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="#fff"
+                            <div
+                              className="d-flex position-absolute top-0 left-0 h-100 w-100"
+                              style={{ zIndex: 2 }}
+                            >
+                              <div
+                                className="p-0"
+                                style={{
+                                  aspectRatio: "1",
+                                }}
+                              >
+                                <img
+                                  className="w-100 h-100 object-cover rounded-lg"
+                                  src={
+                                    item.source.Status === "1"
+                                      ? toAbsoluteUrl(
+                                          `/app2021/images/vongquay.gif`
+                                        )
+                                      : toAbsoluteUrl(
+                                          `/app2021/images/hopqua.gif`
+                                        )
+                                  }
+                                  alt=""
+                                />
+                              </div>
+
+                              <div
+                                className="f--1 pt-15px pr-15px pb-15px d--f jc--c fd--c"
+                                style={{
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                <div
+                                  className="text-white fw-500 mb-2px"
+                                  style={{
+                                    fontSize: "18px",
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                  }}
+                                >
+                                  {item?.text?.split(";")?.[0] || ""}
+                                </div>
+                                <div
+                                  style={{
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                  }}
+                                  className="text-desc"
+                                  dangerouslySetInnerHTML={{
+                                    __html: item?.text?.split(";")?.[1] || "",
+                                  }}
+                                ></div>
+                              </div>
+                              <div className="d--f px-15px">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="#fff"
+                                  style={{
+                                    width: "20px",
+                                  }}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          </Link>
+                        );
+                      }
+                      return (
+                        <Link
+                          className="service-hot2 d-block"
+                          key={index}
+                          style={this.handStyle()}
+                          onClick={() => this.handleUrl(item)}
+                        >
+                          <div
+                            className="bg"
+                            style={{
+                              background: this.getColor(index, arrService),
+                            }}
+                          ></div>
+                          <div
+                            className="d-flex position-absolute top-0 left-0 h-100 w-100"
+                            style={{ zIndex: 2 }}
+                          >
+                            <div
+                              className="p-15px"
                               style={{
-                                width: "20px",
+                                aspectRatio: "1",
                               }}
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                              <img
+                                className="w-100 h-100 object-cover rounded-lg"
+                                src={
+                                  item.FileName
+                                    ? toAbsoluteUrl(
+                                        `/Upload/image/${item.FileName}`
+                                      )
+                                    : this.getRandomImage()
+                                }
+                                alt=""
                               />
-                            </svg>
+                            </div>
+                            <div className="f--1 pt-15px pr-15px pb-15px d--f jc--c fd--c">
+                              <div
+                                className="text-white fw-500 mb-2px"
+                                style={{
+                                  fontSize: "18px",
+                                }}
+                              >
+                                {item.Title}
+                              </div>
+                              <div
+                                className="text-desc"
+                                dangerouslySetInnerHTML={{
+                                  __html: item.Desc,
+                                }}
+                              ></div>
+                            </div>
+                            <div className="d--f px-15px">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="#fff"
+                                style={{
+                                  width: "20px",
+                                }}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                                />
+                              </svg>
+                            </div>
                           </div>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      );
+                    })}
                 </Slider>
               </div>
             </div>
