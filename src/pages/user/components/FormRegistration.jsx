@@ -91,7 +91,7 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
         existPhoneMutation.mutate(
           { phone: values.phone },
           {
-            onSettled: (rs) => {
+            onSuccess: (rs) => {
               if (!rs || rs.length === 0) {
                 let TranOTP = {
                   TranOTP: {
