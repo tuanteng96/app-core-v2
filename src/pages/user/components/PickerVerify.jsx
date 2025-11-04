@@ -79,30 +79,32 @@ function PickerVerify({ children, f7 }) {
   });
 
   const onSubmit = (values) => {
-    verifyOTPMutation.mutate(
-      {
-        MemberID: values?.MemberID,
-        SecureCode: values.Code,
-        IncludeAuth: true,
-      },
-      {
-        onSettled: (data) => {
-          if (data?.error) {
-            toast.error(data?.error, {
-              position: toast.POSITION.TOP_LEFT,
-              autoClose: 3000,
-            });
-          } else {
-            onClose();
+    let newValues = {
+      SecureCode: values.Code,
+      IncludeAuth: values?.MemberID ? true : false,
+    };
+    if (values?.MemberID) {
+      newValues["MemberID"] = values?.MemberID;
+    } else {
+      newValues["Phone"] = values?.Phone;
+    }
+    verifyOTPMutation.mutate(newValues, {
+      onSettled: (data) => {
+        if (data?.error) {
+          toast.error(data?.error, {
+            position: toast.POSITION.TOP_LEFT,
+            autoClose: 3000,
+          });
+        } else {
+          onClose();
 
-            values.resolve({
-              login: data?.authen || null,
-              code: values.Code,
-            });
-          }
-        },
-      }
-    );
+          values.resolve({
+            login: data?.authen || null,
+            code: values.Code,
+          });
+        }
+      },
+    });
   };
 
   const onResetOTP = (values) => {
@@ -110,12 +112,17 @@ function PickerVerify({ children, f7 }) {
 
     let TranOTP = {
       TranOTP: {
-        MemberID: values.MemberID,
         IsNoti: false,
         IsZALOZNS: false,
         IsSMS: false,
       },
     };
+
+    if (values?.MemberID) {
+      TranOTP.TranOTP["MemberID"] = values.MemberID;
+    } else {
+      TranOTP["Phone"] = values.Phone;
+    }
 
     if (
       !window?.GlobalConfig?.SMSOTP_TYPE ||

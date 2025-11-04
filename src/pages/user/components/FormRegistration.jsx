@@ -93,14 +93,13 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
           {
             onSettled: (rs) => {
               if (!rs || rs.length === 0) {
-                const MemberID = rs[0].id;
                 let TranOTP = {
                   TranOTP: {
-                    MemberID,
                     IsNoti: false,
                     IsZALOZNS: false,
                     IsSMS: false,
                   },
+                  Phone: values.phone,
                 };
 
                 if (
@@ -121,7 +120,7 @@ function FormRegistration({ f7, f7router, openSelectStock }) {
                       toast.error(data.error);
                     } else {
                       new Promise((resolve, reject) => {
-                        open({ Phone: values.phone, MemberID, resolve });
+                        open({ Phone: values.phone, resolve });
                       }).then((result) => {
                         f7.preloader.show();
                         regMutation.mutate(
