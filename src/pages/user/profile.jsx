@@ -243,7 +243,7 @@ export default class extends React.Component {
             <div width="33">
               <Link noLinkClass href="/points-change/">
                 <div className="image">
-                  <img src={toAbsoluteUrl(imgPoint)} />
+                  <img src={toAbsoluteUrl("/app2021/images/point.png")} />
                 </div>
                 <span>Tích điểm</span>
               </Link>

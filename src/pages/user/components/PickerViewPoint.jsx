@@ -26,6 +26,7 @@ function PickerViewPoint({ children, data, disabled, refetch }) {
   const alertPoint = () => {
     f7.dialog
       .create({
+        cssClass: "dialog-alert-point",
         title: "Bạn đã đổi quà thành công.",
         buttons: [
           {

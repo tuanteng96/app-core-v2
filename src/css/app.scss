@@ -942,3 +942,15 @@ $size: 150px;
     animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   }
 }
+
+.dialog-alert-point {
+    .dialog-buttons {
+        .dialog-button-apply {
+            flex: 1;
+        }
+        .dialog-button-cancel {
+            width: 100px;
+            color: $color-danger;
+        }
+    }
+}

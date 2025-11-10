@@ -124,7 +124,11 @@ export default class extends React.Component {
                 fontSize: "15px",
               }}
             >
-              <div>Tổng điểm tích luỹ <span className="text-primary fw-500">{TotalPoint || 0}</span> điểm</div>
+              <div>
+                Tổng điểm tích luỹ{" "}
+                <span className="text-primary fw-500">{TotalPoint || 0}</span>{" "}
+                điểm
+              </div>
               <div>
                 <Link href="/points/" className="text-primary" noLinkClass>
                   Xem chi tiết
