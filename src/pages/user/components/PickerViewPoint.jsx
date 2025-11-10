@@ -26,10 +26,10 @@ function PickerViewPoint({ children, data, disabled, refetch }) {
   const alertPoint = () => {
     f7.dialog
       .create({
-        title: "Đổi mã giảm giá thành công.",
+        title: "Bạn đã đổi quà thành công.",
         buttons: [
           {
-            text: "Mã giảm giá",
+            text: "Quản lý Voucher",
             cssClass: "dialog-button-apply",
             onClick: function () {
               close();
@@ -292,7 +292,7 @@ function PickerViewPoint({ children, data, disabled, refetch }) {
                       }}
                       disabled={disabled}
                     >
-                      <span>{disabled ? "Không đủ điểm" : "Đổi Voucher"}</span>
+                      <span>{disabled ? "Không đủ điểm" : "Đổi Quà"}</span>
                     </button>
                   </div>
                 </div>

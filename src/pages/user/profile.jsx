@@ -241,7 +241,7 @@ export default class extends React.Component {
               </Link>
             </div>
             <div width="33">
-              <Link noLinkClass href="/points/">
+              <Link noLinkClass href="/points-change/">
                 <div className="image">
                   <img src={toAbsoluteUrl(imgPoint)} />
                 </div>

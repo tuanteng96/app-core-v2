@@ -99,7 +99,7 @@ export default class extends React.Component {
         infinitePreloader={showPreloader}
         onInfinite={() => this.loadMore()}
         onPtrRefresh={this.loadRefresh.bind(this)}
-        //noToolbar
+        noToolbar
       >
         <Navbar>
           <div className="page-navbar">
@@ -169,7 +169,7 @@ export default class extends React.Component {
             </>
           )}
         </div>
-        <Toolbar tabbar position="bottom">
+        {/* <Toolbar tabbar position="bottom">
           <Link
             noLinkClass
             href="/points-change/"
@@ -180,7 +180,7 @@ export default class extends React.Component {
           >
             Quy đổi tích điểm
           </Link>
-        </Toolbar>
+        </Toolbar> */}
       </Page>
     );
   }

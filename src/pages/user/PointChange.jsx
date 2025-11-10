@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, Link, Toolbar, Navbar } from "framework7-react";
+import { Page, Link, Toolbar, Navbar, Subnavbar } from "framework7-react";
 import PageNoData from "../../components/PageNoData";
 import UserService from "../../service/user.service";
 import { getUser } from "../../constants/user";
@@ -114,11 +114,24 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">
-                Quy đổi tích điểm ({TotalPoint || 0} điểm)
-              </span>
+              <span className="title">Tích điểm đổi quà</span>
             </div>
           </div>
+          <Subnavbar className="sub-nav-bar">
+            <div
+              className="w-100 d--f jc--sb ai--c px-15px"
+              style={{
+                fontSize: "15px",
+              }}
+            >
+              <div>Tổng điểm tích luỹ <span className="text-primary fw-500">{TotalPoint || 0}</span> điểm</div>
+              <div>
+                <Link href="/points/" className="text-primary" noLinkClass>
+                  Xem chi tiết
+                </Link>
+              </div>
+            </div>
+          </Subnavbar>
         </Navbar>
         <div>
           {!isLoading && (
