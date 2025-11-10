@@ -76,6 +76,7 @@ import layoutSuccess from "../pages/user/layoutSuccess.jsx";
 import HistoryServicePage from "../pages/user/HistoryService.jsx";
 import AffPage from "../pages/user/Aff.jsx";
 import PointPage from "../pages/user/Point.jsx";
+import PointChangePage from "../pages/user/PointChange.jsx";
 import ScheduleClassPage from "../pages/ScheduleClass/index.jsx";
 import SheduleClassListPage from "../pages/ScheduleClass/SheduleClassList.jsx";
 import AdminOtpPage from "../pages/admin/AdminOtp.jsx";
@@ -171,7 +172,8 @@ var routes = [
   },
   {
     path: "/news/",
-    asyncComponent: () => window?.GlobalConfig?.APP?.Home?.Slidernail ? HomeNail : HomeIndex,
+    asyncComponent: () =>
+      window?.GlobalConfig?.APP?.Home?.Slidernail ? HomeNail : HomeIndex,
     options: {
       transition: "f7-cover",
     },
@@ -438,8 +440,20 @@ var routes = [
     asyncComponent: () => AffPage,
   },
   {
-    path: "/points/", // Mã giảm giá
+    path: "/points/", // Tích điểm
     asyncComponent: () => PointPage,
+    beforeEnter: checkAuth,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  {
+    path: "/points-change/", // Đổi điểm
+    asyncComponent: () => PointChangePage,
+    beforeEnter: checkAuth,
+    options: {
+      transition: "f7-cover",
+    },
   },
   {
     path: "/wallet/", // Ví điện tử

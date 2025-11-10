@@ -8,6 +8,7 @@ import NotificationIcon from "../../components/NotificationIcon";
 import NewsDataService from "../../service/news.service";
 import { iOS } from "../../constants/helpers";
 import { OPEN_LINK } from "../../constants/prom21";
+import { convertGoogleEmbedToPlaceUrl } from "../../constants/format";
 
 export default class extends React.Component {
   constructor() {
@@ -92,9 +93,9 @@ export default class extends React.Component {
 
   openMaps = (item) => {
     OPEN_LINK(
-      `https://www.google.com/maps/dir/?api=1&destination=${item?.Desc.split(
-        " "
-      ).join("+")}`
+      `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+        item?.Desc
+      )}`
     );
   };
 
@@ -182,9 +183,9 @@ export default class extends React.Component {
                             {iOS() ? (
                               <Link
                                 external
-                                href={`https://www.google.com/maps/dir/?api=1&destination=${item?.Desc.split(
-                                  " "
-                                ).join("+")}`}
+                                href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                                  item?.Desc
+                                )}`}
                                 noLinkClass
                               >
                                 <i className="las la-location-arrow"></i>

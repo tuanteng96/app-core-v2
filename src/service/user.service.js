@@ -166,7 +166,7 @@ class UserService {
     return http.get(
       `/api/v3/noti2?cmd=nextoffset&acctype=${acctype}&accid=${accid}&offset=${offset}&next=${next}${
         refresh ? "&refresh=1" : ""
-      }${reload? "&reload=1" : ""}&token=${localStorage.getItem("token")}`,
+      }${reload ? "&reload=1" : ""}&token=${localStorage.getItem("token")}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -188,11 +188,15 @@ class UserService {
     );
   }
   deleteNotification(data) {
-    return http.post(`/api/v3/noti2/?cmd=clear2&token=${localStorage.getItem("token")}`, data, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    return http.post(
+      `/api/v3/noti2/?cmd=clear2&token=${localStorage.getItem("token")}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
   }
   readedNotification(data) {
     return http.post(`/api/v3/noti2/?cmd=readed2`, data, {
@@ -260,6 +264,12 @@ class UserService {
   }
   getCoach(body) {
     return http.post(`/api/v3/User24@Get`, JSON.stringify(body));
+  }
+  getPointsVoucher(body) {
+    return http.post(`/api/v4/gift@get`, JSON.stringify(body));
+  }
+  changePointVoucher(body) {
+    return http.post(`/api/v4/gift@swap`, JSON.stringify(body));
   }
 }
 

@@ -55,7 +55,7 @@ export default class extends React.Component {
           filter: filters,
           Total: data?.Total,
           showPreloader: false,
-          TotalPoint: data?.TotalPoint
+          TotalPoint: data?.TotalPoint,
         });
       })
       .catch((er) => console.log(er));
@@ -99,7 +99,7 @@ export default class extends React.Component {
         infinitePreloader={showPreloader}
         onInfinite={() => this.loadMore()}
         onPtrRefresh={this.loadRefresh.bind(this)}
-        noToolbar
+        //noToolbar
       >
         <Navbar>
           <div className="page-navbar">
@@ -109,7 +109,9 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Tích điểm ({this.state.TotalPoint} điểm)</span>
+              <span className="title">
+                Tích điểm ({this.state.TotalPoint} điểm)
+              </span>
             </div>
           </div>
         </Navbar>
@@ -167,6 +169,18 @@ export default class extends React.Component {
             </>
           )}
         </div>
+        <Toolbar tabbar position="bottom">
+          <Link
+            noLinkClass
+            href="/points-change/"
+            className="text-center w-100 text-primary fw-500"
+            style={{
+              fontSize: "15px",
+            }}
+          >
+            Quy đổi tích điểm
+          </Link>
+        </Toolbar>
       </Page>
     );
   }
