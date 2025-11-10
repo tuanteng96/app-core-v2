@@ -26,8 +26,7 @@ function PickerViewPoint({ children, data, disabled, refetch }) {
   const alertPoint = () => {
     f7.dialog
       .create({
-        title: "Xác nhận Voucher",
-        text: "Bạn có muốn áp dụng voucher này không?",
+        title: "Đổi mã giảm giá thành công.",
         buttons: [
           {
             text: "Mã giảm giá",
@@ -87,13 +86,13 @@ function PickerViewPoint({ children, data, disabled, refetch }) {
                   () => {
                     f7.dialog.close();
                     close();
-                    toast.success("Đổi voucher thành công");
+                    alertPoint();
                   }
                 );
               } else {
                 f7.dialog.close();
                 close();
-                toast.success("Đổi voucher thành công");
+                alertPoint();
               }
             } else {
               toast.error(rs?.data?.error || "Đổi voucher không thành công");
@@ -139,7 +138,6 @@ function PickerViewPoint({ children, data, disabled, refetch }) {
                 style={{
                   flexDirection: "column",
                 }}
-                onClick={alertPoint}
               >
                 <div
                   style={{
