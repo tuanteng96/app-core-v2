@@ -111,7 +111,6 @@ const checkRouterHome = () => {
     if (window?.GlobalConfig?.APP?.Home?.Slidernail) {
       return HomeNail;
     }
-    return HistoryServicePage
     return HomeIndex;
   }
 
