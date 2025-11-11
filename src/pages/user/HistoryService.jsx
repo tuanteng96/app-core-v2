@@ -1,5 +1,12 @@
 import React from "react";
-import { Page, Link, Navbar, Toolbar, PhotoBrowser } from "framework7-react";
+import {
+  Page,
+  Link,
+  Navbar,
+  Toolbar,
+  PhotoBrowser,
+  f7,
+} from "framework7-react";
 import moment from "moment";
 import "moment/locale/vi";
 import Dom7 from "dom7";
@@ -8,6 +15,9 @@ import userService from "../../service/user.service";
 import clsx from "clsx";
 import PageNoData from "../../components/PageNoData";
 import Skeleton from "react-loading-skeleton";
+import staffService from "../../service/staff.service";
+import { toAbsoluteUrl } from "../../constants/assetPath";
+import { OPEN_LINK } from "../../constants/prom21";
 moment.locale("vi");
 
 export default class extends React.Component {
@@ -87,6 +97,77 @@ export default class extends React.Component {
     });
   };
 
+  getImagesOs = async (osid) => {
+    f7.dialog.preloader("Đang tải ảnh ...");
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    staffService.getImageStaff2({ osid: osid }).then(({ data }) => {
+      f7.dialog.close();
+      let images = data?.data?.list || [];
+
+      images = images
+        .filter((x) => x.IsPublic)
+        .map((item) => ({
+          src: toAbsoluteUrl("/Upload/image/" + item?.Src),
+          thumbSrc: toAbsoluteUrl("/Upload/image/" + item?.Src),
+        }));
+
+      if (!Array.isArray(images) || images.length === 0) {
+        f7.dialog.alert("Không có hình ảnh để hiển thị!");
+        return;
+      }
+
+      Fancybox.show(images, {
+        Carousel: {
+          Toolbar: {
+            items: {
+              downloadImage: {
+                tpl: '<button class="f-button"><svg tabindex="-1" width="24" height="24" viewBox="0 0 24 24"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M7 11l5 5 5-5M12 4v12"></path></svg></button>',
+                click: (carouselInstance, event) => {
+                  try {
+                    const currentIndex = carouselInstance.getPageIndex();
+
+                    const current = images?.[currentIndex];
+
+                    const url =
+                      current?.src ||
+                      current?.downloadSrc ||
+                      current?.thumbSrc ||
+                      "";
+                    if (url) {
+                      OPEN_LINK(url);
+                    } else {
+                      console.warn("Không tìm thấy URL ảnh hiện tại.");
+                    }
+                  } catch (err) {
+                    console.error("Lỗi lấy slide hiện tại:", err);
+                  }
+                },
+              },
+            },
+            display: {
+              left: ["counter"],
+              middle: [
+                "zoomIn",
+                "zoomOut",
+                // "toggle1to1",
+                "rotateCCW",
+                "rotateCW",
+                // "flipX",
+                // "flipY",
+              ],
+              right: [
+                "downloadImage",
+                //"thumbs",
+                "close",
+              ],
+            },
+          },
+        },
+        startIndex: 0, //index
+      });
+    });
+  };
+
   loadMore(done) {
     const self = this;
     self.getHistory(() => done());
@@ -158,11 +239,22 @@ export default class extends React.Component {
                             className="bg-white p-12px rounded mb-12px"
                             key={idx}
                           >
-                            <div className="font-medium text-muted mb-5px">
-                              {moment(k.BookDate).format("HH:mm")}
+                            <div className="d--f jc--sb mb-8px">
+                              <div className="font-medium text-muted">
+                                {moment(k.BookDate).format("HH:mm")}
+                              </div>
+                              {window.GlobalConfig?.APP?.Services
+                                ?.EnableImageHistoryService && (
+                                <div
+                                  className="text-primary"
+                                  onClick={() => this.getImagesOs(k.ID)}
+                                >
+                                  Hình ảnh liệu trình
+                                </div>
+                              )}
                             </div>
                             <div className="zoom text-sm">
-                              <div className="text-[#3f4254] mb-3px">
+                              <div className="text-[#3f4254] mb-3px fw-500">
                                 {k.ProdTitle}{" "}
                               </div>
                               <div className="text-muted">
@@ -192,16 +284,6 @@ export default class extends React.Component {
                                       <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                                     </svg>
                                   ))}
-
-                                  <div className="ml-2px text-[13px] text-gray-500">
-                                    {k.Rate}
-                                  </div>
-                                  <div className="ml-2px text-[13px] text-gray-500">
-                                    trên
-                                  </div>
-                                  <div className="ml-2px text-[13px] text-gray-500">
-                                    5
-                                  </div>
                                 </div>
                                 {k.RateNote && (
                                   <div className="text-muted text-[13px] mt-5px">

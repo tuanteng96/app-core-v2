@@ -38,6 +38,9 @@ class StaffService {
   getImageStaff(osid) {
     return http.get(`/api/v3/orderservice?cmd=attachment&osid=${osid}`);
   }
+  getImageStaff2(data) {
+    return http.post(`/api/v3/OrderService?cmd=attachmentList`, JSON.stringify(data));
+  }
   uploadImageStaff(file) {
     return http.post(`/api/v3/file?cmd=upload&token=${getToken()}`, file);
   }
