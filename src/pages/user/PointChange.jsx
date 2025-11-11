@@ -174,7 +174,7 @@ export default class extends React.Component {
                             >
                               <img
                                 style={{
-                                  aspectRatio: "1",
+                                  //aspectRatio: "1",
                                   objectFit: "cover",
                                   borderRadius: "8px",
                                 }}

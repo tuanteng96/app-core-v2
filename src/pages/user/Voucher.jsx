@@ -251,14 +251,24 @@ export default class extends React.Component {
                                     window?.GlobalConfig?.APP
                                       ?.notFilterVoucher && "no-filter"
                                   )}
-                                  src={toAbsoluteUrl("/app/images/logo-app.png")}
+                                  src={toAbsoluteUrl(
+                                    "/app/images/logo-app.png"
+                                  )}
                                 />
                               </div>
                               <div className="voucher-icon__line"></div>
                             </div>
                             <div className="voucher-text">
                               <div className="code">
-                                <span>Mã</span>
+                                {item?.Voucher?.Title &&
+                                item?.Voucher?.Title.toUpperCase().indexOf(
+                                  "ĐỔI QUÀ"
+                                ) > -1 ? (
+                                  <span>Đổi Quà</span>
+                                ) : (
+                                  <span>Mã</span>
+                                )}
+
                                 <span>{item.ma}</span>
                               </div>
                               <div className="voucher-value">
