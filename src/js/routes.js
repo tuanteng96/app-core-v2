@@ -84,6 +84,7 @@ import ReportSuckMilkPage from "../pages/report-suck-milk/index.jsx";
 import ReportSuckMilkPage2 from "../pages/report-suck-milk/index2.jsx";
 import SuckMilkChartPage from "../pages/report-suck-milk/SuckMilkChart.jsx";
 import SuckMilkChartPage2 from "../pages/report-suck-milk/SuckMilkChart2.jsx";
+import MemberGroupsPage from "../pages/user/MemberGroups.jsx";
 
 function checkAuth(to, from, resolve, reject) {
   var router = this;
@@ -111,6 +112,7 @@ const checkRouterHome = () => {
     if (window?.GlobalConfig?.APP?.Home?.Slidernail) {
       return HomeNail;
     }
+    
     return HomeIndex;
   }
 
@@ -163,6 +165,14 @@ var routes = [
   {
     path: "/lich-su-dich-vu/",
     asyncComponent: () => HistoryServicePage,
+    beforeEnter: checkAuth,
+    options: {
+      transition: "f7-cover",
+    },
+  },
+  {
+    path: "/member-groups/",
+    asyncComponent: () => MemberGroupsPage,
     beforeEnter: checkAuth,
     options: {
       transition: "f7-cover",

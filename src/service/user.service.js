@@ -271,6 +271,11 @@ class UserService {
   changePointVoucher(body) {
     return http.post(`/api/v4/gift@swap`, JSON.stringify(body));
   }
+  getMemberGroups(body) {
+    return http.get(
+      `api/v3/membergroup?${new URLSearchParams(body).toString()}`
+    );
+  }
 }
 
 export default new UserService();
