@@ -134,13 +134,13 @@ export default class extends React.Component {
           item.Role === "thumb" ||
           item.Role === "opt_thumb"
       );
-
+      
       this.setState({
         arrProductCurrent: resultRes.product,
         arrProduct: resultRes.product,
         arrRelProds: resultRes.product.RelProds,
         photos: ptotosNew,
-        arrOptions: resultRes?.options2 || [],
+        arrOptions: resultRes?.options2 ? resultRes?.options2.sort((a,b) => (a?.JoinOrder || 0) - (b?.JoinOrder || 0)) : [],
         arrCombos: resultRes.combos,
         statusLoading: false,
         aff: {
