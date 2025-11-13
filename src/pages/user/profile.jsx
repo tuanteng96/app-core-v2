@@ -72,37 +72,30 @@ export default class extends React.Component {
               ToPay = Number(data.Present.cashSum[0].Payed || 0);
             }
 
-            let newMemberGroups = [
-              ...(MemberGroups?.data?.data?.list || []),
-            ].sort((a, b) => Number(a.Point) - Number(b.Point));
+            if (data.acc_group && Number(data.acc_group) > 0) {
+              let newMemberGroups = [
+                ...(MemberGroups?.data?.data?.list || []),
+              ].sort((a, b) => Number(a.Point) - Number(b.Point));
 
-            let currentGroup = null;
-            let nextGroup = null;
+              let currentGroup = newMemberGroups.find(
+                (item) => Number(item.ID) === Number(data.acc_group)
+              );
 
-            for (let i = 0; i < newMemberGroups.length; i++) {
-              const cur = newMemberGroups[i];
-              const next = newMemberGroups[i + 1];
+              if (currentGroup) {
+                let nextGroup = newMemberGroups.find(
+                  (item) => Number(item.Point) > Number(currentGroup.Point)
+                );
 
-              if (ToPay >= cur.Point && (!next || ToPay < next.Point)) {
-                currentGroup = cur;
-                nextGroup = next || null;
-                break;
+                if (nextGroup) {
+                  groupTitles = `Chi tiêu thêm <span class="text-danger fw-600">${formatPriceVietnamese(
+                    nextGroup.Point - ToPay
+                  )} <span class="fw-500">đ</span></span> </br> để đạt cấp <span class="fw-500">${
+                    nextGroup.Title
+                  }</span>.`;
+                } else {
+                  groupTitles = `Bạn đã đạt cấp <span class="fw-500">${currentGroup.Title}</span>.`;
+                }
               }
-            }
-
-            if (!currentGroup && ToPay < newMemberGroups[0].Point) {
-              currentGroup = newMemberGroups[0];
-              nextGroup = newMemberGroups[1] || null;
-            }
-
-            if (nextGroup) {
-              groupTitles = `Chi tiêu thêm <span class="text-danger fw-600">${formatPriceVietnamese(
-                nextGroup.Point - ToPay
-              )} <span class="fw-500">đ</span></span> </br> để đạt cấp <span class="fw-500">${
-                nextGroup.Title
-              }</span>.`;
-            } else {
-              groupTitles = `Bạn đã đạt cấp <span class="fw-500">${currentGroup.Title}</span>.`;
             }
           }
 

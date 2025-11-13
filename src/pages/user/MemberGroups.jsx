@@ -55,38 +55,28 @@ export default class extends React.Component {
             (a, b) => Number(a.Point) - Number(b.Point)
           );
 
-          let currentIndex = -1;
+          let currentIndex = newData.findIndex(
+            (item) => Number(item.ID) === Number(Info.acc_group)
+          );
 
-          if (Point < newData[0].Point) {
-            currentIndex = -1;
-          } else {
-            for (let i = 0; i < newData.length; i++) {
-              if (
-                Point >= newData[i].Point &&
-                (!newData[i + 1] || Point < newData[i + 1].Point)
-              ) {
-                currentIndex = i;
-                break;
+          rs = newData
+            .map((item, i) => {
+              let status = "none";
+              let need = 0;
+
+              if (currentIndex === -1 && i === 0) {
+                status = "next";
+                need = item.Point - Point;
+              } else if (i === currentIndex) {
+                status = "current";
+              } else if (i === currentIndex + 1) {
+                status = "next";
+                need = item.Point - Point;
               }
-            }
-          }
 
-          rs = newData.map((item, i) => {
-            let status = "none";
-            let need = 0;
-
-            if (currentIndex === -1 && i === 0) {
-              status = "next";
-              need = item.Point - Point;
-            } else if (i === currentIndex) {
-              status = "current";
-            } else if (i === currentIndex + 1) {
-              status = "next";
-              need = item.Point - Point;
-            }
-
-            return { ...item, status, need };
-          });
+              return { ...item, status, need };
+            })
+            .filter((_, i) => i >= currentIndex);
         }
 
         this.setState(
@@ -195,9 +185,12 @@ export default class extends React.Component {
                       </div>
                     )}
                   </div>
-                  <div className="">
-                    Số tiền chi tiêu từ {formatPriceVietnamese(item.Point)}
-                  </div>
+                  {item.Point > 0 && (
+                    <div className="">
+                      Số tiền chi tiêu từ {formatPriceVietnamese(item.Point)}
+                    </div>
+                  )}
+
                   {item.Desc && (
                     <div
                       className="mt-10px"
