@@ -849,7 +849,7 @@ export default class extends React.Component {
                             }
                           >
                             (
-                            {VDiscount && Number(VDiscount) < 100
+                            {VDiscount && Number(VDiscount) <= 100
                               ? `- ${VDiscount}%`
                               : `- ${formatPriceVietnamese(VDiscount)}đ`}
                             ) {VCode}
