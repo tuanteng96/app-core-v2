@@ -281,6 +281,7 @@ export default class extends React.Component {
                 items: data.items.reverse(),
                 order: data.order,
                 popupOpened: false,
+                VItem: data.order?.Voucher,
                 VDiscount: data.order?.Voucher?.Discount,
                 VCode: data.order?.VCode,
                 deleteds: [],
@@ -341,6 +342,7 @@ export default class extends React.Component {
             order: data.order,
             isLoading: false,
             VCode: data.order && data.order?.VoucherCode,
+            VItem: data.order?.Voucher,
             VDiscount: data.order?.Voucher?.Discount,
             WalletMe: data.mm,
             voucherList: data.vouchers,
@@ -611,8 +613,9 @@ export default class extends React.Component {
       VDiscount,
       Preloaders,
       TotalOrder,
+      VItem
     } = this.state;
-
+    
     return (
       <Page
         noToolbar
@@ -850,8 +853,8 @@ export default class extends React.Component {
                           >
                             (
                             {VDiscount && Number(VDiscount) <= 100
-                              ? `- ${VDiscount}%`
-                              : `- ${formatPriceVietnamese(VDiscount)}đ`}
+                              ? `${VDiscount}%`
+                              : `${VItem?.ValueType === 2 ? "Đồng giá " : ""}${formatPriceVietnamese(VDiscount)}đ`}
                             ) {VCode}
                           </span>
                           <i
