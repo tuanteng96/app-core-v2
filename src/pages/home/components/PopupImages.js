@@ -44,7 +44,10 @@ function PopupImages({ f7 }) {
                   setVisible(
                     f7.views.main.router?.currentRoute?.path?.includes(
                       "/vong-quay/"
-                    )
+                    ) ||
+                      f7.views.main.router?.currentRoute?.path?.includes(
+                        "/hop-qua-may-man/"
+                      )
                       ? false
                       : true
                   );
@@ -55,7 +58,12 @@ function PopupImages({ f7 }) {
           } else {
             setData(data.data[0]);
             setVisible(
-              f7.views.main.router?.currentRoute?.path?.includes("/vong-quay/")
+              f7.views.main.router?.currentRoute?.path?.includes(
+                "/vong-quay/"
+              ) ||
+                f7.views.main.router?.currentRoute?.path?.includes(
+                  "/hop-qua-may-man/"
+                )
                 ? false
                 : true
             );
