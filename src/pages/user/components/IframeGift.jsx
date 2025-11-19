@@ -451,6 +451,7 @@ const IframeGift = forwardRef(({ f7, params }, ref) => {
 
     timeoutRef.current = setTimeout(() => {
       setWinnerPrize(data?.data[index]);
+
       onSubmit(data?.data[index]);
 
       safePlay(winerSound.current);
@@ -466,7 +467,7 @@ const IframeGift = forwardRef(({ f7, params }, ref) => {
         Content: values?.option || "",
         MemberID: getUser()?.ID || "",
         BrowserId: getUser()?.ID,
-        Status: "0",
+        Status: "1",
         Type: "contact",
         StockID: getStockIDStorage(),
         DepartmentID: 22,

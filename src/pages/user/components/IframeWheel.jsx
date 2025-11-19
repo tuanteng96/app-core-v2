@@ -1,4 +1,10 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { toAbsoluteUrl } from "../../../constants/assetPath";
 import { useMutation, useQuery } from "react-query";
 import NewsDataService from "../../../service/news.service";
@@ -448,7 +454,7 @@ const IframeWheel = forwardRef(({ f7, params }, ref) => {
         Content: values?.option || "",
         MemberID: getUser()?.ID || "",
         BrowserId: getUser()?.ID,
-        Status: "0",
+        Status: "1",
         Type: "contact",
         StockID: getStockIDStorage(),
         DepartmentID: 22,
@@ -476,7 +482,6 @@ const IframeWheel = forwardRef(({ f7, params }, ref) => {
 
   useImperativeHandle(ref, () => ({
     onClose: () => {
-      
       setWinnerPrize(null);
 
       if (audioRef.current) {
