@@ -281,11 +281,11 @@ export default class extends React.Component {
                                 ) : (
                                   <>
                                     Giảm tối đa{" "}
-                                    {item?.Voucher?.ValueType === 1
-                                      ? `${item?.Voucher?.Discount}%`
-                                      : `${formatPriceVietnamese(
+                                    {item?.Voucher?.Discount > 100
+                                      ? `${formatPriceVietnamese(
                                           item?.Voucher?.Discount
-                                        )} VND`}
+                                        )} VND`
+                                      : `${item?.Voucher?.Discount}%`}
                                   </>
                                 )}
                               </div>
