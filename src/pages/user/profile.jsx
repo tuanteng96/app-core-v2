@@ -253,7 +253,7 @@ export default class extends React.Component {
                   </div>
                 </div>
               </Link>
-              {memberInfo?.MemberGroupTitles && (
+              {!window?.GlobalConfig?.Admin?.an_sap_len_cap && memberInfo?.MemberGroupTitles && (
                 <Link
                   href="/member-groups/"
                   noLinkClass
