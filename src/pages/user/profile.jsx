@@ -53,47 +53,63 @@ export default class extends React.Component {
             await new Promise((resolve) => setTimeout(resolve, 300));
           });
         } else {
-          let MemberGroups = await UserService.getMemberGroups({
-            cmd: "get",
-            "(filter)StockID": data?.ByStockID,
-            sort: "[Point] desc",
-            Pi: 1,
-            Ps: 100,
-          });
-
           let groupTitles = "";
-
-          if (
-            MemberGroups?.data?.data?.list &&
-            MemberGroups?.data?.data?.list.length > 0
-          ) {
-            let ToPay = 0;
-            if (data?.Present?.cashSum && data?.Present?.cashSum.length > 0) {
-              ToPay = Number(data.Present.cashSum[0].Payed || 0);
+          if (!window?.GlobalConfig?.Admin?.an_sap_len_cap) {
+            let isCheck = false;
+            let Configs = await UserService.getConfig("autogroup_config");
+            if (Configs?.data?.data && Configs?.data?.data.length > 0) {
+              let JsonConfigs = Configs?.data?.data[0]?.Value
+                ? JSON.parse(Configs?.data?.data[0]?.Value)
+                : null;
+              if (JsonConfigs && !JsonConfigs?.thoi_gian_tinh) {
+                isCheck = true;
+              }
             }
+            if (isCheck) {
+              let MemberGroups = await UserService.getMemberGroups({
+                cmd: "get",
+                "(filter)StockID": data?.ByStockID,
+                sort: "[Point] desc",
+                Pi: 1,
+                Ps: 100,
+              });
 
-            if (data.acc_group && Number(data.acc_group) > 0) {
-              let newMemberGroups = [
-                ...(MemberGroups?.data?.data?.list || []),
-              ].sort((a, b) => Number(a.Point) - Number(b.Point));
+              if (
+                MemberGroups?.data?.data?.list &&
+                MemberGroups?.data?.data?.list.length > 0
+              ) {
+                let ToPay = 0;
+                if (
+                  data?.Present?.cashSum &&
+                  data?.Present?.cashSum.length > 0
+                ) {
+                  ToPay = Number(data.Present.cashSum[0].Payed || 0);
+                }
 
-              let currentGroup = newMemberGroups.find(
-                (item) => Number(item.ID) === Number(data.acc_group)
-              );
+                if (data.acc_group && Number(data.acc_group) > 0) {
+                  let newMemberGroups = [
+                    ...(MemberGroups?.data?.data?.list || []),
+                  ].sort((a, b) => Number(a.Point) - Number(b.Point));
 
-              if (currentGroup) {
-                let nextGroup = newMemberGroups.find(
-                  (item) => Number(item.Point) > Number(currentGroup.Point)
-                );
+                  let currentGroup = newMemberGroups.find(
+                    (item) => Number(item.ID) === Number(data.acc_group)
+                  );
 
-                if (nextGroup) {
-                  groupTitles = `Chi tiêu thêm <span class="text-danger fw-600">${formatPriceVietnamese(
-                    nextGroup.Point - ToPay
-                  )} <span class="fw-500">đ</span></span> </br> để đạt cấp <span class="fw-500">${
-                    nextGroup.Title
-                  }</span>.`;
-                } else {
-                  groupTitles = `Bạn đã đạt cấp <span class="fw-500">${currentGroup.Title}</span>.`;
+                  if (currentGroup) {
+                    let nextGroup = newMemberGroups.find(
+                      (item) => Number(item.Point) > Number(currentGroup.Point)
+                    );
+
+                    if (nextGroup) {
+                      groupTitles = `Chi tiêu thêm <span class="text-danger fw-600">${formatPriceVietnamese(
+                        nextGroup.Point - ToPay
+                      )} <span class="fw-500">đ</span></span> </br> để đạt cấp <span class="fw-500">${
+                        nextGroup.Title
+                      }</span>.`;
+                    } else {
+                      groupTitles = `Bạn đã đạt cấp <span class="fw-500">${currentGroup.Title}</span>.`;
+                    }
+                  }
                 }
               }
             }
@@ -253,35 +269,36 @@ export default class extends React.Component {
                   </div>
                 </div>
               </Link>
-              {!window?.GlobalConfig?.Admin?.an_sap_len_cap && memberInfo?.MemberGroupTitles && (
-                <Link
-                  href="/member-groups/"
-                  noLinkClass
-                  className="d--f jc--sb ai--c pt-15px mt-8px position-relative text-black"
-                >
-                  <div
-                    className="position-absolute h-1px right-0 top-0"
-                    style={{
-                      background: "#f0f4f7",
-                      width: "calc(100% - 50px)",
-                    }}
-                  ></div>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: memberInfo.MemberGroupTitles,
-                    }}
-                  ></div>
-                  <div
-                    className="d--f ai--c"
-                    style={{
-                      fontSize: "18px",
-                      color: "#999",
-                    }}
+              {!window?.GlobalConfig?.Admin?.an_sap_len_cap &&
+                memberInfo?.MemberGroupTitles && (
+                  <Link
+                    href="/member-groups/"
+                    noLinkClass
+                    className="d--f jc--sb ai--c pt-15px mt-8px position-relative text-black"
                   >
-                    <i className="las la-angle-right"></i>
-                  </div>
-                </Link>
-              )}
+                    <div
+                      className="position-absolute h-1px right-0 top-0"
+                      style={{
+                        background: "#f0f4f7",
+                        width: "calc(100% - 50px)",
+                      }}
+                    ></div>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: memberInfo.MemberGroupTitles,
+                      }}
+                    ></div>
+                    <div
+                      className="d--f ai--c"
+                      style={{
+                        fontSize: "18px",
+                        color: "#999",
+                      }}
+                    >
+                      <i className="las la-angle-right"></i>
+                    </div>
+                  </Link>
+                )}
             </div>
             <div
               className="bg-white p-15px mt-8px"
