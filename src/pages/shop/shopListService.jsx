@@ -22,7 +22,7 @@ import clsx from "clsx";
 import axios from "axios";
 import PickerDetail from "./components/PickerDetail";
 import { toAbsoluteUrl } from "../../constants/assetPath";
-import { debounce } from 'lodash-es';
+import { debounce } from "lodash-es";
 
 const CancelToken = axios.CancelToken;
 let cancel;
@@ -44,6 +44,7 @@ export default class extends React.Component {
       keySearch: "",
       idOpen: null,
       showPreloader: false,
+      HistoryChangeCate: [795],
     };
 
     this.delayedCallback = debounce(this.inputCallback, 400);
@@ -170,20 +171,28 @@ export default class extends React.Component {
     }, 1000);
   }
 
-  changeCate = (cate) => {
+  changeCate = (cate, isAddHistory = true) => {
+    let newHistoryChangeCate = this.state.HistoryChangeCate;
+    if (isAddHistory) {
+      // Chỉ push nếu khác ID cuối cùng
+      if (newHistoryChangeCate[newHistoryChangeCate.length - 1] !== cate.ID) {
+        newHistoryChangeCate.push(cate.ID);
+      }
+    } else {
+      // BACK: bỏ item cuối
+      newHistoryChangeCate.pop();
+    }
+
     this.setState({
       loading: true,
       currentId: cate.ID,
       idOpen: "",
       Pi: 1,
       Count: 0,
+      HistoryChangeCate: newHistoryChangeCate,
     });
     this.getService(cate.ID);
     this.getTitleCate(cate.ID);
-    // this.$f7router.navigate(this.$f7router.currentRoute.url, {
-    //   ignoreCache  : true,
-    //   reloadCurrent : true
-    // });
   };
 
   fixedContentDomain = (content) => {
@@ -238,10 +247,11 @@ export default class extends React.Component {
       currentId,
       idOpen,
       showPreloader,
+      HistoryChangeCate,
     } = this.state;
 
     const userInfo = getUser();
-
+    
     return (
       <Page
         name="shop-List"
@@ -257,7 +267,25 @@ export default class extends React.Component {
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
-              <Link onClick={() => this.$f7router.back()}>
+              <Link
+                onClick={() => {
+                  let newHistoryChangeCate = [...HistoryChangeCate];
+                  newHistoryChangeCate.pop(); // bỏ item hiện tại
+
+                  if (newHistoryChangeCate.length > 0) {
+                    this.changeCate(
+                      {
+                        ID: newHistoryChangeCate[
+                          newHistoryChangeCate.length - 1
+                        ],
+                      },
+                      false
+                    );
+                  } else {
+                    this.$f7router.back();
+                  }
+                }}
+              >
                 <i className="las la-angle-left"></i>
               </Link>
             </div>

@@ -21,7 +21,7 @@ import { TruncateLines } from "react-truncate-lines";
 import clsx from "clsx";
 import { toast } from "react-toastify";
 import { toAbsoluteUrl } from "../../constants/assetPath";
-import { debounce } from 'lodash-es';
+import { debounce } from "lodash-es";
 
 const ButtonCart = ({ item, f7, f7router }) => {
   const [loading, setLoading] = useState(false);
@@ -107,6 +107,7 @@ export default class extends React.Component {
       currentId: 0,
       loading: false,
       keySearch: "",
+      HistoryChangeCate: [794],
     };
 
     this.delayedCallback = debounce(this.inputCallback, 400);
@@ -288,7 +289,18 @@ export default class extends React.Component {
     });
   };
 
-  changeCate = (cate) => {
+  changeCate = (cate, isAddHistory = true) => {
+    let newHistoryChangeCate = this.state.HistoryChangeCate;
+    if (isAddHistory) {
+      // Chỉ push nếu khác ID cuối cùng
+      if (newHistoryChangeCate[newHistoryChangeCate.length - 1] !== cate.ID) {
+        newHistoryChangeCate.push(cate.ID);
+      }
+    } else {
+      // BACK: bỏ item cuối
+      newHistoryChangeCate.pop();
+    }
+
     const itemView = this.state.itemView;
     this.setState({
       currentId: cate.ID,
@@ -296,13 +308,14 @@ export default class extends React.Component {
       Pi: 1,
       Count: 0,
       showPreloader: false,
+      HistoryChangeCate: newHistoryChangeCate,
     });
     this.getDataList(cate.ID, "1", itemView, "", "");
     this.getTitleCate(cate.ID);
   };
 
   render() {
-    const { arrCateList, CateID, currentId, loading } = this.state;
+    const { arrCateList, CateID, currentId, loading, HistoryChangeCate } = this.state;
     return (
       <Page
         name="shop-List"
@@ -317,14 +330,23 @@ export default class extends React.Component {
           <div className="page-navbar">
             <div className="page-navbar__back">
               <Link
-                onClick={
-                  () => this.$f7router.back()
-                  // {
-                  //   url: '/shop/',
-                  //   force: true,
-                  //   ignoreCache: true,
-                  // }
-                }
+                onClick={() => {
+                  let newHistoryChangeCate = [...HistoryChangeCate];
+                  newHistoryChangeCate.pop(); // bỏ item hiện tại
+
+                  if (newHistoryChangeCate.length > 0) {
+                    this.changeCate(
+                      {
+                        ID: newHistoryChangeCate[
+                          newHistoryChangeCate.length - 1
+                        ],
+                      },
+                      false
+                    );
+                  } else {
+                    this.$f7router.back();
+                  }
+                }}
               >
                 <i className="las la-angle-left"></i>
               </Link>

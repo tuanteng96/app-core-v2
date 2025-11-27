@@ -16,10 +16,17 @@ export default class ItemCardService extends React.Component {
   };
   render() {
     const { item } = this.props;
-
+    
     return (
       <div className="cardservice-item__service">
-        <div className="cardservice-item__service-img">
+        <div
+          className="cardservice-item__service-img"
+          onClick={() => {
+            this.$f7.view.main.router.navigate(
+              `/shop/detail/${item.Services[0].ProdID}/?original=${item.Product.ID}&CateId=${item.Product.Type}`
+            );
+          }}
+        >
           {window?.GlobalConfig?.APP?.UIBase ? (
             <div className="h-200px" style={{ background: "#7d7d7d" }}></div>
           ) : (
