@@ -293,18 +293,17 @@
         }
     }
     &__success {
-        background: $white;
+        //background: $white;
         margin-top: 5px;
         @include flexbox;
         @include flex-direction(column);
         @include align-items(center);
         @include justify-content(center);
-        padding: 100px 30px;
+        padding: 50px 30px;
         text-align: center;
         svg {
-            width: 70px;
-            height: 70px;
-            fill: $color-app;
+            width: 90px;
+            stroke: $color-app;
             polyline {
                 stroke: $color-app;
             }
@@ -319,13 +318,12 @@
             line-height: 20px;
         }
         .btn-submit-order {
-            line-height: 38px;
-            margin-top: 30px;
+            line-height: 44px;
             width: auto;
-            padding: 0 20px;
+            padding: 0 15px;
             font-size: var(--font-size-medium, $size-medium);
             border-radius: 2px;
-            min-height: 38px;
+            min-height: 44px;
         }
     }
     .service-search {

@@ -365,7 +365,7 @@ function FormLogin({ f7, f7router }) {
                   )}
                   {window?.GlobalConfig?.SMSOTP && (
                     <div>
-                      <Link href="/login-otp/">Đăng nhập bằng SMS</Link>
+                      <Link href="/login-otp/">Đăng nhập bằng OTP</Link>
                     </div>
                   )}
                 </div>
