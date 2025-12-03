@@ -110,13 +110,13 @@ export const fixedContentDomain = (content) => {
   result = result.replace(
     /<iframe([^>]*)src=["']([^"']+)["']([^>]*)><\/iframe>/gi,
     (match, beforeSrc, src, afterSrc) => {
+      let updated = match;
+
       // Regex tìm YouTube videoId
       const ytRegex =
         /(?:youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/;
       const m = src.match(ytRegex);
 
-      let updated = match;
-      
       if (m && m[1]) {
         const videoId = m[1];
         const newSrc = `${server}/app2021/player.html?videoId=${videoId}`;
@@ -131,17 +131,18 @@ export const fixedContentDomain = (content) => {
         }
       }
 
-      // Thêm style responsive max-width 100% cho tất cả iframe
-      if (/style="/i.test(updated)) {
-        updated = updated.replace(
-          /style="/i,
-          `style="max-width:100%; width:100%; height:auto; `
-        );
+      // Thêm style max-width:100% mà vẫn giữ width và height gốc
+      const styleMatch = updated.match(/style=["']([^"']*)["']/i);
+      if (styleMatch) {
+        // Nếu đã có style, thêm max-width:100% nếu chưa có
+        let newStyle = styleMatch[1];
+        if (!/max-width/i.test(newStyle)) {
+          newStyle += "; max-width:100%";
+        }
+        updated = updated.replace(styleMatch[0], `style="${newStyle}"`);
       } else {
-        updated = updated.replace(
-          "<iframe",
-          `<iframe style="max-width:100%; width:100%; height:auto;"`
-        );
+        // Nếu chưa có style, thêm max-width:100% mà không thay width/height
+        updated = updated.replace("<iframe", `<iframe style="max-width:100%;"`);
       }
 
       return updated;
