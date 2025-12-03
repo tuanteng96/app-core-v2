@@ -20,7 +20,7 @@ import { Suspense } from "react";
 import Skeleton from "react-loading-skeleton";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import NoProduct from "../../assets/images/no-product.png";
-import { checkSLDisabled } from "../../constants/helpers";
+import { checkSLDisabled, fixedContentDomain } from "../../constants/helpers";
 import { OPEN_LINK } from "../../constants/prom21";
 import { toAbsoluteUrl } from "../../constants/assetPath";
 import { Swiper, SwiperSlide } from "framework7-react";
@@ -134,13 +134,17 @@ export default class extends React.Component {
           item.Role === "thumb" ||
           item.Role === "opt_thumb"
       );
-      
+
       this.setState({
         arrProductCurrent: resultRes.product,
         arrProduct: resultRes.product,
         arrRelProds: resultRes.product.RelProds,
         photos: ptotosNew,
-        arrOptions: resultRes?.options2 ? resultRes?.options2.sort((a,b) => (a?.JoinOrder || 0) - (b?.JoinOrder || 0)) : [],
+        arrOptions: resultRes?.options2
+          ? resultRes?.options2.sort(
+              (a, b) => (a?.JoinOrder || 0) - (b?.JoinOrder || 0)
+            )
+          : [],
         arrCombos: resultRes.combos,
         statusLoading: false,
         aff: {
@@ -474,14 +478,6 @@ export default class extends React.Component {
         </li>
       );
     }
-  };
-
-  fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(
-      /src=\"\//g,
-      'src="' + (window.SERVER || SERVER_APP) + "/"
-    );
   };
 
   loadRefresh(done) {
@@ -885,7 +881,7 @@ export default class extends React.Component {
                               }
                             )}
                             {ReactHtmlParser(
-                              this.fixedContentDomain(
+                              fixedContentDomain(
                                 arrProduct.Detail || OriginalCurrent?.Detail
                               ),
                               {

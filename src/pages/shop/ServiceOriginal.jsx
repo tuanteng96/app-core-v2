@@ -8,6 +8,7 @@ import NoProduct from "../../assets/images/no-product.png";
 import ReactHtmlParser from "react-html-parser";
 import ShopListServiceItem from "./shopListServiceItem";
 import { toAbsoluteUrl } from "../../constants/assetPath";
+import { fixedContentDomain } from "../../constants/helpers";
 
 export default class extends React.Component {
   constructor() {
@@ -40,14 +41,6 @@ export default class extends React.Component {
         }
       })
       .catch((e) => console.log(e));
-  };
-
-  fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(
-      /src=\"\//g,
-      'src="' + (window.SERVER || SERVER_APP) + "/"
-    );
   };
 
   render() {
@@ -96,7 +89,7 @@ export default class extends React.Component {
             </div>
             <div className="content_">
               {ReactHtmlParser(data?.root.Desc)}
-              {ReactHtmlParser(this.fixedContentDomain(data?.root.Detail))}
+              {ReactHtmlParser(fixedContentDomain(data?.root.Detail))}
             </div>
             <ShopListServiceItem item={data} f7router={this.$f7router} />
           </div>

@@ -8,6 +8,7 @@ import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
 import { OPEN_LINK } from "../../constants/prom21";
 import { toAbsoluteUrl } from "../../constants/assetPath";
+import { fixedContentDomain } from "../../constants/helpers";
 
 export default class extends React.Component {
   constructor() {
@@ -18,14 +19,6 @@ export default class extends React.Component {
       showPreloader: false,
     };
   }
-
-  fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(
-      /src=\"\//g,
-      'src="' + (window.SERVER || SERVER_APP) + "/"
-    );
-  };
 
   formatHtmlString = (htmlString) => {
     const oembedRegex = /<oembed[^>]*>/g;
@@ -105,7 +98,7 @@ export default class extends React.Component {
                 <div className="page-news__detail-content">
                   <div className="page-news__detail-shadow">
                     {ReactHtmlParser(
-                      this.fixedContentDomain(
+                      fixedContentDomain(
                         this.formatHtmlString(arrayItem.Desc)
                       ),
                       {
@@ -127,7 +120,7 @@ export default class extends React.Component {
                       }
                     )}
                     {ReactHtmlParser(
-                      this.fixedContentDomain(
+                      fixedContentDomain(
                         this.formatHtmlString(arrayItem.Content)
                       ),
                       {

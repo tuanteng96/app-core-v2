@@ -8,6 +8,7 @@ import { SERVER_APP } from "../../../../constants/config";
 import ReactHtmlParser from "react-html-parser";
 import { OPEN_LINK } from "../../../../constants/prom21";
 import { toAbsoluteUrl } from "../../../../constants/assetPath";
+import { fixedContentDomain } from "../../../../constants/helpers";
 export default class SlideList extends React.Component {
   constructor() {
     super();
@@ -26,10 +27,6 @@ export default class SlideList extends React.Component {
       })
       .catch((err) => console.log(error));
   }
-  fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + (window.SERVER || SERVER_APP) + "/");
-  };
 
   render() {
     const { arrayItem, isLoading } = this.state;
@@ -66,7 +63,7 @@ export default class SlideList extends React.Component {
                 </div>
                 <div className="page-news__detail-content">
                   <div className="page-news__detail-shadow">
-                    {ReactHtmlParser(this.fixedContentDomain(arrayItem.Desc), {
+                    {ReactHtmlParser(fixedContentDomain(arrayItem.Desc), {
                       transform: (node) => {
                         
                         if (

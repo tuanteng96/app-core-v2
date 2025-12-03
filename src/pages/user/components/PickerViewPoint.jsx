@@ -7,20 +7,13 @@ import { f7 } from "framework7-react";
 import UserService from "../../../service/user.service";
 import { getUser } from "../../../constants/user";
 import { toast } from "react-toastify";
+import { fixedContentDomain } from "../../../constants/helpers";
 
 function PickerViewPoint({ children, data, disabled, refetch }) {
   const [visible, setVisible] = useState(false);
 
   const close = () => {
     setVisible(false);
-  };
-
-  const fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(
-      /src=\"\//g,
-      'src="' + (window.SERVER || SERVER_APP) + "/"
-    );
   };
 
   const alertPoint = () => {

@@ -1,3 +1,5 @@
+import { SERVER_APP } from "./config";
+
 export const iOS = () => {
   return (
     [
@@ -94,4 +96,57 @@ export const getRandomItemByPercentage = (items, percentages) => {
   }
 
   return items.length - 1;
+};
+
+export const fixedContentDomain = (content) => {
+  if (!content) return "";
+
+  const server = window.SERVER || SERVER_APP;
+
+  // 1. Fix src="/..." → src="SERVER/..."
+  let result = content.replace(/src=\"\//g, `src="${server}/`);
+
+  // 2. Tìm tất cả iframe
+  result = result.replace(
+    /<iframe([^>]*)src=["']([^"']+)["']([^>]*)><\/iframe>/gi,
+    (match, beforeSrc, src, afterSrc) => {
+      // Regex tìm YouTube videoId
+      const ytRegex =
+        /(?:youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/;
+      const m = src.match(ytRegex);
+
+      let updated = match;
+      
+      if (m && m[1]) {
+        const videoId = m[1];
+        const newSrc = `${server}/app2021/player.html?videoId=${videoId}`;
+        updated = match.replace(src, newSrc);
+
+        // Thêm allowfullscreen nếu chưa có
+        if (!/allowfullscreen/i.test(updated)) {
+          updated = updated.replace(
+            "<iframe",
+            `<iframe allowfullscreen="allowfullscreen"`
+          );
+        }
+      }
+
+      // Thêm style responsive max-width 100% cho tất cả iframe
+      if (/style="/i.test(updated)) {
+        updated = updated.replace(
+          /style="/i,
+          `style="max-width:100%; width:100%; height:auto; `
+        );
+      } else {
+        updated = updated.replace(
+          "<iframe",
+          `<iframe style="max-width:100%; width:100%; height:auto;"`
+        );
+      }
+
+      return updated;
+    }
+  );
+
+  return result;
 };

@@ -6,6 +6,7 @@ import clsx from "clsx";
 import NumberFormat from "react-number-format";
 import { getUser } from "../../../constants/user";
 import { SERVER_APP } from "../../../constants/config";
+import { fixedContentDomain } from "../../../constants/helpers";
 
 const PopupConfirm = ({ show, onSubmit, onHide, initialValue, btnLoading }) => {
   const [initialValues, setInitialValues] = useState({
@@ -27,11 +28,6 @@ const PopupConfirm = ({ show, onSubmit, onHide, initialValue, btnLoading }) => {
     Fullname: Yup.string().required("Vui lòng nhập."),
     Phone: Yup.string().required("Vui lòng nhập."),
   });
-
-  const fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + (window.SERVER || SERVER_APP) + "/");
-  };
 
   return (
     <Formik

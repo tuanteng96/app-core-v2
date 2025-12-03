@@ -195,14 +195,6 @@ export default class extends React.Component {
     this.getTitleCate(cate.ID);
   };
 
-  fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(
-      /src=\"\//g,
-      'src="' + (window.SERVER || SERVER_APP) + "/"
-    );
-  };
-
   loadMoreAsync = () => {
     const { arrService, Count, Pi, currentId, showPreloader, isSearch } =
       this.state;

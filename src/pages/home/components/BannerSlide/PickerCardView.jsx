@@ -4,20 +4,13 @@ import { createPortal } from "react-dom";
 import PickerConfirm from "../PickerConfirm";
 import { SERVER_APP } from "../../../../constants/config";
 import PhotosGallery from "./PhotosGallery";
+import { fixedContentDomain } from "../../../../constants/helpers";
 
 function PickerCardView({ children, data }) {
   const [visible, setVisible] = useState(false);
 
   const close = () => {
     setVisible(false);
-  };
-
-  const fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(
-      /src=\"\//g,
-      'src="' + (window.SERVER || SERVER_APP) + "/"
-    );
   };
 
   return (

@@ -6,6 +6,7 @@ import { toAbsoluteUrl } from "../../../../constants/assetPath";
 import PickerConfirm from "../PickerConfirm";
 import { SERVER_APP } from "../../../../constants/config";
 import PhotosGallery from "./PhotosGallery";
+import { fixedContentDomain } from "../../../../constants/helpers";
 
 function PickerCardImageGallery({ children, data, index }) {
   let elSwiper = useRef();
@@ -20,14 +21,6 @@ function PickerCardImageGallery({ children, data, index }) {
 
   const close = () => {
     setVisible(false);
-  };
-
-  const fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(
-      /src=\"\//g,
-      'src="' + (window.SERVER || SERVER_APP) + "/"
-    );
   };
 
   return (

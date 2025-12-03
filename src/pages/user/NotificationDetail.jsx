@@ -13,7 +13,7 @@ import userService from "../../service/user.service";
 import ReactHtmlParser from "react-html-parser";
 import Skeleton from "react-loading-skeleton";
 import { SET_BADGE } from "../../constants/prom21";
-import { iOS } from "../../constants/helpers";
+import { fixedContentDomain, iOS } from "../../constants/helpers";
 import { Form, Formik } from "formik";
 import DatePicker from "react-mobile-datepicker";
 import { toast } from "react-toastify";
@@ -248,14 +248,6 @@ export default class extends React.Component {
     );
   };
 
-  fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(
-      /src=\"\//g,
-      'src="' + (window.SERVER || SERVER_APP) + "/"
-    );
-  };
-
   formatHtmlString = (htmlString) => {
     const oembedRegex = /<oembed[^>]*>/g;
     const oembedMatch = htmlString.match(oembedRegex);
@@ -273,10 +265,11 @@ export default class extends React.Component {
       f7.dialog.preloader("Đang xóa...");
       const data = new FormData();
       data.append("ids", Id);
-      userService.deleteNotification(data)
+      userService
+        .deleteNotification(data)
         .then((response) => {
           f7.dialog.close();
-          window['getNotification'] && window['getNotification']();
+          window["getNotification"] && window["getNotification"]();
           if (response.data) {
             toast.success(" Xóa thành công !", {
               position: toast.POSITION.TOP_LEFT,
@@ -386,9 +379,7 @@ export default class extends React.Component {
                   {data &&
                     data.Content &&
                     ReactHtmlParser(
-                      this.fixedContentDomain(
-                        this.formatHtmlString(data.Content)
-                      )
+                      fixedContentDomain(this.formatHtmlString(data.Content))
                     )}
                 </div>
                 <div>

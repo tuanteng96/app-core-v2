@@ -4,6 +4,7 @@ import ReactHtmlParser from "react-html-parser";
 import { useQuery } from "react-query";
 import ShopDataService from "./../../../service/shop.service";
 import { SERVER_APP } from "../../../constants/config";
+import { fixedContentDomain } from "../../../constants/helpers";
 
 function PickerDetail({ children, item }) {
   const [visible, setVisible] = useState(false);
@@ -16,11 +17,6 @@ function PickerDetail({ children, item }) {
     },
     enabled: visible,
   });
-
-  const fixedContentDomain = (content) => {
-    if (!content) return "";
-    return content.replace(/src=\"\//g, 'src="' + (window.SERVER || SERVER_APP) + "/");
-  };
 
   return (
     <>
